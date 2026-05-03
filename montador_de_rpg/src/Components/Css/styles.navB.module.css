@@ -21,7 +21,8 @@
   display: flex;
   justify-content: space-between; 
   align-items: center;
-  width: calc(100vw - 40px);
+  width: calc(100vw - 50px);
+  margin-left: 5px;
   background-color: var(--navBgColor);
   font-family: "Poppins", sans-serif;
   font-weight: 500;

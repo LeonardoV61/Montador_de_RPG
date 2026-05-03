@@ -42,7 +42,7 @@
 }
 :global(.carousel) {
   border-radius: 15px;
-  margin-top: 80px !important;
+  margin-top: 20vh !important;
 }
 :global(.carousel .control-arrow) {
   width: 40px;
