@@ -1,0 +1,255 @@
+
+.PainelCont {
+    min-height: 100vh; 
+    background-color: var(--bodyBgColor); 
+    color: var(--bodyTextColor); 
+    font-family: 'Inter', sans-serif; 
+    display: flex; 
+    flex-direction: column; 
+    align-items: center; 
+    transition: background 0.3s ease; 
+    overscroll-behavior: none;
+} 
+
+.PainelH1 { 
+    font-size: 2rem; 
+    letter-spacing: 1px; 
+    color: var(--navHoverColor); 
+    text-transform: uppercase; 
+    margin-bottom: 1rem; 
+    margin-left: 3vw; 
+    margin-right: 3vw; 
+    transition: color 0.3s ease; 
+} 
+
+.PainelContNav { 
+    position: fixed; 
+    min-width: 100vw; 
+    display: flex; 
+    flex-direction: column; 
+    align-items: center; 
+    justify-content: center; 
+    padding-top: 1.5rem; 
+    z-index: 10; 
+    transition: opacity 0.3s ease, transform 0.3s ease; 
+} 
+.PainelContNav.shrink {
+    transform: translateY(-20%); 
+    opacity: 0; 
+} 
+
+.PainelHeader { 
+    display: flex; 
+    align-items: center; 
+    justify-content: space-between; 
+}
+
+.PainelLink { 
+    text-decoration: none; 
+} 
+
+.PainelVolt { 
+    font-size: 2.5rem; 
+    color: transparent; 
+    background-color: var(--navHoverColor); 
+    background-image: linear-gradient(90deg, var(--bodyTextColor) 0%, var(--bodyTextColor) 0%); 
+    background-repeat: no-repeat; 
+    background-size: 0% 100%; 
+    -webkit-background-clip: text; 
+    background-clip: text; 
+    transition: background-size 0.8s ease; 
+} 
+
+.PainelVolt:hover { 
+    background-size: 100% 100%; 
+} 
+
+.themeButton { 
+    text-decoration: none; 
+    color: transparent; 
+    background-color: var(--navHoverColor); 
+    background-image: linear-gradient(
+                            90deg, var(--bodyTextColor) 0%, 
+                            var(--bodyTextColor) 0%); 
+    background-repeat: no-repeat; 
+    background-size: 0% 100%; 
+    -webkit-background-clip: text; 
+    background-clip: text; 
+    transition: background-size 0.8s ease; 
+} 
+
+.themeButton:hover { 
+    background-size: 100% 100%; 
+}
+ 
+.PainelNav { 
+    width: 40vw;
+    min-width: 300px;
+    max-width: 600px;
+    height: 6vh; 
+    background-color: var(--bodyBgColor); 
+    filter: brightness(1.1); 
+    padding: 0.3rem 0.6rem; 
+    border-radius: 1.5rem; 
+    display: flex; 
+    align-items: center; 
+    justify-content: space-between; 
+    box-shadow: 0 3px 10px rgba(0, 0, 0, 0.1); 
+    transition: box-shadow 0.3s ease, transform 0.3s ease; 
+} 
+
+.Lupa { 
+    width: 5%; 
+    margin-top: 5px; 
+    align-self: center; 
+} 
+
+.Lupa img{ 
+    width: 100%; 
+    filter: invert(var(--categFilterI)); 
+} 
+
+.PainelNav:hover { 
+    transform: translateY(-2px); 
+    box-shadow: 0 6px 16px rgba(0, 0, 0, 0.15); 
+} 
+
+.PainelPesq { 
+    background-color: transparent; 
+    border: none; 
+    width: 80%; 
+    height: 100%; 
+    margin-left: 10px; 
+    font-size: 1rem; 
+    color: var(--bodyTextColor); 
+    outline: none; 
+    transition: color 0.3s ease; 
+} 
+
+.PainelPesq::placeholder { 
+    color: var(--bodyTextColor); 
+    filter: brightness(.5); 
+    opacity: .55; 
+} 
+
+.PainelButtstNav{ 
+    display: flex; 
+    justify-content: space-between; 
+    align-items: center; 
+} 
+
+.PainelFilt { 
+    text-align: center; 
+    border: none; 
+    border-radius: 50%; 
+    width: 2.2rem; 
+    height: 2.2rem; 
+    cursor: pointer; 
+    font-size: 1rem; 
+    transition: background-color 0.3s ease, transform 0.3s ease; 
+} 
+
+.PainelFilt img { 
+    width: 100%; 
+    filter: invert(var(--categFilterI)); 
+} 
+
+.PainelFilt:hover { 
+    transform: scale(1.05); 
+} 
+
+.PainelNew { 
+    position: relative; 
+    width: 2.5rem; 
+    height: 2.5rem; 
+    background-color: var(--bodyBgColor); 
+    filter: brightness(.9); 
+    border: none; 
+    border-radius: 1rem; 
+    cursor: pointer; 
+    text-align: center; 
+    overflow: hidden; 
+    font-weight: bold; 
+    transition: width 0.4s ease-out,
+                filter 0.3s ease;
+    margin-left: 1rem; 
+    padding: .2rem; 
+} 
+
+.PainelButtstNav div:hover .PainelNew { 
+    width: 7rem; 
+    text-align: start; 
+    filter: brightness(.87); 
+    box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1); 
+} 
+
+.PainelNew::before {
+    content: "+"; 
+    position: absolute;
+    top: 10%;
+    left: 25%;
+    margin-left: 2px; 
+    color: transparent; 
+    filter: var(--categFilter); 
+    background-size: 100% 100%; 
+    background-image: linear-gradient(45deg, var(--navBgColor), var(--bodyBgColor)); 
+    background-repeat: no-repeat; 
+    -webkit-background-clip: text; 
+    background-clip: text;
+    transition: left 0.3s ease;
+} 
+
+.PainelNew::after { 
+    content: 'NOVO'; 
+    position: absolute; 
+    color: transparent; 
+    top: 15%; 
+    left: 110%; 
+    opacity: 0; 
+    background-size: 0% 100%; 
+    background-image: linear-gradient(45deg, var(--navBgColor), var(--bodyBgColor)); 
+    filter: var(--categFilter); 
+    background-repeat: no-repeat; 
+    -webkit-background-clip: text; 
+    background-clip: text; 
+    transition: left 0.3s ease, 
+                opacity 0.3s ease, 
+                background-size 0.4s ease; 
+    
+    pointer-events: none; 
+} 
+
+
+.PainelButtstNav div:hover .PainelNew::after { 
+    left: 30%; 
+    opacity: 1; 
+    background-size: 100% 100%; 
+} 
+
+.PainelButtstNav div:hover .PainelNew::before {
+    left: 7%;
+}
+
+.scrollDiv{
+    margin-top: 23vh;
+    height: 100%;
+    width: 100%;
+    display: flex;
+    justify-content: center;
+    overflow-y: scroll;
+    padding: 0;
+}
+
+.PainelOutlet { 
+    width: 90vw;
+    height: fit-content;
+    border-radius: 2rem 2rem 0 0; 
+    background-color: var(--bodyBgColor);
+    filter: brightness(.95);
+}
+
+@media (orientation: portrait) {
+    .PainelCont {
+        overflow: none;
+    }
+}

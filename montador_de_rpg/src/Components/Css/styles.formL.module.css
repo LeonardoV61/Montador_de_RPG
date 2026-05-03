@@ -1,0 +1,94 @@
+
+.formCont {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    padding: 40px 60px 40px 60px;
+    width: auto;
+    min-height: 50vh;
+    text-align: center;
+    gap: 7px;
+    margin: 0 auto;
+    border-radius: 18px;
+    transform: translate(-50% -50%);
+    transition: .4s;
+}
+
+.formTitle {
+    font-size: 4.5rem;
+    font-family: 'Poppins', serif;
+    color: white;
+}
+
+.inputs {
+    width: auto;
+    padding: 8px 60px 8px 8px;
+    height: 36px;
+    border-radius: 12px;
+    font-size: 22px;
+    font-family: 'Poppins', sans-serif;
+    font-weight: 550;
+    border: none;
+    margin-bottom: 10px;
+    background-color: rgb(236, 225, 210);
+    color: black;
+    transition: .5s;
+    outline: 0;
+}
+
+.inputs:focus{
+    background-color: white;
+}
+
+.inputs::placeholder{
+    color: black;
+}
+
+.formBtn {
+    width: auto;
+    padding: 13px 80px 13px 80px;
+    cursor: pointer;
+    background-color: black;
+    color: white;
+    transition: ease-in-out .3s;
+}
+
+.formBtn:hover {
+    border: .5px solid rgb(116, 116, 116);
+}
+
+.error {
+    font-size: 16px;
+    font-weight: 700;
+    color: red;
+    font-family: 'Poppins', sans-serif;
+}
+
+.passwordCont {
+    position: relative;
+}
+
+.bi {
+    position: absolute;
+    right: 5%;
+    bottom: 40%;
+    width: 22px;
+    cursor: pointer;
+}
+
+input[type="password"]::-ms-reveal {
+  display: none;
+}
+input[type="password"]::-ms-clear {
+  display: none;
+}
+input[type="password"]::-webkit-credentials-auto-fill-button {
+  visibility: hidden;
+  display: none;
+}
+input[type="password"] {
+  appearance: none;
+  -webkit-appearance: none;
+  -moz-appearance: none;
+}

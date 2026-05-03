@@ -1,0 +1,118 @@
+
+
+.AdmCont{
+    margin: 0;
+    padding: 0;
+    width: 100%;
+    height: 100%;
+    box-sizing: border-box;
+    background-color: var(--bodyBgColor);
+    color: var(--bodyTextColor);
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+
+/* .AdmContM{
+} */
+
+.AdmHeader{
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+    justify-content: center;
+    width: 60vw;
+    padding-left: 1.5rem;
+    padding-right: 1.5rem;
+    border-radius: 4rem;
+    margin-top: 1rem;
+    margin-bottom: 1rem;
+    border: 1px solid ;
+}
+
+.AdmH1{
+    text-align: center;
+    color: var(--navHoverColor);
+    margin-left: 5rem;
+    margin-right: 5rem;
+
+}
+
+.themeButton {
+    text-decoration: none;
+    color: transparent;
+    background-color: var(--navHoverColor); 
+    background-image: linear-gradient(90deg, var(--bodyTextColor) 0%, var(--bodyTextColor) 0%); 
+    background-repeat: no-repeat;
+    background-size: 0% 100%;
+    -webkit-background-clip: text;
+    background-clip: text;
+    transition: background-size 0.8s ease;
+}
+
+.themeButton:hover {
+    background-size: 100% 100%;
+}
+
+.AdmVolt {
+    font-size: 2.5rem;
+    color: transparent;
+    background-color: var(--navHoverColor); 
+    background-image: linear-gradient(90deg, var(--bodyTextColor) 0%, var(--bodyTextColor) 0%);
+    background-repeat: no-repeat;
+    background-size: 0% 100%;
+    -webkit-background-clip: text;
+    background-clip: text;
+    transition: background-size 0.8s ease;
+}
+
+.AdmVolt:hover {
+    background-size: 100% 100%;
+}
+
+
+.AdmButtDiv{
+    display: flex;
+    flex-direction: row;  
+    justify-content: center; 
+    align-items: center;    
+    flex-wrap: wrap; 
+}
+
+.AdmLink{
+    text-decoration: none;
+}
+
+.AdmButt, .AdmButtL {
+    width: 20vw;
+    height: 50vh;
+    margin: 0.5rem;
+    padding: 0.5rem;
+    background: var(--cardBg);
+    text-decoration: none;
+    color: var(--categTextColor);
+
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center; 
+}
+
+
+.AdmImg{
+    width: 70%;
+    height: auto;
+    filter: invert(var(--categFilterI));
+}
+
+.AdmButt:hover{
+    filter: var(--categFilter); 
+    cursor: pointer; 
+}
+
+.AdmButtL:hover  .AdmImg, .AdmButtL:hover  i {
+    filter: var(--categFilter); 
+    cursor: pointer; 
+}
+
+

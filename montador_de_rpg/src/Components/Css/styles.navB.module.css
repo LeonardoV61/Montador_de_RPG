@@ -1,0 +1,181 @@
+@import url('https://fonts.googleapis.com/css2?family=Poppins:ital,wght@0,100;0,200;0,300;0,400;0,500;0,600;0,700;0,800;0,900;1,100;1,200;1,300;1,400;1,500;1,600;1,700;1,800;1,900&display=swap');
+
+/* --navBgColor, --navColor, --navHoverColor */
+
+.header {
+  padding: 20px 20px;
+  position: fixed;
+  width: calc(100vw - 40px);
+  top: 0;
+  left: 0;
+  background-color: var(--navBgColor);
+  box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+  backdrop-filter: blur(10px);
+  z-index: 1000;
+  transition: all 0.3s ease;
+}
+.header.shrink {
+  padding: 14px 20px; 
+}
+.inner {
+  display: flex;
+  justify-content: space-between; 
+  align-items: center;
+  width: calc(100vw - 40px);
+  background-color: var(--navBgColor);
+  font-family: "Poppins", sans-serif;
+  font-weight: 500;
+  font-size: 1.4em;
+}
+
+.logo, .logo img{
+  height: 15vh;
+}
+
+.searchBar {
+  background-color: #020623;
+  border-radius: 25px;
+  padding: 0ch 10px;
+  border: 2px solid #ffe600;
+  display: flex;
+  align-items: center;
+  /* gap: 10px; */
+  color: #fff48d;
+  width: 40rem;
+}
+
+.searchBar button {
+  color: #fff48d;
+  border: none;
+  cursor: pointer;
+  padding: 6px 8px;
+  border-radius: 16px;
+  background-color: inherit;
+  font-size: 16px;
+  transition: background-color 0.15s;
+}
+
+.searchBar button:hover {
+  background-color: #1a1b20;
+}
+
+.searchBar input{
+  flex: 1;
+  color: #fff48d;
+  outline: none;
+  padding: 10px 10px;
+  border: none;
+  background-color: #020623;
+  border-radius: 10px;
+  font-family: "Poppins", sans-serif;
+
+}
+
+/* .menuBtn {
+  color: #ffe600;
+} */
+
+.headerBtns{
+  display: flex;
+  align-items: center;
+  gap: 25px;
+  font-family: "Poppins", sans-serif;
+  list-style: none;
+}
+.headerBtns a, .headerBtns button{
+  text-decoration: none;
+  color: var(--navColor);
+}
+.headerBtns a:hover, .headerBtns button:hover{
+  color: var(--navHoverColor);
+}
+
+button {
+  background: none;
+  padding: 0;
+  font-size: 1.5rem;
+  outline: none;
+  transition: 0.5s;
+}
+.headerBtns button:hover {
+  transform: rotate(20deg);
+  transition: 0.5s;
+}
+
+@media(orientation: portrait) {
+  .header {
+    padding: 10px;
+    width: calc(100vw - 20px);
+    box-shadow: 0 2px 3px;
+  }
+  .header.shrink {
+    padding: 7px 10px;
+  }
+  .inner {
+    width: calc(100vw - 20px);
+    font-weight: 500;
+    font-size: 1em;
+  }
+
+  .logo, .logo img{
+    height: 15vw;
+  }
+
+  .searchBar {
+    border-radius: 12.5px;
+    padding: 5px 6px;
+    /* gap: 5px; */
+    width: calc(85vw - 66px);
+    overflow: hidden !important;
+  }
+
+  .searchBar button {
+    padding: 0;
+    border-radius: 16px;
+    font-size: 13px;
+  }
+
+  .searchBar input{
+    padding: 0;
+    border-radius: 10px;
+    max-width: 90% !important;
+    overflow: hidden !important;
+  }
+
+  .menuBtn {
+    color: #ffe600;
+  }
+  /* @keyframes menuOpening {
+    from { margin-top: 0 }
+    to { margin-top: calc(25vw + 10px) }
+  } */
+  .headerBtns{
+    position: absolute;
+    display: flex;
+    flex-direction: row;
+    justify-content: space-evenly;
+    height: 10vw;
+    width: 100vw;
+    margin-top: calc(25vw + 10px);
+    margin-left: -10px;
+    background-color: var(--navBgColor);
+    align-items: center;
+    z-index: -100;
+    /* animation: menuOpening 1s;
+    transition: 1s; */
+  }
+
+  button {
+    font-size: 1.5rem;
+    outline: none;
+  }
+  .headerBtns button:hover {
+    transform: none;
+    transition: 0s;
+  }
+
+}
+
+
+
+

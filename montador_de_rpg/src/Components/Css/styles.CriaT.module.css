@@ -1,0 +1,231 @@
+.background {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background-color: rgba(0, 0, 0, 0.7);
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  z-index: 1000;
+}
+
+.formContainer {
+  width: 90%;
+  max-width: 500px;
+  max-height: 800px;
+  background: var(--bodyBgColor);
+  filter: brightness(0.8);
+  padding: 2rem;
+  border-radius: .9rem;
+  box-shadow: 0 8px 32px rgba(0, 0, 0, 0.3);
+  border: none;
+}
+
+.formContainer h1 {
+  text-align: center;
+  margin-bottom: 1.5rem;
+  font-size: 2rem;
+  letter-spacing: 1px;
+  color: transparent; 
+  filter: var(--categFilter); 
+  background-size: 100% 100%; 
+  background-image: linear-gradient(45deg, var(--navBgColor), var(--bodyBgColor)); 
+  background-repeat: no-repeat; 
+  -webkit-background-clip: text; 
+  background-clip: text;
+  text-transform: uppercase;
+  transition: color 0.3s ease;
+}
+
+.form {
+  display: flex;
+  flex-direction: column;
+  gap: .5rem;
+}
+
+.label {
+  color: var(--bodyTextColor);
+  font-weight: 600;
+  margin-bottom: 0.4rem;
+  display: block;
+  transition: color 0.3s ease;
+}
+
+.input,
+textarea {
+  width: 100%;
+  padding: 0.8rem;
+  border-radius: 8px;
+  border: none;
+  background-color: var(--bodyBgColor);
+  filter: brightness(1.3);
+  color: var(--bodyTextColor);
+  font-size: 1rem;
+  transition: all 0.3s ease;
+  box-sizing: border-box;
+  box-shadow: 0 3px 10px rgba(0, 0, 0, 0.1);
+}
+
+.input:focus,
+textarea:focus {
+  outline: none;
+  filter: brightness(1.2);
+  box-shadow: 0 6px 16px rgba(0, 0, 0, 0.15);
+  transform: translateY(-2px);
+}
+
+.inputFile {
+  padding: 0.5rem;
+  color: var(--bodyTextColor);
+  background: var(--bodyBgColor);
+  filter: brightness(1.1);
+  border-radius: 8px;
+  border: 1px dashed rgba(255, 255, 255, 0.3);
+  cursor: pointer;
+  transition: all 0.3s ease;
+  box-shadow: 0 3px 10px rgba(0, 0, 0, 0.1);
+}
+
+.inputFile:hover {
+  filter: brightness(1.2);
+  box-shadow: 0 6px 16px rgba(0, 0, 0, 0.15);
+  transform: translateY(-2px);
+}
+
+.inputFile::file-selector-button {
+  background: var(--navBgColor);
+  color: var(--navColor);
+  border: none;
+  padding: 0.5rem 1rem;
+  border-radius: 4px;
+  cursor: pointer;
+  margin-right: 1rem;
+  transition: background 0.3s ease;
+  font-weight: bold;
+}
+
+.inputFile::file-selector-button:hover {
+  filter: brightness(.8);
+}
+
+.submitButton {
+  background: var(--navBgColor);
+  color: var(--navColor);
+  font-weight: 600;
+  padding: 1rem;
+  border: none;
+  border-radius: 8px;
+  cursor: pointer;
+  transition: all 0.3s ease;
+  margin-top: 1rem;
+  font-size: 1.1rem;
+  width: 100%;
+}
+
+.submitButton:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.3);
+  filter: brightness(.8);
+}
+
+.submitButton:disabled{
+  filter: brightness(.8) grayscale(.8) saturate(.5);
+}
+
+.backButton {
+  position: absolute;
+  top: 1rem;
+  right: 1rem;
+  background: transparent;
+  color: var(--bodyTextColor);
+  transform: rotate(45deg);
+  font-size: 2rem;
+}
+
+.backButton:hover {
+  color: var(--navBgColor);
+}
+
+textarea {
+  resize: vertical;
+  min-height: 10vh;
+  max-height: 10vh;
+  font-family: inherit;
+}
+
+.checkboxContainer {
+    margin: 15px 0;
+}
+
+.checkboxLabel {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    color: var(--bodyTextColor);
+    font-weight: 600;
+    cursor: pointer;
+}
+
+.checkboxLabel input[type="checkbox"] {
+    width: 16px;
+    height: 16px;
+    cursor: pointer;
+}
+
+.checkboxLabel input[type="checkbox"]:disabled {
+  display: none;
+}
+
+.disabled {
+  display: none;
+}
+
+select.input {
+    width: 100%;
+    padding: 0.8rem;
+    border-radius: 8px;
+    border: none;
+    background-color: var(--bodyBgColor);
+    filter: brightness(1.1);
+    color: var(--bodyTextColor);
+    font-size: 1rem;
+    transition: all 0.3s ease;
+    box-sizing: border-box;
+    box-shadow: 0 3px 10px rgba(0, 0, 0, 0.1);
+    cursor: pointer;
+}
+
+select.input:focus {
+    outline: none;
+    filter: brightness(1.2);
+    box-shadow: 0 6px 16px rgba(0, 0, 0, 0.15);
+    transform: translateY(-2px);
+}
+
+select.input option {
+    background: var(--bodyBgColor);
+    color: var(--bodyTextColor);
+    padding: 0.5rem;
+}
+
+/* Responsividade */
+/* @media (max-width: 768px) {
+  .formContainer {
+    width: 95%;
+    padding: 1.5rem;
+    margin: 1rem;
+    margin-top: 15vh;
+    border-radius: 1rem;
+  }
+  
+  .formContainer h1 {
+    font-size: 1.7rem;
+  }
+  
+  .input,
+  textarea {
+    padding: 0.7rem;
+  }
+} */

@@ -1,0 +1,30 @@
+.cont {
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    gap: 30px;
+    color: white;
+    background-color: #020623;
+    width: 100vw;
+    height: 100vh;
+    font-family: 'Poppins', sans-serif;
+    font-family: 4.5rem;
+    position: absolute;
+    top: 0;
+    left: 0;
+}
+
+.img {
+    width: 35%;
+}
+
+@media (orientation: portrait) {
+    .img {
+        width: 70%
+    }
+    .cont h1{
+        text-align: center;
+        width: auto;
+    }
+}
