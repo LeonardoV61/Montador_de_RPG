@@ -11,7 +11,7 @@ export default function BannerS({ banners, ordem }){
     
     return(
         <>
-            <div style={{ width: "99%", margin: "0 .4vw" }}>
+            <div style={{ width: "99%", margin: "0 .3vw" }}>
                 {bannersL.length != 0?
                     <Carousel className={styles.carrousel} showArrows={true} showThumbs={false} showStatus={false} showIndicators={false} swipeable={true} >
                         {bannersL.map(banner => (
