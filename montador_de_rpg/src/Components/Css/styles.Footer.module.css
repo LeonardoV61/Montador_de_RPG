@@ -7,14 +7,14 @@
 }
 
 .footerContainer {
-  width: calc(98vw - 8px);
+  width: calc(92vw - 8px);
   margin: 0;
   padding-left: 1vw;
   padding-right: calc(1vw + 8px);
   display: flex;
   flex-direction: row;
   align-items: center;
-  justify-content: space-between;
+  justify-content: center;
   text-align: center;
   font-size: 0.875rem;
   color: var(--footColor);

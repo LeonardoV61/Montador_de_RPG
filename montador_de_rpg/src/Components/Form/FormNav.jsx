@@ -1,6 +1,6 @@
 import { Link, Outlet } from 'react-router-dom';
 import style from '../Css/styles.formNav.module.css'
-import Logo from '../../assets/BarB.png'
+import Logo from '../../assets/Hydra.png'
 
 export default function FormNav() {
     return (

@@ -1,5 +1,5 @@
 import styles from '../Css/styles.navB.module.css';
-import logo from '../../assets/BarB.png';
+import logo from '../../assets/Hydra.png';
 import { useState, useEffect } from 'react';
 import { Link } from 'react-router-dom';
 
