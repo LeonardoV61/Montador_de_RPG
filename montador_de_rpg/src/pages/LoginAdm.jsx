@@ -1,6 +1,6 @@
 import Container from "../Components/Form/FormCont"
 
-export default function Login(){
+export default function LoginAdm(){
     return <>
       <Container/>
     </>

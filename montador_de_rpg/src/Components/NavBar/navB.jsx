@@ -6,14 +6,14 @@ import { Link } from 'react-router-dom';
 export default function NavB({setSearchModal, searchText, setSearchText}) {
 
   /* Exibibe botão painel se autenticado */
-  // const [link, setLink] = useState(null)
-  // useEffect(() => {
-  //   if (authenticated) {
-  //     setLink(<li><a href="/adm">ADM</a></li>);
-  //   } else {
-  //     setLink(null);
-  //   }
-  // }, []);
+  /* const [link, setLink] = useState(null)
+     useEffect(() => {
+        if (authenticated) {
+          setLink(<li><a href="/adm">ADM</a></li>);
+        } else {
+          setLink(null);
+        }
+     }, []); */
 
   /* inicializa tema */
   let currentTheme = localStorage.getItem("theme") || "";
@@ -56,25 +56,16 @@ export default function NavB({setSearchModal, searchText, setSearchText}) {
          {/*<!--========== Header ==========-->*/}
             <header className={styles.header}>
                 <div className={styles.inner}>
-                    <div className={styles.logo}>
+                    <div className={styles.navBtns}>
+                        <div className={styles.logo}>
                         <Link to="/" onClick={() => Location.reload()}><img  src={logo}/></Link>
+                        </div>
+                        <div className={styles.headerBtns}>
+                        <li><Link to="/" onClick={() => Location.reload()}>Como Funciona</Link></li>
+                        <li><Link to="/" onClick={() => Location.reload()}>Sistemas</Link></li>
+                        <li><Link to="/" onClick={() => Location.reload()}>Mesa</Link></li>
+                        </div>
                     </div>
-                    {/* <div className={styles.searchBar}>
-                      <input type="text" value={searchText} 
-                      onChange={(e) => setSearchText(e.target.value)} 
-                      name="searchBar" 
-                      id="searchBar" 
-                      placeholder='Pesquise algum produto...'/>
-                      <button onClick={() => {
-                        if (searchText) {
-                          setSearchModal(true)
-                        } else {
-                          alert("Pesquise algo primeiro");
-                        }
-                        }}>
-                          <i className="ri-search-line"></i> 
-                      </button>
-                    </div> */}
                     <div className={styles.headerBtns}>
                         <li><Link to="/" onClick={() => Location.reload()}>Início</Link></li>
                         <li><Link to="/about-us" onClick={() => Location.reload()}>Sobre Nós</Link></li>

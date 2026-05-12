@@ -1,8 +1,12 @@
 import { createBrowserRouter } from "react-router-dom";
 import Home from "../pages/Home.jsx";
-import Login from "../pages/Login.jsx";
+import LoginUser from "../pages/LoginUser.jsx";
+import UserMenu from "../pages/UserMenu.jsx";
+import MasterPanel from "../pages/MasterPanel.jsx";
+import PlayerPanel from "../pages/PlayerPanel.jsx";
+import LoginAdm from "../pages/LoginAdm.jsx";
 import AdmMenu from "../pages/AdmMenu.jsx";
-import AdmPainel from "../pages/AdmPainel.jsx";
+import AdmPanel from "../pages/AdmPanel.jsx";
 import ErrorPage from "../pages/ErrorPage.jsx";
 import { ProtectedRoute } from "./ProtecaoManeira.jsx";
 
@@ -15,7 +19,27 @@ const Router = (banners) =>
     },
     {
       path: "/login",
-      element: <Login />,
+      element: <LoginUser />,
+      errorElement: <ErrorPage />,
+    },
+    {
+      path: "/menu",
+      element: <UserMenu />,
+      errorElement: <ErrorPage />,
+    },
+    {
+      path: "/player",
+      element: <PlayerPanel />,
+      errorElement: <ErrorPage />,
+    },
+    {
+      path: "/master",
+      element: <MasterPanel />,
+      errorElement: <ErrorPage />,
+    },
+    {
+      path: "/admlogin",
+      element: <LoginAdm />,
       errorElement: <ErrorPage />,
     },
     {
@@ -31,24 +55,10 @@ const Router = (banners) =>
       path: "/adm/painel",
       element: (
         <ProtectedRoute>
-          <AdmPainel />
+          <AdmPanel />
         </ProtectedRoute>
       ),
       errorElement: <ErrorPage />,
-      children: [
-        // {
-        //   path: "produtos",
-        //   element: <AdmProd produtos={produtos}/>,
-        // },
-        // {
-        //   path: "categorias",
-        //   element: <AdmCateg categorias={categorias} subCateg={subCateg}/>,
-        // },
-        // {
-        //   path: "banners",
-        //   element: <AdmBanner banners={banners}/>,
-        // },
-      ],
     },
     {
       path: "*",

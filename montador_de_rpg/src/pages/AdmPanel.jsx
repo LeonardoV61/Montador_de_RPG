@@ -8,7 +8,7 @@ import styles from '../Components/Css/styles.AdmPainel.module.css';
 import AdmProdutoModal from "../Components/Adm/MenorComp/AdmProdutoModal";
 import AdmEditProductModal from "../Components/Adm/MenorComp/AdmEditProductModal";
 
-export default function AdmPainel() {
+export default function AdmPanel() {
     const local = useLocation();
     const titulo = local.pathname.slice(12).toUpperCase();
 

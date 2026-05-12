@@ -33,6 +33,11 @@
   height: 15vh;
 }
 
+.navBtns{
+  display: flex;
+  gap: 25px;
+}
+
 .searchBar {
   background-color: #020623;
   border-radius: 25px;
