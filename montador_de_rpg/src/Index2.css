@@ -1,0 +1,37 @@
+*, *::before, *::after {
+    box-sizing: border-box;
+    margin: 0;
+    padding: 0;
+}
+
+:root {
+    --fundo: #1a1814;
+    --fundo2: #2d2a24;
+    --fundo3: #3d3930;
+    --bege: #e8dfc8;
+    --begeEscuro: #c9ba9a;
+    --dourado: #c9a227;
+    --douradoClaro: #e8bf4a;
+    --douradoEscuro: #7a5f14;
+    --cinza: #6b6560;
+    --cinzaClaro: #9b948c;
+    --begeTexto: #d4c9b0;
+    --begeTexto2: #8b8070;
+}
+
+body {
+    font-family: 'Crimson Pro', Georgia, serif;
+    background: var(--fundo);
+    color: var(--begeTexto);
+    min-height: 100vh;
+    overflow-x: hidden;
+}
+
+body::before {
+    content: '';
+    position: fixed;
+    inset: 0;
+    background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 200 200' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.75' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)' opacity='0.04'/%3E%3C/svg%3E"); /* textura para o fundo */
+    pointer-events: none;
+    z-index: 0;
+}

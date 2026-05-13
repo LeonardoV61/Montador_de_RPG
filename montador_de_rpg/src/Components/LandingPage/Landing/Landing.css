@@ -1,0 +1,21 @@
+.divisor {
+    display: flex;
+    align-items: center;
+    gap: 1.5rem;
+    padding: 0 3rem;
+    margin: 3rem 0;
+    color: var(--douradoEscuro);
+}
+.divisor::before, .divisor::after {
+    content: '';
+    flex: 1;
+    height: 1px;
+    background: var(--fundo3);
+}
+.divisorCentro {
+    width: 8px;
+    height: 8px;
+    background:
+    var(--douradoEscuro);
+    transform: rotate(45deg);
+}

@@ -1,0 +1,31 @@
+footer {
+    background: rgba(10,9,8,0.8);
+    border-top: 1px solid var(--fundo3);
+    padding: 2rem 3rem;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    flex-wrap: wrap;
+    gap: 1rem;
+}
+footer p {
+    font-size: 0.82rem;
+    color: var(--begeTexto2);
+    font-family: 'Cinzel', serif;
+    letter-spacing: 0.08em;
+}
+footer div {
+    display: flex;
+    gap: 2rem;
+}
+footer a {
+    color: var(--douradoEscuro);
+    text-decoration: none;
+    font-size: 0.78rem;
+    font-family:'Cinzel', serif;
+    letter-spacing: 0.1em;
+    transition: color 0.2s;
+}
+footer a:hover {
+    color: var(--dourado);
+}

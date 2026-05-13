@@ -1,0 +1,72 @@
+nav {
+    position: fixed;
+    top: 0; left: 0; right: 0;
+    z-index: 100;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 1.2rem 3rem;
+    background: rgba(20, 18, 15, 0.92);
+    border-bottom: 1px solid var(--douradoEscuro);
+    backdrop-filter: blur(6px);
+}
+
+.logo {
+    font-family: 'Cinzel', serif;
+    font-size: 1.1rem;
+    font-weight: 700;
+    color: var(--dourado);
+    letter-spacing: 0.12em;
+    text-decoration: none;
+    display: flex;
+    align-items: center;
+    gap: 0.6rem;
+}
+
+.logo div {
+    width: 28px; height: 28px;
+    border: 1px solid var(--douradoEscuro);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 0.9rem;
+    color: var(--dourado);
+    transform: rotate(45deg);
+}
+.logo div span { transform: rotate(-45deg); display: block; }
+
+.links {
+    display: flex;
+    gap: 2.5rem;
+    align-items: center;
+}
+.links a {
+    font-family: 'Cinzel', serif;
+    font-size: 0.72rem;
+    letter-spacing: 0.15em;
+    color: var(--cinzaClaro);
+    text-decoration: none;
+    text-transform: uppercase;
+    transition: color 0.2s;
+}
+.links a:hover {
+    color: var(--douradoClaro);
+}
+
+.entrar {
+    font-family: 'Cinzel', serif;
+    font-size: 0.68rem;
+    letter-spacing: 0.15em;
+    text-transform: uppercase;
+    padding: 0.55rem 1.4rem;
+    border: 1px solid var(--dourado);
+    color: var(--dourado);
+    background: transparent;
+    cursor: pointer;
+    transition: all 0.2s;
+    text-decoration: none;
+}
+.entrar:hover {
+    background: var(--dourado);
+    color: var(--fundo);
+}
