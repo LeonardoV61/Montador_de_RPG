@@ -1,7 +1,7 @@
 :root {
   --text: #6b6375;
   --text-h: #08060d;
-  --bg: #fff;
+  --bg: #1a1814;
   --border: #e5e4e7;
   --code-bg: #f4f3ec;
   --accent: #aa3bff;
@@ -41,12 +41,11 @@
     font-size: 16px;
   }
 }
-
 @media (prefers-color-scheme: dark) {
   :root {
     --text: #9ca3af;
     --text-h: #f3f4f6;
-    --bg: #16171d;
+    --bg: #1a1814;
     --border: #2e303a;
     --code-bg: #1f2028;
     --accent: #c084fc;
@@ -73,21 +72,19 @@
   }
 }
 
-body {
-  margin: 0;
-}
-
 #root {
-  width: 1800px;
   max-width: 100%;
   margin: 0 auto;
-  text-align: center;
-  border-inline: 1px solid var(--border);
   min-height: 100svh;
   display: flex;
   flex-direction: column;
   box-sizing: border-box;
 }
+body {
+  margin: 0;
+}
+
+
 
 h1,
 h2 {
@@ -113,6 +110,10 @@ h2 {
   @media (max-width: 1024px) {
     font-size: 20px;
   }
+}
+
+h3{
+  margin-block: 0;
 }
 p {
   margin: 0;
