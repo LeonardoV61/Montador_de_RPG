@@ -1,5 +1,5 @@
 import { useState } from 'react'
-import styles from './Sistemas.css'
+import styles from './styles.Sistemas.module.css'
 
 export default function Sistemas() {
 

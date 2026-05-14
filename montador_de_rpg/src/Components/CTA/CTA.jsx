@@ -1,5 +1,5 @@
 import { useState } from 'react'
-import styles from './CTA.css'
+import styles from './styles.CTA.module.css'
 
 export default function CTA() {
 

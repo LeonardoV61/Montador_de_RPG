@@ -29,9 +29,7 @@
   font-size: 1.4em;
 }
 
-.logo, .logo img{
-  height: 15vh;
-}
+
 
 .navBtns{
   display: flex;

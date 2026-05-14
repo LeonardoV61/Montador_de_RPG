@@ -1,5 +1,5 @@
 import { useState } from 'react'
-import styles from './Inicio.css'
+import styles from './styles.Inicio.module.css'
 
 export default function Inicio() {
 
@@ -7,7 +7,7 @@ export default function Inicio() {
     <>
     <section className={styles.inicio}>
         <div className={styles.fundo}></div>
-        <div style="position:relative;z-index:1;max-width:800px;">
+        <div className={styles.textContent}>
             <p className={`${styles.nome} ${styles.aparecendo}`}>Mythic Bastionland · TTRPG Online</p>
             <div className={`${styles.ornamento} ${styles.aparecendo}`}>Sua saga começa aqui</div>
             <h1 className={styles.aparecendo}>Forje Lendas<em>sem fronteiras</em></h1>

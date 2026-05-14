@@ -1,5 +1,5 @@
 import { useState } from 'react'
-import styles from './Fluxo.css'
+import styles from './styles.Fluxo.module.css'
 
 export default function EtapaFluxo(props) {
 

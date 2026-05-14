@@ -1,5 +1,5 @@
 import { useState } from 'react'
-import styles from './Recursos.css'
+import styles from './styles.Recursos.module.css'
 
 export default function Recurso(props) {
 

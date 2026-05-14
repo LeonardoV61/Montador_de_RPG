@@ -35,6 +35,9 @@ nav {
 }
 .logo div span { transform: rotate(-45deg); display: block; }
 
+.logo, .logo img{
+  height: 10vh;
+}
 .links {
     display: flex;
     gap: 2.5rem;

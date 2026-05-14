@@ -20,6 +20,12 @@
     background-size: cover;
 }
 
+.textContent{
+    position:relative;
+    z-index:1;
+    max-width:800px;
+}
+
 .ornamento {
     display: flex;
     align-items: center;
