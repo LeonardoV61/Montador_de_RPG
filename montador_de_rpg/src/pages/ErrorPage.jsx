@@ -1,5 +1,5 @@
 import { useRouteError, Link } from "react-router-dom";
-import FormNav from "../Components/Form/FormNav";
+import FormNav from "../Components/NavBar/navBarE.jsx";
 import style from '../Components/Css/styles.Error.module.css'
 
 export default function ErrorPage(){

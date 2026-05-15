@@ -1,8 +1,6 @@
-import { useState } from 'react'
 import styles from './styles.Inicio.module.css'
 
-export default function Inicio() {
-
+export default function Inicio({ onExplorar }) {
   return (
     <>
     <section className={styles.inicio}>
@@ -19,7 +17,7 @@ export default function Inicio() {
               <button className={styles.btnContorno}>Ver a mesa →</button>
             </div>
         </div>
-        <div className={styles.explorar}>Explorar</div>
+        <button className={styles.explorar} onClick={onExplorar}>Explorar</button>
     </section>
     </>
   )

@@ -27,17 +27,17 @@ export default function NavBar() {
     <nav className={`${styles.navContainer} ${scrolled ? styles.navScrolled : ''}`}>
         <div className={styles.navContents}>
           <div className={styles.logo}>
-          <Link to="/" onClick={() => Location.reload()}><img  src={logo}/></Link>
+            <Link to="/" onClick={() => Location.reload()}><img  src={logo} alt="Logo do Montador de RPG"/></Link>
           </div>
           <div className={styles.links}>
-            <a href="#">Como funciona</a>
-            <a href="#">Sistemas</a>
-            <a href="#">Mesa</a>
+            <li><Link to="/" onClick={() => Location.reload()}>Como Funciona</Link></li>
+            <li><Link to="/" onClick={() => Location.reload()}>Sistemas</Link></li>
+            <li><Link to="/" onClick={() => Location.reload()}>Mesa</Link></li>
           </div>
         </div>
         
         <div className={styles.links}>
-            <a href="#">Entrar</a>
+            <li><Link to="/" onClick={() => Location.reload()}>Entrar</Link></li>
             <button className={styles.btnDouradoCheio}>Jogar Agora</button>
         </div>
     </nav>

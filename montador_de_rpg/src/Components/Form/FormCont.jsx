@@ -1,7 +1,7 @@
 import { useState } from "react";
 import { useAuth } from "../../Routes/AuthContext";
-import Form from "./FormLogin"
-import FormNav from "./FormNav";
+import Form from "./FormLogin.jsx"
+import FormNav from "../NavBar/navBar.jsx";
 import style from '../Css/styles.formContQ.module.css'
 import axios from "axios";
 import { useNavigate } from "react-router-dom";
