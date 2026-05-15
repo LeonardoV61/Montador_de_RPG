@@ -14,22 +14,22 @@ export default function Fluxo() {
         <div className={styles.etapas}>
             <EtapaFluxo
                 num="I"
-                titulo="Crie sua conta"
+                titulo="Crie Sua Conta"
                 texto="Cadastro rápido. Escolha se você será Mestre ou jogador — cada papel tem seu painel."
             />
             <EtapaFluxo
                 num="II"
-                titulo="Monte seu personagem"
+                titulo="Monte Seu Personagem"
                 texto="Use a ficha guiada do Mythic Bastionland. Atributos, cavaleiro, glória e equipamentos — tudo salvo na nuvem."
             />
             <EtapaFluxo
                 num="III"
-                titulo="O Mestre prepara a cena"
+                titulo="O Mestre Prepara a Cena"
                 texto="Crie mapas, adicione NPCs, escreva notas secretas. A cena fica pronta antes dos jogadores entrarem."
             />
             <EtapaFluxo
                 num="IV"
-                titulo="A aventura começa"
+                titulo="A Aventura Começa"
                 texto="Compartilhe o link da mesa. Todos se conectam, a cena aparece e os dados começam a rolar."
             />
         </div>

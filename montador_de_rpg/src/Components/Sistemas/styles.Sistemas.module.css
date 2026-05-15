@@ -34,7 +34,7 @@
     text-transform: uppercase;
 }
 
-.sistema .emBreve {
+.sistema.emBreve {
     border-color: var(--cinza);
     color: var(--cinzaClaro);
     background: transparent;

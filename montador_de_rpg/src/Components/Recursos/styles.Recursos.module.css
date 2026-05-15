@@ -35,13 +35,54 @@
     line-height: 1.7;
 }
 
+/* .grade {
+    display: grid;
+    /* Criamos 4 colunas iguais 
+    grid-template-columns: repeat(4, 1fr); 
+    gap: 2px;
+    background: var(--fundo3);
+}
+
+/* Seleciona o 5º elemento (o primeiro da segunda linha) 
+.grade > :nth-child(5) {
+    /* Empurra ele para a segunda coluna, centralizando o par 
+    grid-column-start: 2;
+}  */
+
 .grade {
     display: grid;
-    grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
-    gap: 1.5px;
-    background: var(--fundo3);
-    border: 1px solid var(--fundo3);
+    grid-template-columns: repeat(4, 1fr);
+    /* Removemos o background e o gap do pai */
+    background: transparent;
+    gap: 0; 
 }
+
+.grade > div {
+    background: var(--fundo3);
+    /* Aqui criamos o contorno cinza claro */
+    border: 2px solid rgba(255, 255, 255, 0.2); /* Ajuste para o seu cinza claro */
+    padding: 20px;
+    
+    /* Esse ajuste faz com que as bordas dos vizinhos se sobreponham, 
+       mantendo a linha com 1px em vez de 2px */
+    margin: -0.5px; 
+    
+    transition: all 0.3s ease;
+}
+
+/* Mantém a animação e garante que o card focado fique por cima das bordas */
+.grade > div:hover {
+    background: var(--fundo-selecionado);
+    z-index: 10;
+    outline: 4px solid var(--douradoEscuro); /* Exemplo de destaque na seleção */
+    outline-offset: -3px;
+}
+
+/* Lógica do Funil */
+.grade > :nth-child(5) {
+    grid-column-start: 2;
+}
+
 
 .recurso {
     background: var(--fundo2);

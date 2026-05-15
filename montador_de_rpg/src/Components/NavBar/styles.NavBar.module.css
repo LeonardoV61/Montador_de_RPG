@@ -5,12 +5,32 @@ nav {
     display: flex;
     justify-content: space-between;
     align-items: center;
-    padding: 1rem 3rem;
+    padding: .8em 3rem;
     background: rgba(20, 18, 15, 0.92);
     border-bottom: 1px solid var(--douradoEscuro);
     backdrop-filter: blur(6px);
 }
 
+.navContainer {
+    position: fixed;
+    top: 0; left: 0; right: 0;
+    z-index: 100;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: .8em 3rem; /* Padding original */
+    border-bottom: 1px solid var(--douradoEscuro);
+    backdrop-filter: blur(6px);
+    transition: padding 0.2s ease, background 0.2s ease;
+}
+
+.navScrolled {
+    padding: 0.5rem 3rem; /* Padding reduzido */
+}
+.navContents{
+    display: flex;
+    gap: 2.5rem;
+}
 .logo {
     font-family: 'Cinzel', serif;
     font-size: 1.1rem;
@@ -36,7 +56,7 @@ nav {
 .logo div span { transform: rotate(-45deg); display: block; }
 
 .logo, .logo img{
-  height: 10vh;
+  height: 12vh;
 }
 .links {
     display: flex;
@@ -72,4 +92,22 @@ nav {
 .entrar:hover {
     background: var(--dourado);
     color: var(--fundo);
+}
+
+.btnDouradoCheio {
+    font-family: 'Cinzel', serif;
+    font-size: 0.7rem;
+    letter-spacing: 0.18em;
+    text-transform: uppercase;
+    padding: 0.8rem 1rem;
+    background: var(--dourado);
+    color: var(--fundo);
+    border: none;
+    cursor: pointer;
+    font-weight: 600;
+    transition: all 0.2s;
+}
+.btnDouradoCheio:hover {
+    background: var(--douradoClaro);
+    transform: translateY(-1px);
 }

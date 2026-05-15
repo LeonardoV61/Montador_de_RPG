@@ -1,12 +1,11 @@
 .inicio {
-    position: relative;
     min-height: 100vh;
     display: flex;
     flex-direction: column;
     justify-content: center;
     align-items: center;
     text-align: center;
-    padding: 6rem 2rem 4rem;
+    padding: 5rem 2rem 4rem;
     overflow: hidden;
 }
 
@@ -121,12 +120,13 @@ h1 em {
 }
 .btnContorno:hover {
     border-color: var(--bege);
+    color: rgb(255, 252, 237);
     transform: translateY(-1px);
 }
 
 .explorar {
     position: absolute;
-    bottom: 2rem;
+    bottom: 1rem;
     left: 50%;
     transform: translateX(-50%);
     display: flex;

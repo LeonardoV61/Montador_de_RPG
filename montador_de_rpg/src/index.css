@@ -81,7 +81,13 @@
   box-sizing: border-box;
 }
 body {
+  min-height: 100vh;
   margin: 0;
+  overflow-x: hidden;
+  font-family: 'Crimson Pro', Georgia, serif;
+  background: var(--fundo);
+  color: var(--begeTexto);
+
 }
 
 
