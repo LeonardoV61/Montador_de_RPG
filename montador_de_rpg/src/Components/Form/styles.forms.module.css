@@ -1,4 +1,17 @@
 
+.cont {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100vw;
+    height: 100vh;
+    background-color: var(--fundo);
+    font-family: 'Cinzel', serif;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+
 .formCont {
     display: flex;
     flex-direction: column;
@@ -17,7 +30,7 @@
 
 .formTitle {
     font-size: 4.5rem;
-    font-family: 'Poppins', serif;
+    font-family: 'Cinzel', serif;
     color: white;
 }
 
@@ -25,13 +38,12 @@
     width: auto;
     padding: 8px 60px 8px 8px;
     height: 36px;
-    border-radius: 12px;
     font-size: 22px;
-    font-family: 'Poppins', sans-serif;
+    font-family: 'Cinzel', serif;
     font-weight: 550;
     border: none;
     margin-bottom: 10px;
-    background-color: rgb(236, 225, 210);
+    background-color: white;
     color: black;
     transition: .5s;
     outline: 0;
@@ -46,23 +58,29 @@
 }
 
 .formBtn {
-    width: auto;
-    padding: 13px 80px 13px 80px;
+    font-family: 'Cinzel', serif;
+    font-size: 0.92rem;
+    letter-spacing: 0.18em;
+    text-transform: uppercase;
+    padding: 0.6rem 1rem;
+    background: var(--dourado);
+    color: var(--fundo);
+    border: none;
     cursor: pointer;
-    background-color: black;
-    color: white;
-    transition: ease-in-out .3s;
+    font-weight: 600;
+    transition: all 0.2s;
 }
 
 .formBtn:hover {
-    border: .5px solid rgb(116, 116, 116);
+    background: var(--douradoClaro);
+    transform: translateY(-1px);
 }
 
 .error {
     font-size: 16px;
     font-weight: 700;
     color: red;
-    font-family: 'Poppins', sans-serif;
+    font-family: 'Cinzel', serif;
 }
 
 .passwordCont {

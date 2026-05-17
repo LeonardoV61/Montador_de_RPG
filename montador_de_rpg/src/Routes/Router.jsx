@@ -10,11 +10,11 @@ import AdmPanel from "../pages/AdmPanel.jsx";
 import ErrorPage from "../pages/ErrorPage.jsx";
 import { ProtectedRoute } from "./ProtecaoManeira.jsx";
 
-const Router = (banners) =>
+const Router = () =>
   createBrowserRouter([
     {
       path: "/",
-      element: <Home banners={banners}/>,
+      element: <Home />,
       errorElement: <ErrorPage />,
     },
     {
@@ -38,7 +38,7 @@ const Router = (banners) =>
       errorElement: <ErrorPage />,
     },
     {
-      path: "/admlogin",
+      path: "/loginadm",
       element: <LoginAdm />,
       errorElement: <ErrorPage />,
     },

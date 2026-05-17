@@ -1,4 +1,4 @@
-import styles from '../Css/styles.formL.module.css'
+import styles from './styles.forms.module.css'
 import eye from '../../assets/eye-fill.svg'
 import closedEye from '../../assets/eye-slash-fill.svg'
 import { useRef } from 'react'

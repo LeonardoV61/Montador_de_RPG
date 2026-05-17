@@ -23,7 +23,6 @@ nav {
     backdrop-filter: blur(6px);
     transition: padding 0.2s ease, background 0.2s ease;
 }
-
 .navScrolled {
     padding: 0.5rem 3rem; /* Padding reduzido */
 }
@@ -42,7 +41,6 @@ nav {
     align-items: center;
     gap: 0.6rem;
 }
-
 .logo div {
     width: 28px; height: 28px;
     border: 1px solid var(--douradoEscuro);
@@ -54,10 +52,10 @@ nav {
     transform: rotate(45deg);
 }
 .logo div span { transform: rotate(-45deg); display: block; }
-
 .logo, .logo img{
   height: 12vh;
 }
+
 .links {
     display: flex;
     gap: 2.5rem;
@@ -85,6 +83,11 @@ nav {
   display: inline-block;   
   width: 100%;             
   height: 100%;           
+}
+.link:visited,
+.link:active,
+.link:hover {
+  color: inherit !important;
 }
 
 .entrar {
@@ -122,3 +125,4 @@ nav {
     background: var(--douradoClaro);
     transform: translateY(-1px);
 }
+

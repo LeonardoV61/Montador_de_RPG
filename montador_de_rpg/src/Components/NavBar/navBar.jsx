@@ -22,12 +22,16 @@ export default function NavBar() {
     return () => window.removeEventListener('scroll', handleScroll);
   }, []);
 
+  function backToBegin(){
+    window.scrollTo({top: 0, behavior: "smooth"});
+  };
+
   return (
     <>
     <nav className={`${styles.navContainer} ${scrolled ? styles.navScrolled : ''}`}>
         <div className={styles.navContents}>
           <div className={styles.logo}>
-            <Link to="/" onClick={() => Location.reload()}><img  src={logo} alt="Logo do Montador de RPG"/></Link>
+            <Link to="/" onClick={backToBegin}><img  src={logo} alt="Logo do Montador de RPG"/></Link>
           </div>
           <div className={styles.links}>
             <li><Link to="/" onClick={() => Location.reload()}>Como Funciona</Link></li>
@@ -37,8 +41,8 @@ export default function NavBar() {
         </div>
         
         <div className={styles.links}>
-            <li><Link to="/" onClick={() => Location.reload()}>Entrar</Link></li>
-            <button className={styles.btnDouradoCheio}>Jogar Agora</button>
+            <li><Link to="/login" onClick={() => Location.reload()}>Entrar</Link></li>
+            <button className={styles.btnDouradoCheio}><Link to="/login" onClick={() => Location.reload()} className={styles.link}>Jogar Agora</Link></button>
         </div>
     </nav>
     </>

@@ -2,7 +2,7 @@ import { useState } from "react";
 import { useAuth } from "../../Routes/AuthContext";
 import Form from "./FormLogin.jsx"
 import FormNav from "../NavBar/navBar.jsx";
-import style from '../Css/styles.formContQ.module.css'
+import style from './styles.forms.module.css'
 import axios from "axios";
 import { useNavigate } from "react-router-dom";
 
@@ -11,7 +11,6 @@ axios.defaults.withCredentials = true
 export default function Container(){
     const [formValues, setFormValues] = useState({ nome: "", senha: "" });
     const [errorMessage, setErrorMessage] = useState("")
-    const {authenticated, setAuthenticated} = useAuth()
     const navigate = useNavigate()
 
     function handleInputChange (e){
