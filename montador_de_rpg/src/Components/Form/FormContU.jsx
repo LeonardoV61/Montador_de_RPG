@@ -1,0 +1,71 @@
+import { useState } from "react";
+import { useAuth } from "../../Routes/AuthContext";
+import Form from "./FormLogin.jsx"
+import FormNav from "../NavBar/navBar.jsx";
+import style from './styles.forms.module.css'
+import axios from "axios";
+import { useNavigate } from "react-router-dom";
+
+axios.defaults.withCredentials = true
+
+export default function Container(){
+    const [formValues, setFormValues] = useState({ nome: "", senha: "" });
+    const [errorMessage, setErrorMessage] = useState("")
+    const { setAuthenticated } = useAuth(null); 
+    const navigate = useNavigate()
+
+    function handleInputChange (e){
+        const {name, value } = e.target
+        setFormValues((prev) => ({...prev, [name]: value }))
+    };
+
+
+     async function handleSubmit(){
+        console.log(formValues);
+            // const response = await axios.post('https://back-end-barbalao.onrender.com/api/login/', {
+            //     nome: formValues.nome,
+            //     senha: formValues.senha
+            // },
+            // { withCredentials: true }) 
+        try {
+            const response = {
+                data: {
+                    message: "OK"
+                }
+            }
+
+            if (response.data.message == "OK") {
+                navigate("/menu")
+                localStorage.setItem("authenticated", "true")
+                setAuthenticated(localStorage.getItem("authenticated"))
+                setErrorMessage("")
+            } else {
+                setErrorMessage(response.data.message)
+                navigate("/login")
+            }
+
+            console.log("Resposta do servidor: ", response.data.message)
+
+        } catch (error){
+            navigate("/login")
+            setErrorMessage("Erro ao enviar dados, tente novamente")
+            console.log("Erro ao buscar dados: ", error)
+        }
+
+        
+    }
+    
+    return<>
+            <FormNav />
+            <div className={style.cont}>
+                 <Form 
+                        title="Login" 
+                        btn="Logar" 
+                        aContent={errorMessage}
+                        values={formValues}
+                        onInputChange={handleInputChange}
+                        click={handleSubmit}
+                        />
+            </div>
+    </>
+}

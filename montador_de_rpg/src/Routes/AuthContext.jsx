@@ -16,24 +16,34 @@ export function AuthProvider({ children }) {
   }, []);
 
   const checkAuth = async () => {
-    try {
-      const res = await axios.get("/api/check_session/");
-      console.log("Resposta check_session:", res.data);
-      
-      if (res.data.authenticated) {
+    const localAuth = localStorage.getItem("authenticated");
+      if (localAuth === "true" || localAuth === true) {
         setAuthenticated(true);
-        localStorage.setItem("authenticated", true);
-
       } else {
         setAuthenticated(false);
-        localStorage.removeItem("authenticated");
       }
-    } catch (error) {
-      console.error("Erro ao verificar sessão:", error);
-      setAuthenticated(false);
-      localStorage.removeItem("authenticated");
-    } 
+
   };
+
+
+//     try {
+//       const res = await axios.get("/api/check_session/");
+//       console.log("Resposta check_session:", res.data);
+      
+//       if (res.data.authenticated) {
+//         setAuthenticated(true);
+//         localStorage.setItem("authenticated", true);
+
+//       } else {
+//         setAuthenticated(false);
+//         localStorage.removeItem("authenticated");
+//       }
+//     } catch (error) {
+//       console.error("Erro ao verificar sessão:", error);
+//       setAuthenticated(false);
+//       localStorage.removeItem("authenticated");
+//     } 
+//   };
 
 
   return (

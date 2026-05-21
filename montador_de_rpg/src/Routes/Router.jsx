@@ -24,7 +24,11 @@ const Router = () =>
     },
     {
       path: "/menu",
-      element: <UserMenu />,
+      element: (
+      <ProtectedRoute>
+        <UserMenu />
+      </ProtectedRoute>
+      ),
       errorElement: <ErrorPage />,
     },
     {

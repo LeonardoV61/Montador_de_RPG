@@ -1,7 +1,7 @@
-import Container from "../Components/Form/FormCont"
+import ContainerU from "../Components/Form/FormContU"
 
 export default function LoginUser(){
     return <>
-      <Container/>
+      <ContainerU/>
     </>
 }

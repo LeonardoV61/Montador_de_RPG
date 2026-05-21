@@ -39,11 +39,14 @@ export default function NavBar() {
             <li><Link to="/" onClick={() => Location.reload()}>Mesa</Link></li>
           </div>
         </div>
-        
-        <div className={styles.links}>
-            <li><Link to="/login" onClick={() => Location.reload()}>Entrar</Link></li>
-            <button className={styles.btnDouradoCheio}><Link to="/login" onClick={() => Location.reload()} className={styles.link}>Jogar Agora</Link></button>
-        </div>
+        {localStorage.getItem("authenticated") === "true" ? (
+          <button className={styles.btnDouradoCheio}><Link to="/menu" onClick={() => Location.reload()} className={styles.link}>Perfil</Link></button>
+        ):(
+          <div className={styles.links}>
+              <li><Link to="/login" onClick={() => Location.reload()}>Entrar</Link></li>
+              <button className={styles.btnDouradoCheio}><Link to="/login" onClick={() => Location.reload()} className={styles.link}>Jogar Agora</Link></button>
+          </div>
+        )}
     </nav>
     </>
   )

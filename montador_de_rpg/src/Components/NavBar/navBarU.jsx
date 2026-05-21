@@ -36,7 +36,7 @@ export default function NavBar() {
           </div>
         </div>
         
-        <button className={styles.btnDouradoCheio}><Link to="/" onClick={() => Location.reload()} className={styles.link}>Perfil</Link></button>
+        <button className={styles.btnDouradoCheio}><Link to="/menu" onClick={() => Location.reload()} className={styles.link}>Perfil</Link></button>
     </nav>
     </>
   )
