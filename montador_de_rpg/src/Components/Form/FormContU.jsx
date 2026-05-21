@@ -2,6 +2,7 @@ import { useState } from "react";
 import { useAuth } from "../../Routes/AuthContext";
 import Form from "./FormLogin.jsx"
 import FormNav from "../NavBar/navBar.jsx";
+import Footer from "../Footer/Footer.jsx";
 import style from './styles.forms.module.css'
 import axios from "axios";
 import { useNavigate } from "react-router-dom";
@@ -67,5 +68,6 @@ export default function Container(){
                         click={handleSubmit}
                         />
             </div>
+            <Footer />
     </>
 }

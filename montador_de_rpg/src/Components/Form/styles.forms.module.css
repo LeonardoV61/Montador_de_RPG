@@ -1,10 +1,7 @@
 
 .cont {
-    position: absolute;
-    top: 0;
-    left: 0;
     width: 100vw;
-    height: 100vh;
+    height: 89vh;
     background-color: var(--fundo);
     font-family: 'Cinzel', serif;
     display: flex;
@@ -26,6 +23,7 @@
     border-radius: 18px;
     transform: translate(-50% -50%);
     transition: .4s;
+    margin: 12vh auto 0 auto;
 }
 
 .formTitle {
