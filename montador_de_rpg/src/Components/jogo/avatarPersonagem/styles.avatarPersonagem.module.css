@@ -1,0 +1,70 @@
+.avatarPersonagem {
+  position: absolute;
+  transform: translate(-50%,-50%);
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 3px;
+  cursor: pointer;
+  transition: filter 0.15s;
+  z-index: 20;
+}
+.avatarPersonagem:hover {
+  filter: brightness(1.3);
+}
+
+.avatarPersonagemBorda {
+  width: 32px;
+  height: 32px;
+  border-radius: 50%;
+  border: 2px solid var(--douradoEscuro);
+  background: rgba(26,24,20,0.92);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 0.9rem;
+  position: relative;
+  transition: border-color 0.15s;
+}
+.avatarPersonagemBorda.jogador {
+  border-color: var(--dourado);
+  background: rgba(201,162,39,0.2);
+}
+.avatarPersonagemBorda.inimigo {
+  border-color: var(--vermelho);
+  background: rgba(139,32,32,0.25);
+}
+.avatarPersonagemBorda.selecionado {
+  border-color: var(--douradoClaro)!important;
+  box-shadow: 0 0 0 2px rgba(232,191,74,0.4);
+}
+
+.avatarPersonagemNome {
+  font-family: 'Cinzel',serif;
+  font-size: 0.44rem;
+  letter-spacing: 0.1em;
+  color: var(--begeEscuro);
+  text-transform: uppercase;
+  white-space: nowrap;
+  background: rgba(14,12,10,0.9);
+  padding: 1px 4px;
+  border: 1px solid var(--fundo3);
+}
+
+.avatarPersonagemHPBarra {
+  position: absolute;
+  bottom: -5px;
+  left: 50%;
+  transform: translateX(-50%);
+  width: 28px;
+  height: 3px;
+  background: var(--fundo3);
+  overflow: hidden;
+}
+.avatarPersonagemHPNivel {
+  height: 100%;
+  background: #4caf69;
+}
+.avatarPersonagemHPNivel.baixo {
+  background: var(--vermelho);
+}

@@ -1,0 +1,41 @@
+.jogadores {
+  display: flex;
+  align-items: center;
+  gap: 0.4rem;
+  flex-shrink: 0;
+}
+.jogador {
+  width: 26px;
+  height: 26px;
+  border-radius: 50%;
+  border: 1.5px solid var(--douradoEscuro);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-family: 'Cinzel',serif;
+  font-size: 0.55rem;
+  color: var(--begeEscuro);
+  background: var(--fundo2);
+  cursor: pointer;
+  transition: border-color 0.15s;
+  position: relative;
+}
+.jogador.mestre {
+  background: rgba(201,162,39,0.15);
+  border-color: var(--dourado);
+  color: var(--dourado);
+}
+.jogador.ausente {
+  opacity: .4;
+  border-color: var(--cinza);
+}
+.jogador .online {
+  position: absolute;
+  bottom: -1px;
+  right: -1px;
+  width: 7px;
+  height: 7px;
+  border-radius: 50%;
+  background: #4caf69;
+  border: 1px solid var(--fundo);
+}

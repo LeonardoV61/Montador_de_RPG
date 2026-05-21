@@ -1,0 +1,45 @@
+.historicoRegistro {
+  display: flex;
+  flex-direction: column;
+  gap: 0.1rem;
+}
+
+.historicoRegistroRolamento {
+  background: rgba(201,162,39,0.07);
+  border: 1px solid var(--douradoEscuro);
+  border-left: 3px solid var(--dourado);
+  padding: 0.4rem 0.6rem;
+  display: flex;
+  align-items: center;
+  gap: 0.7rem;
+}
+
+.rolamentoIcone {
+  font-size: 1.1rem;
+}
+
+.rolamentoDescricao {
+  flex: 1;
+}
+
+.rolamentoTipo {
+  font-family: 'Cinzel',serif;
+  font-size: 0.6rem;
+  letter-spacing: 0.12em;
+  color: var(--douradoEscuro);
+  text-transform: uppercase;
+}
+
+.rolamentoValor {
+  font-family: 'Cinzel',serif;
+  font-size: 1.3rem;
+  font-weight: 700;
+  color: var(--dourado);
+  transition: all 0.2s;
+}
+
+.rolamentoAnalise {
+  font-size: 0.72rem;
+  color: var(--begeTexto2);
+  font-style: italic;
+}

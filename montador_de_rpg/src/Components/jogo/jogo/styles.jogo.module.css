@@ -1,0 +1,8 @@
+.jogo {
+  display: flex;
+  flex-direction: row;
+  width: 100vw;
+  height: calc(100dvh - 42px);
+  overflow: hidden;
+  user-select: none;
+}

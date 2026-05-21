@@ -1,0 +1,133 @@
+.personagem {
+  padding: 0.7rem 0.9rem;
+  overflow-y: auto;
+  scrollbar-width: thin;
+  scrollbar-color: var(--fundo3) transparent;
+}
+.personagem::-webkit-scrollbar {
+  width: 3px;
+}
+.personagem::-webkit-scrollbar-thumb {
+  background: var(--fundo3);
+}
+
+.nome {
+  font-family: 'Cinzel',serif;
+  font-size: 0.95rem;
+  font-weight: 600;
+  color: var(--bege);
+  margin-bottom: 0.15rem;
+}
+.titulo {
+  font-size: 0.82rem;
+  font-style: italic;
+  color: var(--dourado);
+  margin-bottom: 0.7rem;
+}
+
+.gradeAtributos {
+  display: grid;
+  grid-template-columns: repeat(3,1fr);
+  gap: 0.4rem;
+  margin-bottom: 0.7rem;
+}
+.atributo {
+  background: var(--fundo2);
+  border: 1px solid var(--fundo3);
+  padding: 0.4rem;
+  text-align: center;
+  cursor: default;
+  transition: border-color 0.15s;
+}
+.atributo:hover {
+  border-color: var(--douradoEscuro);
+}
+.atributoNome {
+  font-family: 'Cinzel',serif;
+  font-size: 0.5rem;
+  letter-spacing: 0.18em;
+  color: var(--begeTexto2);
+  text-transform: uppercase;
+  margin-bottom: 0.2rem;
+}
+.atributoValor {
+  font-family: 'Cinzel',serif;
+  font-size: 1.1rem;
+  font-weight: 700;
+  color: var(--bege);
+}
+.atributoValor.baixo {
+  color: var(--vermelho);
+}
+
+.atributoHP {
+  margin-bottom: 0.5rem;
+}
+.atributoHPCabecalho {
+  display: flex;
+  justify-content: space-between;
+  font-family: 'Cinzel',serif;
+  font-size: 0.55rem;
+  letter-spacing: 0.12em;
+  color: var(--begeTexto2);
+  margin-bottom: 0.25rem;
+}
+.atributoHPBarra {
+  height: 6px;
+  background: var(--fundo3);
+  overflow: hidden;
+}
+.barraHPNivel {
+  height: 100%;
+  background: linear-gradient(to right,var(--vermelho),#c04020);
+  width: 65%;
+}
+
+.atributoGloria {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-bottom: 0.5rem;
+}
+.atributoGloriaTitulo {
+  font-family: 'Cinzel',serif;
+  font-size: 0.55rem;
+  letter-spacing: 0.15em;
+  color: var(--begeTexto2);
+  text-transform: uppercase;
+}
+.atributoGloriaSimbolos {
+  display: flex;
+  gap: 3px;
+}
+.atributoGloriaSimbolo {
+  width: 10px;
+  height: 10px;
+  background: var(--douradoEscuro);
+  transform: rotate(45deg);
+}
+.atributoGloriaSimbolo.aceso {
+  background: var(--dourado);
+}
+
+.efeitos {
+  display: flex;
+  gap: 0.25rem;
+  margin-top: 0.4rem;
+}
+.efeito {
+  font-family: 'Cinzel',serif;
+  font-size: 0.48rem;
+  letter-spacing: 0.08em;
+  padding: 2px 5px;
+  border: 1px solid;
+  text-transform: uppercase;
+}
+.efeito.ferido {
+  border-color: var(--vermelho);
+  color: var(--vermelho);
+}
+.efeito.emGloria {
+  border-color: var(--douradoEscuro);
+  color: var(--douradoEscuro);
+}
