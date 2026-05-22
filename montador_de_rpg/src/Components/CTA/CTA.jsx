@@ -1,4 +1,5 @@
 import { useState } from 'react'
+import { Link } from 'react-router-dom';
 import styles from './styles.CTA.module.css'
 
 export default function CTA() {
@@ -8,7 +9,7 @@ export default function CTA() {
     <div className={styles.cta}>
         <h2>Pronto para sua <em>primeira sessão?</em></h2>
         <p>A mesa está posta. Os dados, rolados. Falta apenas você e seu grupo.</p>
-        <button className={styles.btnDouradoCheio}>Começar gratuitamente ↗</button>
+        <button className={styles.btnDouradoCheio}><Link to="/login" onClick={() => Location.reload()} className={styles.link}>Começar gratuitamente ↗</Link></button>
     </div>
     </>
   )
