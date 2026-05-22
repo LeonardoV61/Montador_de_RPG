@@ -40,20 +40,12 @@ export default function UserMenu() {
               Dashboard
             </a>
             <a href="#">
-              <ScrollText size={18} />
-              Campanhas
-            </a>
-            <a href="#">
               <Users size={18} />
               Personagens
             </a>
             <a href="#">
               <Map size={18} />
               Mapas & Cenas
-            </a>
-            <a href="#">
-              <Sword size={18} />
-              Mesa de Jogo
             </a>
 
             <p className="menu-title">FERRAMENTAS</p>
