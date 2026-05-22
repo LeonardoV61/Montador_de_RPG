@@ -1,0 +1,8 @@
+{
+  "private": true,
+  "scripts": {
+    "dev": "cd montador_de_rpg && npm run dev",
+    "build": "cd montador_de_rpg && npm run build",
+    "preview": "cd montador_de_rpg && npm run preview"
+  }
+}
