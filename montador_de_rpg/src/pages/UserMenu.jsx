@@ -1,5 +1,6 @@
 import "./UserMenu.css";
 import { useNavigate } from "react-router-dom";
+import navStyles from "../Components/NavBar/styles.NavBar.module.css";
 import {
   LayoutDashboard,
   ScrollText,
@@ -26,14 +27,6 @@ export default function UserMenu() {
       {/* SIDEBAR */}
       <aside className="sidebar">
         <div>
-          <div className="profile">
-            <div className="avatar"></div>
-            <div>
-              <h2>HERON</h2>
-              <span>Mestre</span>
-            </div>
-          </div>
-
           <div className="roles">
             <button>Jogador</button>
             <button className="active">Mestre</button>
@@ -77,19 +70,7 @@ export default function UserMenu() {
               Itens & Loot
             </a>
 
-            <p className="menu-title">CONTAS</p>
-            <a href="#">
-              <Users size={18} />
-              Jogadores
-            </a>
-            <a href="#">
-              <Bell size={18} />
-              Notificações
-            </a>
-            <a href="#">
-              <Settings size={18} />
-              Configurações
-            </a>
+          
           </div>
         </div>
 
@@ -105,15 +86,27 @@ export default function UserMenu() {
       {/* MAIN */}
       <main className="main">
         {/* NAVBAR */}
-        <header className="topbar">
-          <a href="#" className="active">
-            Resumo
-          </a>
-          <a href="#">Campanhas</a>
-          <a href="#">Personagens</a>
-          <a href="#">Jogadores</a>
-          <a href="#">Configurações</a>
-          <button className="logout-button" onClick={handleLogout}>
+        <header className={navStyles.navContainer}>
+          <div className={navStyles.navContents}>
+            <div className={navStyles.links}>
+              <a href="#" className={navStyles.link}>
+                Resumo
+              </a>
+              <a href="#" className={navStyles.link}>
+                Campanhas
+              </a>
+              <a href="#" className={navStyles.link}>
+                Personagens
+              </a>
+              <a href="#" className={navStyles.link}>
+                Jogadores
+              </a>
+              <a href="#" className={navStyles.link}>
+                Configurações
+              </a>
+            </div>
+          </div>
+          <button className={navStyles.btnDouradoCheio} onClick={handleLogout}>
             Sair
           </button>
         </header>
@@ -219,8 +212,8 @@ export default function UserMenu() {
               <h3>ATIVIDADE RECENTE</h3>
             </div>
             <ul className="list">
-              <li>Mariana atualizou a ficha</li>
-              <li>Ricardo criou personagem</li>
+              <li>Oséias atualizou a ficha</li>
+              <li>Erik Guilherme criou personagem</li>
               <li>Sessão VII finalizada</li>
             </ul>
           </div>
