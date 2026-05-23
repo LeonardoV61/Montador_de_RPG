@@ -1,0 +1,114 @@
+.sidebar {
+  width: 260px;
+  min-height: 100vh;
+  background: #050505;
+  border-right: 1px solid rgba(255, 255, 255, .05);
+  display: flex;
+  flex-direction: column;
+  padding: 22px;
+}
+
+/* ROLES (Botões de Alternância de Função) */
+.roles {
+  display: flex;
+  gap: 8px;
+  margin: 30px 0;
+}
+
+.roles button {
+  flex: 1;
+  padding: 8px;
+  background: #111;
+  border: 1px solid #2b2419;
+  color: #7f6d50;
+  text-transform: uppercase;
+  font-size: 11px;
+  cursor: pointer;
+  transition: .3s;
+}
+
+.roles button:hover {
+  border-color: #8d6b33;
+}
+
+.roles .active {
+  background: #6b5123;
+  color: white;
+}
+
+/* MENU DE NAVEGAÇÃO */
+.menu {
+  margin-top: 10px;
+}
+
+.menuTitle {
+  color: #5c4e39;
+  font-size: 11px;
+  letter-spacing: 2px;
+  margin: 24px 0 12px;
+}
+
+.menu a {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  text-decoration: none;
+  color: #b69f77;
+  padding: 14px;
+  border-left: 2px solid transparent;
+  transition: .3s;
+}
+
+/* Garante que os ícones do Lucide (ou similar) alinhem bem com o texto */
+.menu a svg {
+  flex-shrink: 0;
+}
+
+.menu a:hover {
+  background: #13100d;
+}
+
+.menu a.active {
+  background: linear-gradient(to right, #4a3818, #15110d);
+  border-left: 2px solid #c69d5b;
+  color: #f0d6a8;
+}
+
+/* USER PANEL (Parte Inferior) */
+.bottomUser {
+  display: flex;
+  align-items: center;
+  gap: 14px;
+}
+
+.bottomUser h4 {
+  font-family: 'Cinzel', serif;
+  color: #f1d39f;
+  font-size: 16px;
+}
+
+.bottomUser span {
+  color: #7f6d50;
+  font-size: 12px;
+}
+
+/* AVATAR */
+.avatar {
+  width: 54px;
+  height: 54px;
+  border-radius: 50%;
+  border: 2px solid #8d6b33;
+  background: linear-gradient(145deg, #1f1a14, #090909);
+}
+
+.avatar.small {
+  width: 42px;
+  height: 42px;
+}
+
+/* RESPONSIVIDADE (Esconde a sidebar em telas menores) */
+@media(max-width: 900px) {
+  .sidebar {
+    display: none;
+  }
+}

@@ -6,13 +6,6 @@
   box-sizing:border-box;
 }
 
-body{
-  background: var(--fundo);
-  color: var(--begeTexto);
-  font-family: 'Crimson Pro', Georgia, serif;
-  overflow-x:hidden;
-}
-
 .app{
   display:flex;
   min-height:100vh;
