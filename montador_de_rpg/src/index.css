@@ -140,3 +140,26 @@ code {
   background: var(--code-bg);
 }
 
+.app {
+  display: flex;
+  min-height: 100vh;
+  padding-top: 145px;
+  background: var(--fundo);
+}
+
+.main {
+  flex: 1;
+  padding: 24px 30px;
+}
+
+.grid {
+  display: grid;
+  grid-template-columns: 2fr 1fr;
+  gap: 22px;
+}
+
+@media(max-width: 1200px) {
+  .grid {
+    grid-template-columns: 1fr;
+  }
+}

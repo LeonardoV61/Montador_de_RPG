@@ -54,24 +54,47 @@
   gap: 12px;
   text-decoration: none;
   color: #b69f77;
-  padding: 14px;
+  padding: 14px 14px 14px 14px; 
   border-left: 2px solid transparent;
-  transition: .3s;
+  
+  /* Transição suave e coordenada para cada propriedade alterada */
+  transition: 
+    background 0.25s ease-in-out, 
+    color 0.25s ease-in-out, 
+    padding-left 0.25s ease-in-out,
+    border-color 0.25s ease-in-out;
 }
 
-/* Garante que os ícones do Lucide (ou similar) alinhem bem com o texto */
+/* Garante que os ícones do Lucide não amassem no efeito de deslize */
 .menu a svg {
   flex-shrink: 0;
+  transition: transform 0.25s ease-in-out;
 }
 
+/* EFEITO AO PASSAR O MOUSE (HOVER) */
 .menu a:hover {
   background: #13100d;
+  color: #f0d6a8; /* O texto e o ícone acendem suavemente */
+  padding-left: 18px; /* Leve deslize para a direita */
+  border-left: 2px solid #5c4e39; /* Borda sutil de feedback */
 }
 
+/* Ajusta o ícone levemente no hover para dar um efeito extra de dinamismo */
+.menu a:hover svg {
+  transform: scale(1.05);
+}
+
+/* ITEM ATIVO (CLICADO) */
 .menu a.active {
   background: linear-gradient(to right, #4a3818, #15110d);
   border-left: 2px solid #c69d5b;
   color: #f0d6a8;
+  padding-left: 18px; /* Mantém o recuo enquanto estiver ativo */
+}
+
+/* Garante que o ícone do item ativo mantenha o tamanho ideal */
+.menu a.active svg {
+  transform: scale(1);
 }
 
 /* USER PANEL (Parte Inferior) */
@@ -99,11 +122,51 @@
   border-radius: 50%;
   border: 2px solid #8d6b33;
   background: linear-gradient(145deg, #1f1a14, #090909);
+  overflow: hidden; 
+  display: flex;
+  align-items: center;
+  justify-content: center;
 }
 
+/* MODIFICADOR PARA O TAMANHO MENOR (SIDEBAR) */
 .avatar.small {
   width: 42px;
   height: 42px;
+}
+
+/* ESTILIZAÇÃO DA IMAGEM COM ZOOM E FOCO SUPERIOR */
+.avatar img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover; 
+  
+  /* 1. Alinha o corte no topo (de cima) e no centro horizontal */
+  object-position: top center; 
+  
+  /* 2. Aplica o ZOOM (1.2 significa 20% de zoom, ajuste para mais ou menos se necessário) */
+  transform: scale(1.2); 
+  
+  /* Garante que o zoom seja calculado a partir do topo central */
+  transform-origin: top center; 
+}
+
+.btnDouradoCheio {
+    font-family: 'Cinzel', serif;
+    font-size: 0.72rem;
+    letter-spacing: 0.18em;
+    text-transform: uppercase;
+    padding: 0.5rem 2.5rem;
+    margin: 1.5rem 2rem 0;
+    background: var(--dourado);
+    color: var(--fundo);
+    border: none;
+    cursor: pointer;
+    font-weight: 700;
+    transition: all 0.2s;
+}
+.btnDouradoCheio:hover {
+    background: var(--douradoClaro);
+    transform: translateY(-1px);
 }
 
 /* RESPONSIVIDADE (Esconde a sidebar em telas menores) */
