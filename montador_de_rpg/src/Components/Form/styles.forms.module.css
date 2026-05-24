@@ -18,12 +18,10 @@
     width: auto;
     min-height: 50vh;
     text-align: center;
-    gap: 7px;
     margin: 0 auto;
-    border-radius: 18px;
     transform: translate(-50% -50%);
     transition: .4s;
-    margin: 12vh auto 0 auto;
+    margin: 9.1vh auto 0 auto;
 }
 
 .formTitle {
@@ -91,6 +89,89 @@
     bottom: 40%;
     width: 22px;
     cursor: pointer;
+}
+
+.dividerContainer {
+    display: flex;
+    align-items: center;
+    width: 100%;
+    max-width: 320px; /* Alinha com o tamanho estimado dos seus inputs */
+    margin: -25px 0 15px 0;
+}
+
+.dividerLine {
+    flex: 1;
+    border: none;
+    height: 1px;
+    background-color: rgba(255, 255, 255, 0.2); /* Linha sutil para o fundo escuro */
+}
+
+.dividerText {
+    color: rgba(255, 255, 255, 0.7);
+    padding: 0 10px;
+    font-size: 0.75rem;
+    letter-spacing: 0.15em;
+    text-transform: uppercase;
+    font-weight: 550;
+}
+
+/* Container dos botões sociais */
+.socialContainer {
+    display: flex;
+    flex-direction: column;
+    gap: 12px;
+    width: 55%;
+    max-width: 320px; /* Mantém o alinhamento vertical idêntico aos inputs */
+}
+
+/* Estilização dos botões seguindo o padrão Cinzel */
+.socialBtn {
+    font-family: 'Cinzel', serif;
+    font-size: 0.85rem;
+    letter-spacing: 0.18em;
+    text-transform: uppercase;
+    padding: 0.7rem 1rem;
+    border: none;
+    cursor: pointer;
+    font-weight: 600;
+    transition: all 0.3s ease;
+    width: 100%;
+    
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 12px; /* Distância entre o ícone SVG e o texto */
+}
+
+.socialBtn:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.2);
+}
+
+/* Controle estrito do tamanho dos SVGs injetados */
+.socialIcon {
+    width: 20px;
+    height: 20px;
+    object-fit: contain;
+}
+
+/* Cores dedicadas sem quebrar a estética */
+.googleBtn {
+    background-color: #ffffff;
+    color: #1a1a1a;
+}
+
+.googleBtn:hover {
+    background-color: #f1f1f1;
+}
+
+.discordBtn {
+    background-color: #ffffff;
+    color: #1a1a1a;
+}
+
+.discordBtn:hover {
+    background-color: #f1f1f1;
 }
 
 input[type="password"]::-ms-reveal {

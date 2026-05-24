@@ -3,23 +3,19 @@ import eye from '../../assets/eye-fill.svg'
 import closedEye from '../../assets/eye-slash-fill.svg'
 import { useRef } from 'react'
 
-export default function Form( props ){
+export default function Form({ children, ...props }){
     const inputPass = useRef(null)
     const bi = useRef(null)
 
     function mostrarSenha() {
         if(inputPass.current.type === 'password') {
-
           inputPass.current.setAttribute('type', 'text')
           bi.current.setAttribute('src', closedEye)
-
         } else {
-
           inputPass.current.setAttribute('type', 'password')
           bi.current.setAttribute('src', eye)
         }
     }
-
 
     return <>
             <form className={styles.formCont} action={ props.action } onSubmit={e => e.preventDefault()}>
@@ -54,7 +50,9 @@ export default function Form( props ){
                 </button>
 
                 <h5 className={styles.error}>{props.aContent}</h5>
-            </form>
 
+                {/* O divisor e os botões entram aqui, expandindo o fundo do form */}
+                {children}
+            </form>
     </>
 }
