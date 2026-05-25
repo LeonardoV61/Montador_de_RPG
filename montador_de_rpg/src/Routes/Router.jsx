@@ -8,6 +8,7 @@ import LoginAdm from "../pages/LoginAdm.jsx";
 import AdmMenu from "../pages/AdmMenu.jsx";
 import AdmPanel from "../pages/AdmPanel.jsx";
 import ErrorPage from "../pages/ErrorPage.jsx";
+import OAuth2Redirect from "../pages/OAuth2Redirect.jsx";
 import { ProtectedRoute } from "./ProtecaoManeira.jsx";
 
 const Router = () =>
@@ -20,6 +21,11 @@ const Router = () =>
     {
       path: "/login",
       element: <LoginUser />,
+      errorElement: <ErrorPage />,
+    },
+    {
+      path: "/oauth2/redirect", 
+      element: <OAuth2Redirect />,
       errorElement: <ErrorPage />,
     },
     {

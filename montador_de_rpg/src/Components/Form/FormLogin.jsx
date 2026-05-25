@@ -51,7 +51,6 @@ export default function Form({ children, ...props }){
 
                 <h5 className={styles.error}>{props.aContent}</h5>
 
-                {/* O divisor e os botões entram aqui, expandindo o fundo do form */}
                 {children}
             </form>
     </>

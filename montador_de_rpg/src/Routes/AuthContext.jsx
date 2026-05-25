@@ -1,29 +1,29 @@
-import axios from "axios";
-import { useState, useEffect, createContext, useContext } from "react";
+// import axios from "axios";
+// import { useState, useEffect, createContext, useContext } from "react";
 
-const AuthContext = createContext();
+// const AuthContext = createContext();
 
-export function AuthProvider({ children }) {
-  const [authenticated, setAuthenticated] = useState(localStorage.getItem("authenticated"))
+// export function AuthProvider({ children }) {
+//   const [authenticated, setAuthenticated] = useState(localStorage.getItem("authenticated"))
 
-  useEffect(() => {
-    axios.defaults.withCredentials = true;
-    axios.defaults.baseURL = 'https://back-end-barbalao.onrender.com';
-  }, []);
+//   useEffect(() => {
+//     axios.defaults.withCredentials = true;
+//     axios.defaults.baseURL = 'https://back-end-barbalao.onrender.com';
+//   }, []);
 
-  useEffect(() => {
-    checkAuth();
-  }, []);
+//   useEffect(() => {
+//     checkAuth();
+//   }, []);
 
-  const checkAuth = async () => {
-    const localAuth = localStorage.getItem("authenticated");
-      if (localAuth === "true" || localAuth === true) {
-        setAuthenticated(true);
-      } else {
-        setAuthenticated(false);
-      }
+//   const checkAuth = async () => {
+//     const localAuth = localStorage.getItem("authenticated");
+//       if (localAuth === "true" || localAuth === true) {
+//         setAuthenticated(true);
+//       } else {
+//         setAuthenticated(false);
+//       }
 
-  };
+//   };
 
 
 //     try {
@@ -46,8 +46,37 @@ export function AuthProvider({ children }) {
 //   };
 
 
+//   return (
+//     <AuthContext.Provider value={{ authenticated, setAuthenticated, checkAuth }}>
+//       {children}
+//     </AuthContext.Provider>
+//   );
+// }
+
+// export function useAuth() {
+//   return useContext(AuthContext);
+// }
+
+import { useState, createContext, useContext } from "react";
+
+const AuthContext = createContext();
+
+export function AuthProvider({ children }) {
+  // Verifica se existe um token JWT guardado no navegador
+  const [authenticated, setAuthenticated] = useState(!!localStorage.getItem("token"));
+
+  const checkAuth = () => {
+    const token = localStorage.getItem("token");
+    setAuthenticated(!!token);
+  };
+
+  const logout = () => {
+    localStorage.removeItem("token");
+    setAuthenticated(false);
+  };
+
   return (
-    <AuthContext.Provider value={{ authenticated, setAuthenticated, checkAuth }}>
+    <AuthContext.Provider value={{ authenticated, setAuthenticated, checkAuth, logout }}>
       {children}
     </AuthContext.Provider>
   );
