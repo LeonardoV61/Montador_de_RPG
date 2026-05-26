@@ -7,6 +7,7 @@ import PlayerPanel from "../pages/PlayerPanel.jsx";
 import LoginAdm from "../pages/LoginAdm.jsx";
 import AdmMenu from "../pages/AdmMenu.jsx";
 import AdmPanel from "../pages/AdmPanel.jsx";
+import Jogo from "../pages/Jogo/Jogo.jsx"
 import ErrorPage from "../pages/ErrorPage.jsx";
 import { ProtectedRoute } from "./ProtecaoManeira.jsx";
 
@@ -61,6 +62,13 @@ const Router = () =>
         <ProtectedRoute>
           <AdmPanel />
         </ProtectedRoute>
+      ),
+      errorElement: <ErrorPage />,
+    },
+    {
+      path: "/jogo",
+      element: (
+        <Jogo />
       ),
       errorElement: <ErrorPage />,
     },
