@@ -1,6 +1,6 @@
 import { useState } from 'react';
 import styles from './styles.LateralHistorico.module.css';
-import Historico from '../Historico/Historico';
+import Historico from '../Historico/Historico.jsx';
 
 export default function LateralHistorico() {
 
@@ -24,7 +24,7 @@ export default function LateralHistorico() {
                setTituloAba("Diario");
             }}>Diário</button>
          </div>
-         <historico aba={abaAtiva} titulo={tituloAba}/>
+         <Historico aba={abaAtiva} titulo={tituloAba}/>
       </aside>
       </>
    )

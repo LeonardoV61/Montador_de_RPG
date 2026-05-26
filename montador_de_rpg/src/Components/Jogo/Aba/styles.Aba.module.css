@@ -26,6 +26,6 @@
   color: var(--cinza);
   transition: transform 0.2s;
 }
-.aba .cabecalhoSeta .aberto {
+.aba .cabecalhoSeta.aberto {
   transform: rotate(90deg);
 }

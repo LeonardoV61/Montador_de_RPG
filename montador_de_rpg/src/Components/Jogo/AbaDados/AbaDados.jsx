@@ -11,18 +11,9 @@ export default function AbaDados() {
     const { registros, setRegistros } = useContext(ContextoRegistros);
 
     function rolarDado(lados) {
-        
-        if(lados === 2) {
-            setTipoRolamento("Cara ou Coroa →");
-            setResultado(Math.floor(Math.random() * 2) ? "Cara" : "Coroa");
-        }
-        else {
-            setTipoRolamento('d' + lados + ' →');
-            setResultado(Math.floor(Math.random() * lados) + 1);
-        }
-        
-        setRegistros(...registros,
-        {
+
+        let novoRoll = {
+            "id": registros.length + 1,
             "aba": "Roll",
             "icone": "🎲",
             "autor": "VOCÊ",
@@ -30,7 +21,22 @@ export default function AbaDados() {
             "valor": resultado,
             "dado": tipoRolamento,
             "valorAtributo": false
-        });
+        }
+        
+        if(lados === 2) {
+            novoRoll.tipo = "Cara ou Coroa";
+            novoRoll.valor = Math.floor(Math.random() * 2) ? "Cara" : "Coroa";
+            novoRoll.dado = "Cara ou Coroa";
+        }
+        else {
+            novoRoll.tipo = 'd' + lados;
+            novoRoll.valor = Math.floor(Math.random() * lados) + 1;
+            novoRoll.dado = 'd' + lados;
+        }
+        setTipoRolamento(novoRoll.tipo);
+        setResultado(novoRoll.valor);
+        
+        setRegistros([...registros, novoRoll]);
     }
 
     return (
@@ -49,7 +55,7 @@ export default function AbaDados() {
             <div className={styles.dadoResultado}>
                 <span className={styles.rolamentoIcone}>🎲</span>
                 <div /* style="flex:1" */>
-                    <div className={styles.rolamentoTipo}>{tipoRolamento}</div>
+                    <div className={styles.rolamentoTipo}>{tipoRolamento} →</div>
                     {resultado && <div className={styles.rolamentoValor}>{resultado}</div>}
                 </div>
             </div>

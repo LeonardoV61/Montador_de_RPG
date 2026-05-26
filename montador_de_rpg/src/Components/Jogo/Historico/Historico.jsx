@@ -16,14 +16,15 @@ export default function Historico(props) {
 
    function enviarMsg(msg) {
       msg.trim();
-      if (!text) return;
+      if (!msg) return;
       let agora = new Date();
-      setRegistros(...registros, {
+      setRegistros([...registros, {
+         "id": registros.length+1,
          "aba": "Chat",
          "autor": "Você",
          "horario": agora.getHours()+':'+String(agora.getMinutes()).padStart(2,'0'),
          "texto": msg,
-      });
+      }]);
       divRegistros.scrollTop = divRegistros.scrollHeight;
       setMsg("");
    }
@@ -35,18 +36,18 @@ export default function Historico(props) {
             <div className={styles.historicoTitulo}>{props.titulo}</div>
             {registros.map((registro) => {
                if(registro.aba == "Chat" && props.aba == "Chat") {
-                  <HistoricoRegistro autor={registro.autor} horario={registro.horario}>{registro.texto}</HistoricoRegistro>
+                  return <HistoricoRegistro key={registro.id} autor={registro.autor} horario={registro.horario}>{registro.texto}</HistoricoRegistro>;
                }
-               else if(registro.aba != "Diario" && props.aba != "Diario") {
-                  <Rolamento icone={registro.icone} autor={registro.autor} tipo={registro.tipo} valor={registro.valor} dado={registro.dado} valorAtributo={registro.valorAtributo} />
+               else if(registro.aba == "Roll" && props.aba != "Diario") {
+                  return <Rolamento key={registro.id} registro={registro} />;
                }
                else if(registro.aba == "Diario" && props.aba == "Diario") {
-                  <Diario titulo={registro.titulo} texto={registro.texto} etiqueta={registro.etiqueta} />
+                  return <Diario key={registro.id} titulo={registro.titulo} texto={registro.texto} etiqueta={registro.etiqueta} />;
                }
             })}
          </div>
          {(props.aba == "Chat") && <div className={styles.chatForm}>
-            <textarea className={styles.chatTexto} onChange={(e) => setMsg(e.target.value)} placeholder="Escreva uma ação ou mensagem…" rows="1" value={msg}></textarea>
+            <textarea className={styles.chatTexto} onChange={(e) => setMsg(e.target.value)} placeholder="Escreva uma mensagem…" rows="1" value={msg}></textarea>
             <button className={styles.chatBotao} onClick={() => enviarMsg(msg)} >Enviar</button>
          </div>}
       </div>

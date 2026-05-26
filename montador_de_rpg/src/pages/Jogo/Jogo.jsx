@@ -78,13 +78,13 @@ export default function Jogo() {
    return (
       <>
         <NavBarJogo />
-        <ContextoRegistros value={registros, setRegistros}>
+        <ContextoRegistros.Provider value={{registros, setRegistros}}>
             <div className={styles.jogo}>
                 <LateralPersonagem />
                 <Mapa />
                 <LateralHistorico />
             </div>
-        </ContextoRegistros>
+        </ContextoRegistros.Provider>
       </>
    )
 }

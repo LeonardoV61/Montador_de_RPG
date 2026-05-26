@@ -79,7 +79,7 @@ export default function Mapa() {
 
    return (
    <>
-   <main className={styles.mapa} id="map" oncontextmenu={() => setContextoAberto(true)} onClick={() => setContextoAberto(false)}>
+   <main className={styles.mapa} id="map" onContextMenu={() => setContextoAberto(true)} onClick={() => setContextoAberto(false)}>
       <canvas id="mapaHexagonal" onWheel={e => {
          e.preventDefault();
          const escala = e.deltaY < 0 ? 1.1 : 0.91;
@@ -108,9 +108,9 @@ export default function Mapa() {
       </div>
 
       <div className={styles.mapaZoom}>
-         <button className={styles.zoomBotao} onClick="zoomMap(1.2)">+</button>
-         <button className={styles.zoomBotao} onClick="zoomMap(0.83)">−</button>
-         <button className={styles.zoomBotao} onClick="resetMapView()" title="Reset">⌖</button>
+         <button className={styles.zoomBotao} /* onClick="zoomMap(1.2)" */>+</button>
+         <button className={styles.zoomBotao} /* onClick="zoomMap(0.83)" */>−</button>
+         <button className={styles.zoomBotao} /* onClick="resetMapView()" title="Reset" */>⌖</button>
       </div>
       <div className={styles.nomeCena}>Região de Bastionland · Mapa Hexagonal</div>
    </main>
