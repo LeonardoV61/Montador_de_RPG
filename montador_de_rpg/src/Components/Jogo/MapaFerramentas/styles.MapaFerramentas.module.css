@@ -7,7 +7,7 @@
   align-items: center;
   gap: 0.3rem;
   background: rgba(14,12,10,0.94);
-  border: 1px solid var(--douradoEscuro);
+  border: 1px solid var(--dourado2);
   padding: 0.35rem 0.6rem;
   z-index: 30;
   backdrop-filter: blur(4px);
@@ -26,12 +26,12 @@
   white-space: nowrap;
 }
 .mapaFerramenta:hover {
-  color: var(--bege);
+  color: var(--branco);
   border-color: var(--fundo3);
 }
 .mapaFerramenta.ativo {
   color: var(--dourado);
-  border-color: var(--douradoEscuro);
+  border-color: var(--dourado2);
   background: rgba(201,162,39,0.08);
 }
 .mapaFerramentasDivisor {

@@ -7,10 +7,10 @@ export default function HistoricoRegistro(props) {
       <>
       <div className={styles.historicoRegistro}>
          <div className={styles.historicoRegistroAssinatura}>
-            <span className={`${styles.historicoRegistroAutor} ${(props.Autor == "Mestre") && styles.mestre}`}>{props.autor}</span>
+            <span className={`${styles.historicoRegistroAutor} ${(props.autor == "Mestre") && styles.mestre}`}>{props.autor}</span>
             <span className={styles.historicoRegistroHorario}>{props.horario}</span>
          </div>
-         <p className={`${styles.historicoRegistroTexto} ${(props.Autor == "Mestre") && styles.italico}`}>{props.children}</p>
+         <p className={`${styles.historicoRegistroTexto} ${(props.autor == "Mestre") && styles.italico}`}>{props.children}</p>
       </div>
       </>
    )

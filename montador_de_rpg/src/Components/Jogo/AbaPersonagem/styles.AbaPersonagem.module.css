@@ -15,7 +15,7 @@
   font-family: 'Cinzel',serif;
   font-size: 0.95rem;
   font-weight: 600;
-  color: var(--bege);
+  color: var(--branco);
   margin-bottom: 0.15rem;
 }
 .titulo {
@@ -40,13 +40,13 @@
   transition: border-color 0.15s;
 }
 .atributo:hover {
-  border-color: var(--douradoEscuro);
+  border-color: var(--dourado2);
 }
 .atributoNome {
   font-family: 'Cinzel',serif;
   font-size: 0.5rem;
   letter-spacing: 0.18em;
-  color: var(--begeTexto2);
+  color: var(--branco);
   text-transform: uppercase;
   margin-bottom: 0.2rem;
 }
@@ -54,7 +54,7 @@
   font-family: 'Cinzel',serif;
   font-size: 1.1rem;
   font-weight: 700;
-  color: var(--bege);
+  color: var(--branco);
 }
 .atributoValor.baixo {
   color: var(--vermelho);
@@ -69,7 +69,7 @@
   font-family: 'Cinzel',serif;
   font-size: 0.55rem;
   letter-spacing: 0.12em;
-  color: var(--begeTexto2);
+  color: var(--branco);
   margin-bottom: 0.25rem;
 }
 .atributoHPBarra {
@@ -93,7 +93,7 @@
   font-family: 'Cinzel',serif;
   font-size: 0.55rem;
   letter-spacing: 0.15em;
-  color: var(--begeTexto2);
+  color: var(--branco);
   text-transform: uppercase;
 }
 .atributoGloriaSimbolos {
@@ -103,7 +103,7 @@
 .atributoGloriaSimbolo {
   width: 10px;
   height: 10px;
-  background: var(--douradoEscuro);
+  background: var(--dourado2);
   transform: rotate(45deg);
 }
 .atributoGloriaSimbolo.aceso {
@@ -128,6 +128,6 @@
   color: var(--vermelho);
 }
 .efeito.emGloria {
-  border-color: var(--douradoEscuro);
-  color: var(--douradoEscuro);
+  border-color: var(--dourado2);
+  color: var(--dourado2);
 }

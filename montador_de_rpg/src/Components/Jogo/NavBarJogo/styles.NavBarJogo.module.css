@@ -1,7 +1,7 @@
 .navBar {
   height: 42px;
   background: rgba(14,12,10,0.98);
-  border-bottom: 1px solid var(--douradoEscuro);
+  border-bottom: 1px solid var(--dourado2);
   display: flex;
   align-items: center;
   justify-content: space-between;
@@ -24,7 +24,7 @@
 .logoSimbolo {
   width: 20px;
   height: 20px;
-  border: 1px solid var(--douradoEscuro);
+  border: 1px solid var(--dourado2);
   transform: rotate(45deg);
   display: flex;
   align-items: center;
@@ -44,7 +44,7 @@
   font-family: 'Cinzel', serif;
   font-size: 0.65rem;
   letter-spacing: 0.1em;
-  color: var(--begeEscuro);
+  color: var(--branco);
 }
 .pontoAtivo {
   width: 7px;
@@ -81,7 +81,7 @@
   transition: all 0.15s;
 }
 .botao:hover {
-  border-color: var(--douradoEscuro);
+  border-color: var(--dourado2);
   color: var(--dourado);
 }
 .botao .ativo {

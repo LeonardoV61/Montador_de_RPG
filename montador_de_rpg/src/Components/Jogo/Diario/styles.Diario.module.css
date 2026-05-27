@@ -14,20 +14,20 @@
   transition: border-color 0.15s;
 }
 .diarioRegistro:hover {
-  border-color: var(--douradoEscuro);
+  border-color: var(--dourado2);
 }
 .diarioRegistroTitulo {
   font-family: 'Cinzel',serif;
   font-size: 0.68rem;
   letter-spacing: 0.12em;
-  color: var(--begeEscuro);
+  color: var(--branco);
   margin-bottom: 0.2rem;
   text-transform: uppercase;
 }
 .diarioRegistroTexto {
   font-size: 0.8rem;
   font-style: italic;
-  color: var(--begeTexto2);
+  color: var(--branco);
   line-height: 1.4;
   display: -webkit-box;
   -webkit-line-clamp: 2;
@@ -40,8 +40,8 @@
   font-family: 'Cinzel',serif;
   font-size: 0.48rem;
   letter-spacing: 0.1em;
-  color: var(--douradoEscuro);
-  border: 1px solid var(--douradoEscuro);
+  color: var(--dourado2);
+  border: 1px solid var(--dourado2);
   padding: 1px 5px;
   text-transform: uppercase;
 }

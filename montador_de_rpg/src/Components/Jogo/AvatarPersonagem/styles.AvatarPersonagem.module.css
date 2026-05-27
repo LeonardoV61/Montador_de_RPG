@@ -17,7 +17,7 @@
   width: 32px;
   height: 32px;
   border-radius: 50%;
-  border: 2px solid var(--douradoEscuro);
+  border: 2px solid var(--dourado2);
   background: rgba(26,24,20,0.92);
   display: flex;
   align-items: center;
@@ -35,7 +35,7 @@
   background: rgba(139,32,32,0.25);
 }
 .avatarPersonagemBorda.selecionado {
-  border-color: var(--douradoClaro)!important;
+  border-color: var(--dourado2)!important;
   box-shadow: 0 0 0 2px rgba(232,191,74,0.4);
 }
 
@@ -43,7 +43,7 @@
   font-family: 'Cinzel',serif;
   font-size: 0.44rem;
   letter-spacing: 0.1em;
-  color: var(--begeEscuro);
+  color: var(--branco);
   text-transform: uppercase;
   white-space: nowrap;
   background: rgba(14,12,10,0.9);

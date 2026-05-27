@@ -20,7 +20,7 @@
     font-family: 'Cinzel', serif;
     font-size: clamp(1.5rem, 3vw, 2.4rem);
     font-weight: 600;
-    color: var(--bege);
+    color: var(--branco);
     text-align: center;
     margin-bottom: 0.6rem;
 }
@@ -29,7 +29,7 @@
     text-align: center;
     font-size: 1.05rem;
     font-style: italic;
-    color: var(--begeTexto2);
+    color: var(--branco);
     max-width: 500px;
     margin: 0 auto 3.5rem;
     line-height: 1.7;
@@ -74,7 +74,7 @@
 .grade > div:hover {
     background: var(--fundo-selecionado);
     z-index: 10;
-    outline: 4px solid var(--douradoEscuro); /* Exemplo de destaque na seleção */
+    outline: 4px solid var(--dourado2); /* Exemplo de destaque na seleção */
     outline-offset: -3px;
 }
 
@@ -96,7 +96,7 @@
 .icone {
     width: 40px; height: 40px;
     background: rgba(201,162,39,0.1);
-    border: 1px solid var(--douradoEscuro);
+    border: 1px solid var(--dourado2);
     display: flex;
     align-items: center;
     justify-content: center;
@@ -109,7 +109,7 @@
     font-family: 'Cinzel', serif;
     font-size: 0.9rem;
     font-weight: 600;
-    color: var(--bege);
+    color: var(--branco);
     letter-spacing: 0.05em;
     margin-bottom: 0.7rem;
 }
@@ -117,5 +117,5 @@
 .texto {
     font-size: 0.95rem;
     line-height: 1.7;
-    color: var(--begeTexto2);
+    color: var(--branco);
 }

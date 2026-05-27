@@ -23,7 +23,7 @@
 }
 
 .inventarioItemNome {
-  color: var(--begeTexto);
+  color: var(--branco);
   flex: 1;
 }
 
@@ -31,8 +31,8 @@
   font-family: 'Cinzel',serif;
   font-size: 0.5rem;
   letter-spacing: 0.1em;
-  color: var(--douradoEscuro);
-  border: 1px solid var(--douradoEscuro);
+  color: var(--dourado2);
+  border: 1px solid var(--dourado2);
   padding: 1px 5px;
   text-transform: uppercase;
 }

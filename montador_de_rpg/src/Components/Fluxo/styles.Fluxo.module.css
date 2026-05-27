@@ -20,7 +20,7 @@
     font-family: 'Cinzel', serif;
     font-size: clamp(1.5rem, 3vw, 2.4rem);
     font-weight: 600;
-    color: var(--bege);
+    color: var(--branco);
     text-align: center;
     margin-bottom: 0.6rem;
 }
@@ -29,7 +29,7 @@
     text-align: center;
     font-size: 1.05rem;
     font-style: italic;
-    color: var(--begeTexto2);
+    color: var(--branco);
     max-width: 500px;
     margin: 0 auto 3.5rem;
     line-height: 1.7;
@@ -45,7 +45,7 @@
     position: absolute;
     left: 28px; top: 40px; bottom: 40px;
     width: 1px;
-    background: linear-gradient(to bottom, var(--douradoEscuro), transparent);
+    background: linear-gradient(to bottom, var(--dourado2), transparent);
 }
 
 .etapa {
@@ -58,7 +58,7 @@
 .etapaNum {
     flex-shrink: 0;
     width: 56px; height: 56px;
-    border: 1px solid var(--douradoEscuro);
+    border: 1px solid var(--dourado2);
     display: flex;
     align-items: center;
     justify-content: center;
@@ -75,12 +75,12 @@
     font-family: 'Cinzel', serif;
     font-size: 1rem;
     font-weight: 600;
-    color: var(--bege);
+    color: var(--branco);
     margin-bottom: 0.5rem;
     padding-top: 1rem;
 }
 .etapaTexto p {
     font-size: 0.97rem;
     line-height: 1.7;
-    color: var(--begeTexto2);
+    color: var(--branco);
 }

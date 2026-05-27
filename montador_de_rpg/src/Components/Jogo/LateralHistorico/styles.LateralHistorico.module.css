@@ -1,14 +1,14 @@
 .lateralHistorico {
   flex: 0 0 280px;
   background: var(--fundo);
-  border-left: 1px solid var(--douradoEscuro);
+  border-left: 1px solid var(--dourado2);
   display: flex;
   flex-direction: column;
   overflow: hidden;
 }
 .historicoAbas {
   display: flex;
-  border-bottom: 1px solid var(--douradoEscuro);
+  border-bottom: 1px solid var(--dourado2);
 }
 .historicoAba {
   flex: 1;
@@ -32,5 +32,5 @@
   border-bottom-color: var(--dourado);
 }
 .historicoAba:hover:not(.ativo) {
-  color: var(--begeEscuro);
+  color: var(--branco);
 }

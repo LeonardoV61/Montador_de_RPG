@@ -1,7 +1,7 @@
 .menuContexto {
   position: fixed;
   background: rgba(14,12,10,0.98);
-  border: 1px solid var(--douradoEscuro);
+  border: 1px solid var(--dourado2);
   min-width: 160px;
   z-index: 1000;
 }
@@ -10,7 +10,7 @@
   font-family: 'Cinzel',serif;
   font-size: 0.65rem;
   letter-spacing: 0.1em;
-  color: var(--begeEscuro);
+  color: var(--branco);
   padding: 0.5rem 0.9rem;
   cursor: pointer;
   text-transform: uppercase;

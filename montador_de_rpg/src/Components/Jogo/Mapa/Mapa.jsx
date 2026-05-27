@@ -1,4 +1,4 @@
-import { useState } from 'react';
+import { useState, useEffect, useRef } from 'react';
 import { createContext, useContext } from 'react';
 import styles from './styles.Mapa.module.css';
 import MapaFerramentas from '../MapaFerramentas/MapaFerramentas.jsx';
@@ -12,42 +12,30 @@ export default function Mapa() {
    const [contextoAberto, setContextoAberto] = useState(false)
    const [avatarSelecionado, setAvatarSelecionado] = useState("Aldric")
 
+   const canvasRef =  useRef(null)
+   let canvas, canvasCtx2d
+   useEffect(() => {
+      canvas = canvasRef.current;
+      canvasCtx2d = canvas.getContext('2d');
+   })
+   
+   const HEX_SIZE = 54; // radius
+   let mapOffsetX = 0, mapOffsetY = 0, mapScale = 1;
+
+
    // Map interaction
-   /* let dragging = false, dragStartX, dragStartY;
+   let dragging = false, dragStartX, dragStartY;
 
-   canvas.addEventListener('mousedown', e => {
-      if (e.button === 0) {
-         dragging = true;
-         dragStartX = e.clientX - mapOffsetX;
-         dragStartY = e.clientY - mapOffsetY;
-      }
-   });
-   document.addEventListener('mousemove', e => {
-      if (dragging) {
-         mapOffsetX = e.clientX - dragStartX;
-         mapOffsetY = e.clientY - dragStartY;
-         drawHexMap();
-      } else {
-         // hover
-         const mapEl = document.getElementById('map');
-         const rect = mapEl.getBoundingClientRect();
-         const mx = (e.clientX - rect.left - mapEl.clientWidth/2 - mapOffsetX) / mapScale;
-         const my = (e.clientY - rect.top - mapEl.clientHeight/2 - mapOffsetY) / mapScale;
-         const w = HEX_SIZE * Math.sqrt(3);
-         const cols=9,rows=9,h=HEX_SIZE*2,totalW=cols*w,totalH=rows*h*0.75;
-         const adjX = mx + totalW/2, adjY = my + totalH/2;
-         const hov = pixelToHex(adjX - w/2, adjY - HEX_SIZE);
-         const changed = JSON.stringify(hov) !== JSON.stringify(hoveredHex);
-         hoveredHex = hov;
-         if (changed) drawHexMap();
-      }
-   });
-   document.addEventListener('mouseup', e => { dragging = false; });
-
-   canvas.addEventListener('click', e => {
+   function canvasWheel(e) {e => 
+      e.preventDefault();
+      const escala = e.deltaY < 0 ? 1.1 : 0.91;
+      mapScale = Math.min(Math.max(mapScale * escala, 0.35), 3); //possibilidade de substituir por Math.clamp(mapScale * escala, 0.35, 3)
+      drawHexMap();
+   }
+   function canvasClick(e) {
       if (Math.abs(e.clientX - (dragStartX + mapOffsetX)) < 4 &&
             Math.abs(e.clientY - (dragStartY + mapOffsetY)) < 4) {
-         const mapEl = document.getElementById('map');
+         /* const mapEl = document.getElementById('map');
          const rect = mapEl.getBoundingClientRect();
          const mx = (e.clientX - rect.left - mapEl.clientWidth/2 - mapOffsetX) / mapScale;
          const my = (e.clientY - rect.top - mapEl.clientHeight/2 - mapOffsetY) / mapScale;
@@ -63,39 +51,63 @@ export default function Mapa() {
             else { revealed.add(key); }
             }
             drawHexMap();
-         }
+         } */
       }
-   });
+   };
+   function canvasMouseDown(e) {
+      if (e.button === 0) {
+         dragging = true;
+         dragStartX = e.clientX - mapOffsetX;
+         dragStartY = e.clientY - mapOffsetY;
+      }
+   };
+   function canvasMouseMove(e) {
+      if (dragging) {
+         mapOffsetX = e.clientX - dragStartX;
+         mapOffsetY = e.clientY - dragStartY;
+         drawHexMap();
+      } else {
+         // hover
+         /* const mapEl = document.getElementById('map');
+         const rect = mapEl.getBoundingClientRect();
+         const mx = (e.clientX - rect.left - mapEl.clientWidth/2 - mapOffsetX) / mapScale;
+         const my = (e.clientY - rect.top - mapEl.clientHeight/2 - mapOffsetY) / mapScale;
+         const w = HEX_SIZE * Math.sqrt(3);
+         const cols=9,rows=9,h=HEX_SIZE*2,totalW=cols*w,totalH=rows*h*0.75;
+         const adjX = mx + totalW/2, adjY = my + totalH/2;
+         const hov = pixelToHex(adjX - w/2, adjY - HEX_SIZE);
+         const changed = JSON.stringify(hov) !== JSON.stringify(hoveredHex);
+         hoveredHex = hov;
+         if (changed) drawHexMap(); */
+      }
+   };
+   function canvasMouseUp(e) { dragging = false; };
 
    function zoomMap(f) { mapScale = Math.min(Math.max(mapScale*f, 0.35), 3); drawHexMap(); }
    function resetMapView() { mapOffsetX=0; mapOffsetY=0; mapScale=1; drawHexMap(); }
-
+   
    // Resize observer
-   const ro = new ResizeObserver(() => drawHexMap());
-   ro.observe(document.getElementById('map'));
+   /* const ro = new ResizeObserver(() => drawHexMap());
+   ro.observe(document.getElementById('map')); */
 
    // Initial draw
-   setTimeout(drawHexMap, 50); */
+   /* setTimeout(drawHexMap, 50); */
 
    return (
    <>
    <main className={styles.mapa} id="map" onContextMenu={() => setContextoAberto(true)} onClick={() => setContextoAberto(false)}>
-      <canvas id="mapaHexagonal" onWheel={e => {
-         e.preventDefault();
-         const escala = e.deltaY < 0 ? 1.1 : 0.91;
-         mapScale = Math.min(Math.max(mapScale * escala, 0.35), 3); //possibilidade de substituir por Math.clamp(mapScale * escala, 0.35, 3)
-         drawHexMap();
-      }}></canvas>
+      <canvas ref={canvasRef} className={styles.mapaHexagonal} onWheel={(e) => canvasWheel(e)} onClick={(e) => canvasClick(e)}
+      onMouseDown={(e) => canvasMouseDown(e)} onMouseMove={(e) => canvasMouseMove(e)} onMouseUp={(e) => canvasMouseUp(e)} ></canvas>
 
       <MapaFerramentas />
 
-      <ContextoAvatar value={[avatarSelecionado, setAvatarSelecionado]}>
+      <ContextoAvatar.Provider value={{avatarSelecionado, setAvatarSelecionado}}>
          <AvatarPersonagem tipo="jogador" nome="Aldric" icone="⚔" porcentagemHP="67"/>
          <AvatarPersonagem tipo="jogador" nome="Sena" icone="🏹" porcentagemHP="100"/>
          <AvatarPersonagem tipo="inimigo" nome="Guarda 1" icone="💀" porcentagemHP="30"/>
          <AvatarPersonagem tipo="inimigo" nome="Guarda 2" icone="💀" porcentagemHP="80"/>
          <AvatarPersonagem tipo="npc" nome="Ancião" icone="🧙" porcentagemHP="100"/>
-      </ContextoAvatar>
+      </ContextoAvatar.Provider>
 
       {/* <!-- iniciativa --> */}
       <div className={styles.iniciativa}>

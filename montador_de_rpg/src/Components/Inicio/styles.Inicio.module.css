@@ -5,7 +5,7 @@
     justify-content: center;
     align-items: center;
     text-align: center;
-    padding: 5rem 2rem 4rem;
+    padding: 8rem 2rem 1rem;
     overflow: hidden;
 }
 
@@ -30,7 +30,7 @@
     align-items: center;
     gap: 1rem;
     margin-bottom: 1.5rem;
-    color: var(--douradoEscuro);
+    color: var(--dourado2);
     font-size: 0.75rem;
     letter-spacing: 0.3em;
     text-transform: uppercase;
@@ -40,9 +40,9 @@
     content: '';
     flex: 1;
     height: 1px;
-    background: linear-gradient(to right, transparent, var(--douradoEscuro));
+    background: linear-gradient(to right, transparent, var(--dourado2));
 }
-.ornamento::after { background: linear-gradient(to left, transparent, var(--douradoEscuro)); }
+.ornamento::after { background: linear-gradient(to left, transparent, var(--dourado2)); }
 
 .nome {
     font-family: 'Cinzel', serif;
@@ -58,7 +58,7 @@ h1 {
     font-family: 'Cinzel', serif;
     font-size: clamp(2.8rem, 7vw, 5.5rem);
     font-weight: 700;
-    color: var(--bege);
+    color: var(--branco);
     line-height: 1.1;
     margin-bottom: 0.3rem;
     text-shadow: 0 2px 40px rgba(201,162,39,0.15);
@@ -74,7 +74,7 @@ h1 em {
     font-size: 1.25rem;
     font-weight: 300;
     font-style: italic;
-    color: var(--begeEscuro);
+    color: var(--branco);
     max-width: 540px;
     margin: 1.5rem auto 2.5rem;
     line-height: 1.65;
@@ -115,7 +115,7 @@ h1 em {
     transition: all 0.2s;
 }
 .btnDouradoCheio:hover {
-    background: var(--douradoClaro);
+    background: var(--dourado2);
     transform: translateY(-1px);
 }
 
@@ -126,13 +126,13 @@ h1 em {
     text-transform: uppercase;
     padding: 1rem 2.4rem;
     background: transparent;
-    color: var(--bege);
+    color: var(--branco);
     border: 1px solid var(--cinza);
     cursor: pointer;
     transition: all 0.2s;
 }
 .btnContorno:hover {
-    border-color: var(--bege);
+    border-color: var(--branco);
     color: rgb(255, 252, 237);
     transform: translateY(-1px);
 }
@@ -150,7 +150,7 @@ h1 em {
   gap: 0.5rem;
   background: none;   
   border: none;
-  color: var(--begeTexto2);
+  color: var(--branco);
   font-size: 0.7rem;
   letter-spacing: 0.2em;
   font-family: 'Cinzel', serif;
@@ -164,7 +164,7 @@ h1 em {
     display: block;
     width: 1px;
     height: 36px;
-    background: linear-gradient(to bottom, var(--douradoEscuro), transparent);
+    background: linear-gradient(to bottom, var(--dourado2), transparent);
 }
 .explorar:hover {
   color: var(--dourado); 

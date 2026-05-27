@@ -8,7 +8,7 @@
 
 .historicoAbas {
   display: flex;
-  border-bottom: 1px solid var(--douradoEscuro);
+  border-bottom: 1px solid var(--dourado2);
 }
 .historicoAba {
   flex: 1;
@@ -32,7 +32,7 @@
   border-bottom-color: var(--dourado);
 }
 .historicoAba:hover:not(.ativo) {
-  color: var(--begeEscuro);
+  color: var(--branco);
 }
 .historicoTitulo {
   display: flex;
@@ -42,7 +42,7 @@
   font-family: 'Cinzel',serif;
   letter-spacing: 0.2em;
   text-transform: uppercase;
-  color: var(--begeTexto2);
+  color: var(--branco);
 }
 .historicoTitulo::before, .historicoTitulo::after {
   content: '';
@@ -69,7 +69,7 @@
 }
 
 .chatForm {
-  border-top: 1px solid var(--douradoEscuro);
+  border-top: 1px solid var(--dourado2);
   padding: 0.6rem;
   display: flex;
   gap: 0.4rem;
@@ -79,7 +79,7 @@
   flex: 1;
   background: var(--fundo2);
   border: 1px solid var(--fundo3);
-  color: var(--begeTexto);
+  color: var(--branco);
   font-family: 'Crimson Pro',Georgia,serif;
   font-size: 0.9rem;
   padding: 0.45rem 0.6rem;
@@ -90,10 +90,10 @@
   max-height: 80px;
 }
 .chatTexto:focus {
-  border-color: var(--douradoEscuro);
+  border-color: var(--dourado2);
 }
 .chatTexto::placeholder {
-  color: var(--begeTexto2);
+  color: var(--branco);
   font-style: italic;
 }
 .chatBotao {

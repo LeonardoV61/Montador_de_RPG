@@ -12,7 +12,7 @@
     font-size: 0.68rem;
     letter-spacing: 0.3em;
     text-transform: uppercase;
-    color: var(--begeTexto2);
+    color: var(--branco);
     margin-bottom: 1.5rem;
 }
 
@@ -25,7 +25,7 @@
 
 .sistema {
     padding: 0.5rem 1.4rem;
-    border: 1px solid var(--douradoEscuro);
+    border: 1px solid var(--dourado2);
     font-family: 'Cinzel', serif;
     font-size: 0.72rem;
     letter-spacing: 0.15em;
