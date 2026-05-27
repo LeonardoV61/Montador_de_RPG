@@ -4,8 +4,10 @@ import Form from "./FormLogin.jsx";
 import FormNav from "../NavBar/navBar.jsx";
 import Footer from "../Footer/Footer.jsx";
 import style from './styles.forms.module.css';
-import api from "../../utils/api";
 import { useNavigate } from "react-router-dom";
+
+// IMPORTAÇÃO DA API COMENTADA (FUNCIONAL)
+// import api from "../../utils/api";
 
 import googleIcon from "../../assets/icons/google-icon.svg";
 import discordIcon from "../../assets/icons/discord-icon.svg";
@@ -13,7 +15,9 @@ import discordIcon from "../../assets/icons/discord-icon.svg";
 export default function ContainerU(){
     const [formValues, setFormValues] = useState({ nome: "", senha: "" });
     const [errorMessage, setErrorMessage] = useState("");
-    const { setAuthenticated } = useAuth(); 
+    
+    // Usando a função login do seu AuthContext
+    const { login } = useAuth();
     const navigate = useNavigate();
 
     function handleInputChange (e){
@@ -21,34 +25,77 @@ export default function ContainerU(){
         setFormValues((prev) => ({...prev, [name]: value }));
     };
 
-    async function handleSubmit(){
+    async function handleSubmit(e){
+        if (e && e.preventDefault) e.preventDefault();
+
+        console.log("Tentativa de Login capturada (Bypass Ativo):", formValues);
+        
         try {
-            // Chamada real para o seu backend Spring Boot
-            // Dica: Se o seu backend esperar "email" ou "username", altere a chave 'username' abaixo
-            const response = await api.post("/auth/login", {
-                username: formValues.nome, 
-                password: formValues.senha
-            });
+            // ==========================================
+            // LOGICA DE BYPASS (ATIVA SEM COMENTÁRIOS)
+            // ==========================================
+            const response = {
+                data: {
+                    message: "OK",
+                    token: "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.YnlwYXNzLWZha2Uua2V5.token123"
+                }
+            };
+
             if (response.data && response.data.token) {
-                localStorage.setItem("token", response.data.token);
-                setAuthenticated(true);
+                login(response.data.token); 
                 setErrorMessage("");
                 navigate("/menu");
+                localStorage.setItem("authenticated", "true");
             } else {
                 setErrorMessage("Falha na autenticação do servidor.");
             }
 
+            // ==========================================
+            // LOGICA REAL DO SPRING BOOT (COMENTADA)
+            // ==========================================
+            /*
+            const response = await api.post("/auth/login", {
+                username: formValues.nome, 
+                password: formValues.senha
+            });
+
+            if (response.data && response.data.token) {
+                login(response.data.token);
+                setErrorMessage("");
+                navigate("/menu");
+                localStorage.setItem("authenticated", "true");
+            } else {
+                setErrorMessage("Falha na autenticação do servidor.");
+            }
+            */
+
         } catch (error){
-            console.error("Erro ao buscar dados: ", error);
+            console.error("Erro no fluxo de login: ", error);
+            setErrorMessage("Erro ao processar o login temporário.");
+            
+            // TRATAMENTO DE ERRO REAL (COMENTADO)
+            /*
             const msgErro = error.response?.data?.message || "Usuário ou senha inválidos, tente novamente.";
             setErrorMessage(msgErro);
+            */
         }
     }
 
-    // Função que despacha o usuário para o fluxo do Google ou Discord configurado no Spring Security
+    // ==========================================
+    // LOGICA DE OAUTH2 BYPASS (ATIVA)
+    // ==========================================
     const handleOAuth2Login = (provider) => {
+        console.log(`Bypass: Simulando OAuth2 via ${provider}`);
+        login(`fake-token-oauth2-${provider}`);
+        navigate("/menu");
+    };
+
+    // LOGICA DE OAUTH2 REAL (COMENTADA)
+    /*
+    const handleOAuth2LoginReal = (provider) => {
         window.location.href = `${import.meta.env.VITE_API_URL}/oauth2/authorize/${provider}`;
     };
+    */
     
     return (
         <>
@@ -60,7 +107,7 @@ export default function ContainerU(){
                     aContent={errorMessage}
                     values={formValues}
                     onInputChange={handleInputChange}
-                    click={handleSubmit}
+                    click={handleSubmit} // Mantenha 'click' ou mude para 'onSubmit' dependendo do seu FormLogin.jsx
                  >
                 <div className={style.dividerContainer}>
                     <hr className={style.dividerLine} />

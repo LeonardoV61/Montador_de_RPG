@@ -30,7 +30,6 @@ export default function NavBar() {
             <Link to="/" onClick={() => Location.reload()}><img  src={logo} alt="Logo do Montador de RPG"/></Link>
           </div>
           <div className={styles.links}>
-            <li><Link to="/" onClick={() => Location.reload()}>Como Funciona</Link></li>
             <li><Link to="/" onClick={() => Location.reload()}>Sistemas</Link></li>
             <li><Link to="/" onClick={() => Location.reload()}>Mesa</Link></li>
           </div>

@@ -50,16 +50,28 @@ export function AuthProvider({ children }) {
   };
 
   // Opcional: Função para validar se o token atual ainda é válido no backend
+  // const validateTokenOnServer = async () => {
+  //   try {
+  //     // Supondo que você tenha uma rota no Spring que valide o token atual
+  //     await api.get("/auth/validate"); 
+  //   } catch (error) {
+  //     // Se o backend retornar 401 ou 403, desloga o usuário imediatamente
+  //     logout();
+  //   }
+  // };
+// === MODALIDADE BYPASS TEMPORÁRIO ===
   const validateTokenOnServer = async () => {
     try {
-      // Supondo que você tenha uma rota no Spring que valide o token atual
-      await api.get("/auth/validate"); 
+      // Comentamos a chamada real temporariamente
+      // await api.get("/auth/validate"); 
+      
+      // Simulamos que o token fake sempre é válido
+      console.log("Bypass: Validando token fictício no front-end... OK!");
+      return true; 
     } catch (error) {
-      // Se o backend retornar 401 ou 403, desloga o usuário imediatamente
       logout();
     }
   };
-
   return (
     <AuthContext.Provider value={{ authenticated, login, logout, validateTokenOnServer }}>
       {children}
