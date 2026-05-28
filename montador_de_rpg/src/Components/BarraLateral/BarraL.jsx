@@ -8,6 +8,7 @@ export default function BarraL({ roleAtiva, setRoleAtiva, menuAtivo, setMenuAtiv
 
     function handleLogout() {
         localStorage.removeItem("authenticated");
+        localStorage.removeItem("perfil_rpg");
         navigate("/");
     }
 

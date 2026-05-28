@@ -7,6 +7,8 @@ import AmigoP from "../Components/Amigos/AmigoP.jsx";
 import TarefaP from "../Components/Tarefas/TarefaP.jsx";
 import AtividadeP from "../Components/Atividade/AtividadeP.jsx";
 import BarraL from "../Components/BarraLateral/BarraL.jsx";
+import Wiki from "../Components/Wiki/Wiki.jsx"
+import Personagens from "../Components/Personagens/Personagens.jsx"
 import Perfil from "../Components/Perfil/Perfil.jsx";
 import HeronPadrao from "../assets/perfil/Heron.png"; 
 
@@ -54,6 +56,12 @@ export default function UserMenu() {
               </section>
             </>
           )
+          ||
+          menuAtivo === "wiki" && (
+            <>
+              <Wiki />
+            </>
+          )
         ) : (
           menuAtivo === "dashboard" && (
               <>
@@ -66,6 +74,12 @@ export default function UserMenu() {
                 </section>
               </>
             ) 
+            ||
+          menuAtivo === "personagens" && (
+            <>
+              <Personagens />
+            </>
+          )
             ||
           menuAtivo === "perfil" && (
             <>
