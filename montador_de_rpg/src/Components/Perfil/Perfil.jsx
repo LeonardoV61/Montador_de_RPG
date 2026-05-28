@@ -1,4 +1,4 @@
-import { useState, useRef } from "react";
+import { useState, useRef, useEffect } from "react";
 import { Upload, Save, User } from "lucide-react";
 import styles from "./styles.PerfilJogador.module.css";
 import HeronPadrao from "../../assets/perfil/Heron.png"; // Sua imagem padrão inicial
@@ -20,11 +20,53 @@ export default function PerfilJogador({ nome, setNome, imagem, setImagem, zoom, 
     }
   }
 
+  const [localNome, setLocalNome] = useState(nome);
+  const [localImagem, setLocalImagem] = useState(imagem);
+  const [localZoom, setLocalZoom] = useState(zoom);
+  const [localPosX, setLocalPosX] = useState(posX);
+  const [localPosY, setLocalPosY] = useState(posY);
+
+  // Sincroniza os estados locais caso os dados oficiais mudem externamente (ex: carregar do localStorage)
+  useEffect(() => {
+    setLocalNome(nome);
+    setLocalImagem(imagem);
+    setLocalZoom(zoom);
+    setLocalPosX(posX);
+    setLocalPosY(posY);
+  }, [nome, imagem, zoom, posX, posY]);
+
+  function handleImageUpload(e) {
+    const file = e.target.files[0];
+    if (file) {
+      const reader = new FileReader();
+      reader.onloadend = () => {
+        setLocalImagem(reader.result); // Atualiza o rascunho
+        setLocalZoom(1);
+        setLocalPosX(0);
+        setLocalPosY(0);
+      };
+      reader.readAsDataURL(file);
+    }
+  }
+
   function handleSalvar() {
-    // Aqui você integraria com seu banco de dados ou localStorage
-    const dadosPerfil = { nome, imagem, zoom, posX, posY };
+    // 1. Atualiza os estados oficiais no componente Pai (faz a Barra Lateral atualizar)
+    setNome(localNome);
+    setImagem(localImagem);
+    setZoom(localZoom);
+    setPosX(localPosX);
+    setPosY(localPosY);
+
+    // 2. Salva no banco/localStorage os dados confirmados
+    const dadosPerfil = { 
+      nome: localNome, 
+      imagem: localImagem, 
+      zoom: localZoom, 
+      posX: localPosX, 
+      posY: localPosY 
+    };
     localStorage.setItem("perfil_rpg", JSON.stringify(dadosPerfil));
-    console.log("Salvando dados do perfil RPG:", dadosPerfil);
+    
     alert("Perfil atualizado com sucesso no seu grimório!");
   }
 
@@ -33,14 +75,19 @@ export default function PerfilJogador({ nome, setNome, imagem, setImagem, zoom, 
       <h2 className={styles.titulo}>Configurações de Personagem</h2>
       
       <div className={styles.cardPerfil}>
-        {/* Lado Esquerdo: Área do Avatar e Controles de Posição */}
         <div className={styles.secaoAvatar}>
           <div className={styles.previewContainer}>
             <div className={styles.circuloAvatar}>
               <img 
-                src={imagem} 
+                src={localImagem} // Usa o rascunho
                 alt="Avatar Preview" 
-                style={{transform: `translate(${posX}%, ${posY}%) scale(${zoom})`, cursor: "move", width: "100%",height: "100%",objectFit: "cover"}}
+                style={{
+                  transform: `translate(${localPosX}%, ${localPosY}%) scale(${localZoom})`, // Usa o rascunho
+                  cursor: "move", 
+                  width: "100%", 
+                  height: "100%", 
+                  objectFit: "cover"
+                }}
               />
             </div>
           </div>
@@ -60,7 +107,7 @@ export default function PerfilJogador({ nome, setNome, imagem, setImagem, zoom, 
             className={styles.hiddenInput}
           />
 
-          {/* Sliders de Ajuste Fino */}
+          {/* Sliders conectados aos estados locais */}
           <div className={styles.controlesImagem}>
             <label>
               Zoom:
@@ -69,8 +116,8 @@ export default function PerfilJogador({ nome, setNome, imagem, setImagem, zoom, 
                 min="1" 
                 max="3" 
                 step="0.1" 
-                value={zoom} 
-                onChange={(e) => setZoom(parseFloat(e.target.value))} 
+                value={localZoom} 
+                onChange={(e) => setLocalZoom(parseFloat(e.target.value))} 
               />
             </label>
             <label>
@@ -79,8 +126,8 @@ export default function PerfilJogador({ nome, setNome, imagem, setImagem, zoom, 
                 type="range" 
                 min="-100" 
                 max="100" 
-                value={posX} 
-                onChange={(e) => setPosX(parseInt(e.target.value))} 
+                value={localPosX} 
+                onChange={(e) => setLocalPosX(parseInt(e.target.value))} 
               />
             </label>
             <label>
@@ -89,14 +136,13 @@ export default function PerfilJogador({ nome, setNome, imagem, setImagem, zoom, 
                 type="range" 
                 min="-100" 
                 max="100" 
-                value={posY} 
-                onChange={(e) => setPosY(parseInt(e.target.value))} 
+                value={localPosY} 
+                onChange={(e) => setLocalPosY(parseInt(e.target.value))} 
               />
             </label>
           </div>
         </div>
 
-        {/* Lado Direito: Formulário de Dados */}
         <div className={styles.secaoDados}>
           <div className={styles.inputGroup}>
             <label htmlFor="nomeJogador">Nome do Jogador / Mestre</label>
@@ -105,8 +151,8 @@ export default function PerfilJogador({ nome, setNome, imagem, setImagem, zoom, 
               <input 
                 id="nomeJogador"
                 type="text" 
-                value={nome} 
-                onChange={(e) => setNome(e.target.value.toUpperCase())} // Mantém o padrão em caixa alta se desejar
+                value={localNome} 
+                onChange={(e) => setLocalNome(e.target.value.toUpperCase())} 
                 placeholder="Digite seu nome de herói..."
               />
             </div>
