@@ -1,0 +1,334 @@
+/* Container Principal e Título */
+.container {
+  width: 100%;
+  max-width: 1500px;
+  margin: 0 auto;
+  padding: 2rem;
+}
+
+.titulo {
+  font-family: 'Cinzel', serif, sans-serif;
+  font-size: 1.8rem;
+  color: #b3924e;
+  margin-bottom: 2rem;
+  text-shadow: 0 2px 4px rgba(0, 0, 0, 0.5);
+  letter-spacing: 1px;
+}
+
+/* Card que divide em Duas Colunas */
+.cardPerfil {
+  display: grid;
+  grid-template-columns: 320px 1fr; /* Mantém a proporção ideal no desktop */
+  gap: 4rem;;
+  background: rgba(15, 15, 15, 0.75);
+  border: 1px solid rgba(179, 146, 78, 0.15);
+  padding: 2.5rem;
+  border-radius: 8px;
+  backdrop-filter: blur(8px);
+  box-shadow: 0 8px 32px rgba(0, 0, 0, 0.4);
+}
+
+/* ==========================================================================
+   LADO ESQUERDO: ÁREA DO AVATAR (Mantendo o layout anterior)
+   ========================================================================== */
+.secaoAvatar {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 1.5rem;
+}
+
+.previewContainer {
+  width: 200px;
+  height: 200px;
+  position: relative;
+}
+
+.circuloAvatar {
+  width: 100%;
+  height: 100%;
+  border-radius: 50%;
+  overflow: hidden;
+  border: 2px solid #b3924e;
+  box-shadow: 0 0 15px rgba(179, 146, 78, 0.2);
+  background: #111;
+}
+
+.btnUpload {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  background: #1c1a16;
+  border: 1px solid #b3924e;
+  color: #b3924e;
+  padding: 0.6rem 1.2rem;
+  font-size: 0.85rem;
+  font-weight: 600;
+  border-radius: 4px;
+  cursor: pointer;
+  transition: all 0.2s ease;
+}
+
+.btnUpload:hover {
+  background: #b3924e;
+  color: #000;
+  box-shadow: 0 0 10px rgba(179, 146, 78, 0.4);
+}
+
+.hiddenInput {
+  display: none;
+}
+
+/* Sliders de Zoom e Posição */
+.controlesImagem {
+  width: 100%;
+  display: flex;
+  flex-direction: column;
+  gap: 1rem;
+  background: rgba(0, 0, 0, 0.3);
+  padding: 1rem;
+  border-radius: 6px;
+  border: 1px solid #222;
+}
+
+.controlesImagem label {
+  display: flex;
+  flex-direction: column;
+  gap: 0.4rem;
+  font-size: 0.8rem;
+  color: #aaa;
+}
+
+.controlesImagem input[type="range"] {
+  width: 100%;
+  accent-color: #b3924e;
+  background: #222;
+  height: 4px;
+  border-radius: 2px;
+  cursor: pointer;
+}
+
+/* ==========================================================================
+   LADO DIREITO: FORMULÁRIOS, VÍNCULOS E BOTÃO SALVAR
+   ========================================================================== */
+.secaoDados {
+  display: flex;
+  flex-direction: column;
+}
+
+/* Blocos de agrupamento interno (Identidade / Contas) */
+.blocoConfig {
+  margin-bottom: 2rem;
+  display: flex;
+  flex-direction: column;
+  gap: 1rem;
+}
+
+.subtituloSecao {
+  font-family: 'Cinzel', serif, sans-serif;
+  font-size: 1.1rem;
+  color: #b3924e;
+  border-bottom: 1px solid rgba(179, 146, 78, 0.2);
+  padding-bottom: 0.4rem;
+  letter-spacing: 1px;
+}
+
+/* Grupo de Inputs de Texto */
+.inputGroup {
+  display: flex;
+  flex-direction: column;
+  gap: 0.5rem;
+}
+
+.inputGroup label {
+  font-size: 0.85rem;
+  color: #aaa;
+}
+
+.inputIconWrapper {
+  position: relative;
+  display: flex;
+  align-items: center;
+}
+
+.inputIcon {
+  position: absolute;
+  left: 12px;
+  color: #666;
+  pointer-events: none;
+}
+
+.inputIconWrapper input {
+  width: 100%;
+  background: #0d0d0d;
+  border: 1px solid #222;
+  color: #fff;
+  padding: 0.75rem 1rem 0.75rem 2.5rem;
+  border-radius: 6px;
+  font-size: 0.95rem;
+  transition: all 0.2s ease;
+}
+
+.inputIconWrapper input:focus {
+  outline: none;
+  border-color: #b3924e;
+  box-shadow: 0 0 8px rgba(179, 146, 78, 0.15);
+}
+
+/* Lista de Vínculos de Contas */
+.listaContas {
+  display: flex;
+  flex-direction: column;
+  gap: 0.75rem;
+}
+
+.itemConta {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  background: #0d0d0d;
+  border: 1px solid #222;
+  padding: 0.75rem 1rem;
+  border-radius: 6px;
+  transition: all 0.2s ease;
+}
+
+.contaConectada {
+  border-color: rgba(179, 146, 78, 0.3);
+  background: linear-gradient(to right, #14110d, #0d0d0d);
+}
+
+.infoContaLeft {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+}
+
+.iconeMidiaSVG {
+  width: 20px;
+  height: 20px;
+  object-fit: contain;
+  filter: grayscale(40%);
+  transition: filter 0.2s ease;
+}
+
+.contaConectada .iconeMidiaSVG {
+  filter: grayscale(0%);
+}
+
+.nomeMidia {
+  font-size: 0.95rem;
+  font-weight: bold;
+  color: #fff;
+  margin: 0;
+}
+
+.statusMidia {
+  font-size: 0.8rem;
+  color: #555;
+  margin: 0;
+}
+
+.contaConectada .statusMidia {
+  color: #aaa;
+}
+
+/* Botões de Vínculo (Vincular vs Desvincular) */
+.btnVincular, .btnDesvincular {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  font-size: 0.8rem;
+  padding: 0.5rem 0.8rem;
+  border-radius: 4px;
+  cursor: pointer;
+  font-weight: 600;
+  transition: all 0.2s ease;
+}
+
+.btnVincular {
+  background: #141414;
+  border: 1px solid #333;
+  color: #ccc;
+}
+
+.btnVincular:hover {
+  background: #b3924e;
+  color: #000;
+  border-color: #b3924e;
+}
+
+.btnDesvincular {
+  background: transparent;
+  border: 1px solid #721c24;
+  color: #f8d7da;
+}
+
+.btnDesvincular:hover {
+  background: #721c24;
+  color: #fff;
+}
+
+/* Botão Salvar Geral (Alinhado na base do formulário) */
+.btnSalvar {
+  margin-top: auto; /* Empurra o botão para a base caso a tela estique */
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  background: #b3924e;
+  color: #000;
+  border: none;
+  padding: 0.85rem;
+  font-size: 1rem;
+  font-weight: bold;
+  border-radius: 6px;
+  cursor: pointer;
+  transition: all 0.2s ease;
+}
+
+.btnSalvar:hover {
+  background: #c5a663;
+  box-shadow: 0 0 15px rgba(179, 146, 78, 0.3);
+  transform: translateY(-1px);
+}
+
+/* ==========================================================================
+   AJUSTE INTERMEDIÁRIO (Telas menores que 1080px)
+   ========================================================================== */
+@media (max-width: 1900px) {
+  .container {
+    padding-left: 0rem; /* Desativa completamente o padding lateral esquerdo */
+  }
+}
+/* ==========================================================================
+   RESPONSIVIDADE (Garante o funcionamento de celulares a telas de 1500px)
+   ========================================================================== */
+@media (max-width: 850px) {
+  
+  /* Remove o recuo lateral do container e da main no mobile */
+  .container, 
+  :global(main), /* Se a tag main estiver fora desse módulo CSS, usamos :global(main) */
+  main { 
+    padding: 1rem 0rem; /* Mantém um respiro em cima/baixo, mas zera nas laterais */
+  }
+
+  .cardPerfil {
+    grid-template-columns: 1fr; /* Transforma o layout em uma coluna vertical */
+    gap: 2.5rem;
+    padding: 1.5rem 1rem; /* Reduz o padding interno do próprio card no mobile */
+    border-radius: 0px; /* Opcional: remove as bordas arredondadas para colar na tela */
+    border-left: none;
+    border-right: none;
+  }
+
+  .secaoAvatar {
+    width: 100%;
+    max-width: 400px; /* Evita que os controles do avatar fiquem gigantes no mobile */
+    margin: 0 auto; /* Centraliza a coluna do avatar */
+  }
+
+  .btnSalvar {
+    margin-top: 2rem; /* Garante o espaçamento do botão no fim do fluxo vertical */
+  }
+}

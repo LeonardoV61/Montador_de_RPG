@@ -5,6 +5,7 @@ import UserMenu from "../pages/UserMenu.jsx";
 import PlayerPanel from "../pages/PlayerPanel.jsx";
 import Jogo from "../pages/Jogo/Jogo.jsx"
 import ErrorPage from "../pages/ErrorPage.jsx";
+import OAuth2Redirect from "../pages/OAuth2Redirect.jsx";
 import { ProtectedRoute } from "./ProtecaoManeira.jsx";
 /* import MasterPanel from "../pages/MasterPanel.jsx"; */
 /* import LoginAdm from "../pages/LoginAdm.jsx";
@@ -21,6 +22,11 @@ const Router = () =>
     {
       path: "/login",
       element: <LoginUser />,
+      errorElement: <ErrorPage />,
+    },
+    {
+      path: "/oauth2/redirect", 
+      element: <OAuth2Redirect />,
       errorElement: <ErrorPage />,
     },
     {

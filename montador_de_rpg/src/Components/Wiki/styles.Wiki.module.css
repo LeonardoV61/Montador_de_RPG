@@ -1,0 +1,275 @@
+.wikiContainer {
+  display: grid;
+  grid-template-columns: 300px 1fr;
+  gap: 0; 
+  width: 100%;
+  height: calc(100vh - 120px); /* Ajuste os 120px de acordo com a altura do seu header/nav principal */
+  background: rgba(15, 15, 15, 0.75);
+  border: 1px solid rgba(179, 146, 78, 0.15);
+  border-radius: 8px;
+  overflow: hidden; /* Impede o container de criar barra de rolagem na tela principal */
+  backdrop-filter: blur(8px);
+}
+
+/* --- BARRA LATERAL DA WIKI --- */
+.sidebarWiki {
+  background: rgba(8, 8, 8, 0.5);
+  border-right: 1px solid rgba(179, 146, 78, 0.1);
+  display: flex;
+  flex-direction: column;
+  height: 100%; /* Fixa a altura na mesma do container */
+  overflow: hidden;
+}
+
+.abasCategorias {
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  gap: 4px;
+  padding: 1rem;
+  background: #090909;
+}
+
+.btnCategoria {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 6px;
+  background: #121212;
+  border: 1px solid #222;
+  color: #888;
+  padding: 0.5rem;
+  font-size: 0.8rem;
+  font-weight: 600;
+  cursor: pointer;
+  border-radius: 4px;
+  transition: all 0.2s;
+}
+
+.btnCategoria:hover, .catAtiva {
+  border-color: #b3924e;
+  color: #b3924e;
+  background: rgba(179, 146, 78, 0.05);
+}
+
+.listaArtigos {
+  padding: 1rem;
+  display: flex;
+  flex-direction: column;
+  gap: 0.5rem;
+  flex: 1;
+  overflow-y: auto; /* Apenas a lista de artigos rola se houver muitos itens */
+  /* Scrollbar customizada estilo Grimório */
+  scrollbar-width: thin;
+  scrollbar-color: rgba(179, 146, 78, 0.3) transparent;
+}
+
+.headerLista {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  font-size: 0.8rem;
+  color: #666;
+  font-weight: bold;
+  margin-bottom: 0.5rem;
+}
+
+.btnCriar {
+  display: flex;
+  align-items: center;
+  gap: 4px;
+  background: transparent;
+  border: 1px solid #b3924e;
+  color: #b3924e;
+  padding: 0.2rem 0.5rem;
+  font-size: 0.75rem;
+  border-radius: 4px;
+  cursor: pointer;
+}
+
+.btnCriar:hover {
+  background: #b3924e;
+  color: #000;
+}
+
+.itemArtigo {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  background: #0d0d0d;
+  border: 1px solid #1a1a1a;
+  color: #ccc;
+  padding: 0.75rem 1rem;
+  border-radius: 4px;
+  text-align: left;
+  cursor: pointer;
+  transition: all 0.15s;
+}
+
+.itemArtigo:hover, .artigoSelecionado {
+  background: #161412;
+  border-color: rgba(179, 146, 78, 0.4);
+  color: #fff;
+}
+
+.truncarTexto {
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  font-size: 0.9rem;
+}
+
+/* --- ÁREA DE CONTEÚDO --- */
+.conteudoWiki {
+  padding: 2.5rem;
+  display: flex;
+  flex-direction: column;
+  height: 100%; /* Fixa a altura */
+  overflow: hidden;
+}
+
+.painelArtigo {
+  display: flex;
+  flex-direction: column;
+  gap: 1.5rem;
+  height: 100%;
+  overflow: hidden;
+}
+
+.headerArtigo {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  border-bottom: 1px solid rgba(179, 146, 78, 0.15);
+  padding-bottom: 1rem;
+}
+
+.tagCategoria {
+  background: rgba(179, 146, 78, 0.1);
+  border: 1px solid rgba(179, 146, 78, 0.3);
+  color: #b3924e;
+  padding: 0.3rem 0.8rem;
+  font-size: 0.75rem;
+  border-radius: 20px;
+  font-weight: bold;
+  letter-spacing: 1px;
+}
+
+.btnEditar, .btnSalvar {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  padding: 0.5rem 1rem;
+  font-size: 0.85rem;
+  font-weight: bold;
+  border-radius: 4px;
+  cursor: pointer;
+  transition: all 0.2s;
+}
+
+.btnEditar {
+  background: #141414;
+  border: 1px solid #333;
+  color: #aaa;
+}
+
+.btnEditar:hover {
+  border-color: #b3924e;
+  color: #b3924e;
+}
+
+.btnSalvar {
+  background: #b3924e;
+  border: none;
+  color: #000;
+}
+
+.tituloArtigo {
+  font-family: 'Cinzel', serif, sans-serif;
+  color: #b3924e;
+  font-size: 2rem;
+  margin-bottom: 1rem;
+}
+
+.textoArtigo {
+  color: #b3b3b3;
+  line-height: 1.7;
+  font-size: 1.05rem;
+  white-space: pre-wrap; /* Mantém as quebras de linha */
+}
+
+.corpoArtigo {
+  flex: 1;
+  overflow-y: auto; /* O texto da lore ou o formulário rolam aqui dentro de forma independente */
+  padding-right: 1rem;
+  
+  /* Scrollbar customizada */
+  scrollbar-width: thin;
+  scrollbar-color: rgba(179, 146, 78, 0.3) transparent;
+}
+
+/* --- CAMPOS DE EDIÇÃO --- */
+.formularioEdicao {
+  display: flex;
+  flex-direction: column;
+  gap: 1.5rem;
+  height: 100%;
+}
+
+.inputTitulo {
+  background: #0a0a0a;
+  border: 1px solid #222;
+  color: #fff;
+  padding: 0.75rem;
+  font-size: 1.5rem;
+  font-family: 'Cinzel', serif;
+  border-radius: 4px;
+}
+
+.inputTitulo:focus, .textareaConteudo:focus {
+  outline: none;
+  border-color: #b3924e;
+}
+
+.textareaConteudo {
+  background: #0a0a0a;
+  border: 1px solid #222;
+  color: #ccc;
+  padding: 1rem;
+  font-size: 1rem;
+  line-height: 1.6;
+  flex: 1; /* Faz a área de texto expandir até o final do espaço disponível */
+  resize: none; /* Como o container é fixo, desativamos o resize manual para não quebrar o layout */
+  border-radius: 4px;
+}
+
+.semArtigo {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 1rem;
+  color: #444;
+  height: 100%;
+  text-align: center;
+}
+
+/* --- RESPONSIVIDADE INTERMEDIÁRIA E MOBILE --- */
+@media (max-width: 1080px) {
+  .wikiContainer {
+    margin-left: 0rem;
+  }
+}
+
+@media (max-width: 768px) {
+  .wikiContainer {
+    grid-template-columns: 1fr; /* Vira coluna única */
+    border-radius: 0;
+    border-left: none;
+    border-right: none;
+  }
+  
+  .sidebarWiki {
+    border-right: none;
+    border-bottom: 1px solid rgba(179, 146, 78, 0.15);
+  }
+}

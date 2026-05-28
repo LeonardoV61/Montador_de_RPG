@@ -1,0 +1,438 @@
+.containerGeral {
+  width: 100%;
+  height: calc(100vh - 120px);
+  display: flex;
+  flex-direction: column;
+  background: rgba(15, 15, 15, 0.75);
+  border: 1px solid rgba(179, 146, 78, 0.15);
+  border-radius: 8px;
+  overflow: hidden;
+  backdrop-filter: blur(8px);
+}
+
+/* --- HEADER COM BOTÕES DE ABA --- */
+.headerMenu {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 0 2.5rem;
+  height: 75px;
+  background: #090909;
+  border-bottom: 1px solid rgba(179, 146, 78, 0.1);
+}
+
+.abasPrincipais {
+  display: flex;
+  gap: 1rem;
+  height: 100%;
+  align-items: center;
+}
+
+.btnAbaPrincipal {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  background: transparent;
+  border: none;
+  color: #555;
+  font-family: 'Cinzel', serif;
+  font-size: 1rem;
+  font-weight: bold;
+  height: 100%;
+  padding: 0 0.5rem;
+  cursor: pointer;
+  position: relative;
+  transition: color 0.2s;
+}
+
+.btnAbaPrincipal:hover {
+  color: #aaa;
+}
+
+.abaPrincipalAtiva {
+  color: #b3924e !important;
+}
+
+.abaPrincipalAtiva::after {
+  content: '';
+  position: absolute;
+  bottom: -1px;
+  left: 0;
+  width: 100%;
+  height: 2px;
+  background: #b3924e;
+  box-shadow: 0 -2px 10px rgba(179, 146, 78, 0.5);
+}
+
+.buscaWrapper {
+  position: relative;
+  display: flex;
+  align-items: center;
+}
+
+.buscaIcon {
+  position: absolute;
+  left: 12px;
+  color: #444;
+}
+
+.buscaWrapper input {
+  background: #0d0d0d;
+  border: 1px solid #222;
+  color: #fff;
+  padding: 0.55rem 1rem 0.55rem 2.4rem;
+  border-radius: 4px;
+  width: 260px;
+  font-size: 0.85rem;
+}
+
+.buscaWrapper input:focus {
+  outline: none;
+  border-color: #b3924e;
+}
+
+/* --- PAINEL ROlÁVEL --- */
+.painelRolavel {
+  flex: 1;
+  overflow-y: auto;
+  padding: 2.5rem;
+  scrollbar-width: thin;
+  scrollbar-color: rgba(179, 146, 78, 0.2) transparent;
+}
+
+.secaoLayout {
+  display: flex;
+  flex-direction: column;
+  gap: 2rem;
+}
+
+.subHeaderInterno {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.subHeaderInterno h3 {
+  font-family: 'Cinzel', serif;
+  font-size: 1.25rem;
+  color: #fff;
+  margin: 0 0 0.25rem 0;
+}
+
+.subHeaderInterno p {
+  font-size: 0.85rem;
+  color: #666;
+  margin: 0;
+}
+
+.btnCriarHeroi {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  background: #b3924e;
+  color: #000;
+  border: none;
+  padding: 0.6rem 1.2rem;
+  font-weight: bold;
+  font-size: 0.85rem;
+  border-radius: 4px;
+  cursor: pointer;
+  transition: background 0.2s;
+}
+
+.btnCriarHeroi:hover {
+  background: #c5a663;
+}
+
+/* --- GRID DE CARDS --- */
+.gridCards {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+  gap: 1.5rem;
+}
+
+.cardHeroi {
+  background: #0a0a0a;
+  border: 1px solid #1c1a16;
+  border-radius: 6px;
+  padding: 1.2rem;
+  display: flex;
+  flex-direction: column;
+  gap: 1.5rem;
+  transition: all 0.2s;
+}
+
+.cardHeroi:hover {
+  border-color: #b3924e;
+  transform: translateY(-2px);
+  box-shadow: 0 4px 20px rgba(0,0,0,0.6);
+}
+
+/* Customização para Cards de NPCs */
+.cardNpc {
+  background: #070707;
+  border-color: #161616;
+}
+
+.cardNpc:hover {
+  border-color: #444;
+}
+
+.cardHeader {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.tagCampanha {
+  font-size: 0.75rem;
+  color: #888;
+  display: flex;
+  align-items: center;
+  gap: 4px;
+  text-transform: uppercase;
+}
+
+.statusVivo {
+  font-size: 0.7rem;
+  color: #28a745;
+  background: rgba(40, 167, 69, 0.1);
+  padding: 0.15rem 0.4rem;
+  border-radius: 3px;
+  font-weight: bold;
+}
+
+.tagPapel {
+  font-size: 0.7rem;
+  color: #aaa;
+  border: 1px solid #333;
+  padding: 0.15rem 0.4rem;
+  border-radius: 3px;
+}
+
+.cardCorpo h4 {
+  font-family: 'Cinzel', serif;
+  font-size: 1.1rem;
+  color: #fff;
+  margin: 0 0 0.4rem 0;
+}
+
+.cardCorpo p {
+  font-size: 0.85rem;
+  color: #b3924e;
+  margin: 0;
+  display: flex;
+  align-items: center;
+  gap: 4px;
+}
+
+.descricaoNpc {
+  color: #666 !important;
+  line-height: 1.4;
+  display: -webkit-box !important;
+  -webkit-line-clamp: 2;
+  -webkit-box-orient: vertical;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.btnAcaoCard {
+  background: #121212;
+  border: 1px solid #252525;
+  color: #fff;
+  font-weight: bold;
+  padding: 0.5rem;
+  font-size: 0.8rem;
+  border-radius: 4px;
+  cursor: pointer;
+  transition: all 0.15s;
+}
+
+.btnAcaoCard:hover {
+  background: #b3924e;
+  color: #000;
+  border-color: #b3924e;
+}
+
+.btnVerNpc {
+  color: #aaa;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 6px;
+}
+
+.btnVerNpc:hover {
+  background: #222;
+  color: #fff;
+  border-color: #444;
+}
+
+/* ==========================================================================
+   TELA DE LEITURA COMPLETA (ESTILO INTERFACE DA WIKI)
+   ========================================================================== */
+.telaLeituraWiki {
+  width: 100%;
+  height: 100%;
+  display: flex;
+  flex-direction: column;
+  background: rgba(10, 10, 10, 0.4);
+  animation: entrarTelaWiki 0.25s ease-out;
+}
+
+.headerLeitura {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 1.5rem 2.5rem;
+  background: #090909;
+  border-bottom: 1px solid rgba(179, 146, 78, 0.15);
+}
+
+.btnVoltar {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  background: transparent;
+  border: 1px solid #222;
+  color: #aaa;
+  padding: 0.5rem 1rem;
+  font-size: 0.85rem;
+  font-weight: 600;
+  border-radius: 4px;
+  cursor: pointer;
+  transition: all 0.2s;
+}
+
+.btnVoltar:hover {
+  border-color: #b3924e;
+  color: #b3924e;
+  background: rgba(179, 146, 78, 0.05);
+}
+
+.tagGrupo {
+  display: flex;
+  gap: 8px;
+}
+
+.tagCampanhaLeitura {
+  background: rgba(179, 146, 78, 0.1);
+  border: 1px solid rgba(179, 146, 78, 0.3);
+  color: #b3924e;
+  font-size: 0.75rem;
+  padding: 0.25rem 0.7rem;
+  border-radius: 4px;
+  font-weight: bold;
+}
+
+.tagPapelLeitura {
+  background: #141414;
+  border: 1px solid #333;
+  color: #aaa;
+  font-size: 0.75rem;
+  padding: 0.25rem 0.7rem;
+  border-radius: 4px;
+}
+
+/* Corpo do Artigo */
+.corpoLeitura {
+  flex: 1;
+  padding: 3rem 4rem;
+  overflow-y: auto;
+  scrollbar-width: thin;
+  scrollbar-color: rgba(179, 146, 78, 0.3) transparent;
+}
+
+.tituloAlinhamento {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  margin-bottom: 1rem;
+}
+
+.iconSelo {
+  color: #b3924e;
+}
+
+.tituloArtigoNpc {
+  font-family: 'Cinzel', serif, sans-serif;
+  color: #b3924e;
+  font-size: 2.2rem;
+  margin: 0;
+  letter-spacing: 1px;
+}
+
+.divisorEstilizado {
+  width: 100%;
+  height: 1px;
+  background: linear-gradient(to right, rgba(179, 146, 78, 0.3), transparent);
+  margin-bottom: 2rem;
+}
+
+.textoLoreNpc {
+  color: #cccccc;
+  font-size: 1.1rem;
+  line-height: 1.8;
+  white-space: pre-wrap;
+  max-width: 850px; /* Evita linhas longas demais para uma leitura confortável */
+}
+
+.rodapeProtegido {
+  padding: 1rem 2.5rem;
+  background: #060606;
+  border-top: 1px solid rgba(179, 146, 78, 0.05);
+  text-align: center;
+}
+
+.rodapeProtegido span {
+  font-size: 0.75rem;
+  color: #444;
+}
+
+/* Animação suave para a transição de tela */
+@keyframes entrarTelaWiki {
+  from { opacity: 0; transform: scale(0.99); }
+  to { opacity: 1; transform: scale(1); }
+}
+
+/* Ajustes de Responsividade */
+@media (max-width: 768px) {
+  .headerLeitura {
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 1rem;
+    padding: 1.5rem;
+  }
+  .corpoLeitura {
+    padding: 2rem 1.5rem;
+  }
+  .tituloArtigoNpc {
+    font-size: 1.8rem;
+  }
+}
+
+/* --- RESPONSIVO --- */
+@media (max-width: 768px) {
+  .headerMenu {
+    flex-direction: column;
+    height: auto;
+    padding: 1.5rem;
+    gap: 1rem;
+    align-items: stretch;
+  }
+  .abasPrincipais {
+    justify-content: space-around;
+  }
+  .buscaWrapper input {
+    width: 100%;
+  }
+  .subHeaderInterno {
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 1rem;
+  }
+  .btnCriarHeroi {
+    width: 100%;
+    justify-content: center;
+  }
+}
