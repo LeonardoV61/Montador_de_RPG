@@ -1,0 +1,469 @@
+.containerGeral {
+  width: 100%;
+  height: calc(100vh - 120px);
+  display: flex;
+  flex-direction: column;
+  background: rgba(15, 15, 15, 0.75);
+  border: 1px solid rgba(179, 146, 78, 0.15);
+  border-radius: 8px;
+  overflow: hidden;
+  backdrop-filter: blur(8px);
+}
+
+/* --- HEADER COM BOTÕES DE ABA --- */
+.headerMenu {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 0 2.5rem;
+  height: 75px;
+  background: #090909;
+  border-bottom: 1px solid rgba(179, 146, 78, 0.1);
+}
+
+.abasPrincipais {
+  display: flex;
+  gap: 1rem;
+  height: 100%;
+  align-items: center;
+}
+
+.btnAbaPrincipal {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  background: transparent;
+  border: none;
+  color: #555;
+  font-family: 'Cinzel', serif, sans-serif;
+  font-size: 1rem;
+  font-weight: bold;
+  height: 100%;
+  padding: 0 0.5rem;
+  cursor: pointer;
+  position: relative;
+  transition: color 0.2s;
+}
+
+.btnAbaPrincipal:hover {
+  color: #aaa;
+}
+
+.abaPrincipalAtiva {
+  color: #b3924e !important;
+}
+
+.abaPrincipalAtiva::after {
+  content: '';
+  position: absolute;
+  bottom: -1px;
+  left: 0;
+  width: 100%;
+  height: 2px;
+  background: #b3924e;
+  box-shadow: 0 -2px 10px rgba(179, 146, 78, 0.5);
+}
+
+.buscaWrapper {
+  position: relative;
+  display: flex;
+  align-items: center;
+}
+
+.buscaIcon {
+  position: absolute;
+  left: 12px;
+  color: #444;
+}
+
+.buscaWrapper input {
+  background: #0d0d0d;
+  border: 1px solid #222;
+  color: #fff;
+  padding: 0.55rem 1rem 0.55rem 2.4rem;
+  border-radius: 4px;
+  width: 260px;
+  font-size: 0.85rem;
+}
+
+.buscaWrapper input:focus {
+  outline: none;
+  border-color: #b3924e;
+}
+
+/* --- PAINEL ROlÁVEL --- */
+.painelRolavel {
+  flex: 1;
+  overflow-y: auto;
+  padding: 2.5rem;
+  scrollbar-width: thin;
+  scrollbar-color: rgba(179, 146, 78, 0.2) transparent;
+}
+
+.secaoLayout {
+  display: flex;
+  flex-direction: column;
+  gap: 2rem;
+}
+
+.subHeaderInterno {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.subHeaderInterno h3 {
+  font-family: 'Cinzel', serif;
+  font-size: 1.25rem;
+  color: #fff;
+  margin: 0 0 0.25rem 0;
+}
+
+.subHeaderInterno p {
+  font-size: 0.85rem;
+  color: #666;
+  margin: 0;
+}
+
+/* --- GRID ADAPTADO PARA BANNERS DE CAPA DE LIVRO --- */
+.gridLivros {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(240px, 1fr));
+  gap: 2rem;
+}
+
+.cardLivro {
+  background: #0a0a0a;
+  border: 1px solid #1c1a16;
+  border-radius: 8px;
+  overflow: hidden;
+  display: flex;
+  flex-direction: column;
+  transition: all 0.25s ease;
+}
+
+.cardLivro:hover {
+  border-color: #b3924e;
+  transform: translateY(-4px);
+  box-shadow: 0 8px 25px rgba(0, 0, 0, 0.7);
+}
+
+/* Container do Banner Vertical */
+.capaLivroContainer {
+  width: 100%;
+  height: 280px; /* Proporção ideal de capa vertical de livro de RPG */
+  position: relative;
+  overflow: hidden;
+  background: #111;
+}
+
+.imagemCapa {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  transition: transform 0.4s ease;
+}
+
+.cardLivro:hover .imagemCapa {
+  transform: scale(1.05);
+}
+
+.overlayCapa {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background: linear-gradient(to top, rgba(0,0,0,0.8) 0%, transparent 60%);
+  display: flex;
+  align-items: flex-end;
+  padding: 1rem;
+}
+
+.badgeCategoriaCapa {
+  font-size: 0.7rem;
+  color: #b3924e;
+  background: rgba(0, 0, 0, 0.75);
+  border: 1px solid rgba(179, 146, 78, 0.3);
+  padding: 0.2rem 0.5rem;
+  border-radius: 4px;
+  text-transform: uppercase;
+  font-weight: bold;
+}
+
+/* Informações do Livro abaixo da capa */
+.livroInfoCorpo {
+  padding: 1.2rem;
+  display: flex;
+  flex-direction: column;
+  gap: 0.8rem;
+  flex: 1;
+}
+
+.livroMetaHeader {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.livroVersao {
+  font-size: 0.75rem;
+  color: #555;
+}
+
+.statusInstalado {
+  font-size: 0.65rem;
+  color: #28a745;
+  background: rgba(40, 167, 69, 0.1);
+  padding: 0.15rem 0.4rem;
+  border-radius: 3px;
+  font-weight: bold;
+  text-transform: uppercase;
+}
+
+.livroInfoCorpo h4 {
+  font-family: 'Cinzel', serif;
+  font-size: 1.05rem;
+  color: #fff;
+  margin: 0;
+  line-height: 1.3;
+}
+
+.descricaoLivroShort {
+  font-size: 0.8rem;
+  color: #777;
+  line-height: 1.5;
+  margin: 0;
+  display: -webkit-box;
+  -webkit-line-clamp: 3;
+  -webkit-box-orient: vertical;
+  overflow: hidden;
+}
+
+/* Botões Customizados */
+.btnAbrirLivro {
+  background: #121212;
+  border: 1px solid #252525;
+  color: #fff;
+  font-weight: bold;
+  padding: 0.55rem;
+  font-size: 0.8rem;
+  border-radius: 4px;
+  cursor: pointer;
+  margin-top: auto;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 6px;
+  transition: all 0.2s;
+}
+
+.btnAbrirLivro:hover {
+  background: #b3924e;
+  color: #000;
+  border-color: #b3924e;
+}
+
+.btnInstalarLivro {
+  background: rgba(179, 146, 78, 0.15);
+  border: 1px solid #b3924e;
+  color: #b3924e;
+  font-weight: bold;
+  padding: 0.55rem;
+  font-size: 0.8rem;
+  border-radius: 4px;
+  cursor: pointer;
+  margin-top: auto;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 6px;
+  transition: all 0.2s;
+}
+
+.btnInstalarLivro:hover {
+  background: #b3924e;
+  color: #000;
+}
+
+/* ==========================================================================
+   TELA DE LEITURA INTERNA DO GRIMÓRIO (ESTILO WIKI COMPLETA)
+   ========================================================================== */
+.telaLeituraWiki {
+  width: 100%;
+  height: 100%;
+  display: flex;
+  flex-direction: column;
+  background: rgba(10, 10, 10, 0.4);
+  animation: entrarTelaWiki 0.25s ease-out;
+}
+
+.headerLeitura {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 1.5rem 2.5rem;
+  background: #090909;
+  border-bottom: 1px solid rgba(179, 146, 78, 0.15);
+}
+
+.btnVoltar {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  background: transparent;
+  border: 1px solid #222;
+  color: #aaa;
+  padding: 0.5rem 1rem;
+  font-size: 0.85rem;
+  font-weight: 600;
+  border-radius: 4px;
+  cursor: pointer;
+  transition: all 0.2s;
+}
+
+.btnVoltar:hover {
+  border-color: #b3924e;
+  color: #b3924e;
+  background: rgba(179, 146, 78, 0.05);
+}
+
+.tagGrupo {
+  display: flex;
+  gap: 8px;
+}
+
+.tagCampanhaLeitura {
+  background: rgba(179, 146, 78, 0.1);
+  border: 1px solid rgba(179, 146, 78, 0.3);
+  color: #b3924e;
+  font-size: 0.75rem;
+  padding: 0.25rem 0.7rem;
+  border-radius: 4px;
+  font-weight: bold;
+}
+
+.tagPaperLeitura, .tagPapelLeitura {
+  background: #141414;
+  border: 1px solid #333;
+  color: #aaa;
+  font-size: 0.75rem;
+  padding: 0.25rem 0.7rem;
+  border-radius: 4px;
+}
+
+/* Layout de Leitura do Livro */
+.corpoLeitura {
+  flex: 1;
+  padding: 3rem 4rem;
+  overflow-y: auto;
+  scrollbar-width: thin;
+  scrollbar-color: rgba(179, 146, 78, 0.3) transparent;
+}
+
+.layoutLeituraLivro {
+  display: grid;
+  grid-template-columns: 220px 1fr;
+  gap: 3rem;
+  max-width: 1100px;
+  margin: 0 auto;
+}
+
+.capaLeituraWrapper img {
+  width: 100%;
+  height: 320px;
+  object-fit: cover;
+  border-radius: 6px;
+  border: 1px solid rgba(179, 146, 78, 0.25);
+  box-shadow: 0 10px 30px rgba(0,0,0,0.8);
+}
+
+.tituloAlinhamento {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  margin-bottom: 1rem;
+}
+
+.iconSelo {
+  color: #b3924e;
+}
+
+.tituloArtigoNpc {
+  font-family: 'Cinzel', serif, sans-serif;
+  color: #b3924e;
+  font-size: 2.2rem;
+  margin: 0;
+  letter-spacing: 1px;
+}
+
+.divisorEstilizado {
+  width: 100%;
+  height: 1px;
+  background: linear-gradient(to right, rgba(179, 146, 78, 0.3), transparent);
+  margin-bottom: 2rem;
+}
+
+.textoLoreNpc {
+  color: #cccccc;
+  font-size: 1.05rem;
+  line-height: 1.8;
+  white-space: pre-wrap;
+}
+
+.caixaAlertaLeitura {
+  margin-top: 2rem;
+  background: rgba(179, 146, 78, 0.03);
+  border: 1px dashed rgba(179, 146, 78, 0.2);
+  padding: 1rem;
+  border-radius: 4px;
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  color: #aaa;
+  font-size: 0.85rem;
+}
+
+.rodapeProtegido {
+  padding: 1rem 2.5rem;
+  background: #060606;
+  border-top: 1px solid rgba(179, 146, 78, 0.05);
+  text-align: center;
+}
+
+.rodapeProtegido span {
+  font-size: 0.75rem;
+  color: #444;
+}
+
+/* Animações e Responsividade */
+@keyframes entrarTelaWiki {
+  from { opacity: 0; transform: scale(0.99); }
+  to { opacity: 1; transform: scale(1); }
+}
+
+@media (max-width: 768px) {
+  .headerMenu, .headerLeitura {
+    flex-direction: column;
+    height: auto;
+    padding: 1.5rem;
+    gap: 1rem;
+    align-items: stretch;
+  }
+  .abasPrincipais {
+    justify-content: space-around;
+  }
+  .buscaWrapper input {
+    width: 100%;
+  }
+  .layoutLeituraLivro {
+    grid-template-columns: 1fr;
+    gap: 2rem;
+  }
+  .capaLeituraWrapper img {
+    height: 240px;
+    width: 180px;
+    margin: 0 auto;
+    display: block;
+  }
+}

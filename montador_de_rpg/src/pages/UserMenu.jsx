@@ -8,10 +8,13 @@ import AmigoP from "../Components/PainelUser/Amigos/AmigoP.jsx";
 import TarefaP from "../Components/PainelUser/Tarefas/TarefaP.jsx";
 import AtividadeP from "../Components/PainelUser/Atividade/AtividadeP.jsx";
 import BarraL from "../Components/PainelUser/BarraLateral/BarraL.jsx";
-import Wiki from "../Components/PainelUser/Wiki/Wiki.jsx"
+import Wiki from "../Components/PainelUser/Wiki/Wiki.jsx";
+import GeradorMapa from "../Components/PainelUser/Mapas/GeradorMapa.jsx";
+import Compendio from "../Components/PainelUser/Compendio/Compendio.jsx";
 import Personagens from "../Components/PainelUser/Personagens/Personagens.jsx"
 import Perfil from "../Components/PainelUser/Perfil/Perfil.jsx";
 import HeronPadrao from "../assets/perfil/Heron.png"; 
+
 
 export default function UserMenu() {
   const [roleAtiva, setRoleAtiva] = useState("mestre");
@@ -60,6 +63,18 @@ export default function UserMenu() {
           menuAtivo === "wiki" && (
             <>
               <Wiki />
+            </>
+          )
+          ||
+          menuAtivo === "mapas" && (
+            <>
+              <GeradorMapa />
+            </>
+          )
+          ||
+          menuAtivo === "compendio" && (
+            <>
+              <Compendio />
             </>
           )
         ) : (

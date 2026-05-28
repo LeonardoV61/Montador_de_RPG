@@ -35,7 +35,7 @@ export default function NavBar() {
             <li><Link to="/" onClick={() => Location.reload()}>Mesa</Link></li>
           </div>
         </div>
-        <button className={`${styles.btnDouradoCheio} ${styles.link}`} onClick={() => navigate('/jogo')}>Jogar Agora</button>
+        <button className={`${styles.btnDouradoCheio} ${styles.link}`} onClick={() => navigate('/jogo')}>Perfil</button>
     </nav>
     </>
   )
