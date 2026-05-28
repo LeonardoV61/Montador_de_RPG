@@ -95,15 +95,15 @@
     display: flex;
     align-items: center;
     width: 100%;
-    max-width: 320px; /* Alinha com o tamanho estimado dos seus inputs */
-    margin: -25px 0 15px 0;
+    max-width: 320px; 
+    margin: 25px 0 25px 0;
 }
 
 .dividerLine {
     flex: 1;
     border: none;
     height: 1px;
-    background-color: rgba(255, 255, 255, 0.2); /* Linha sutil para o fundo escuro */
+    background-color: rgba(255, 255, 255, 0.2); 
 }
 
 .dividerText {

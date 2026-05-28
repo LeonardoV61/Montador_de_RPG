@@ -77,19 +77,19 @@ nav {
     color: var(--dourado2);
 }
 
-.link {
+.button {
   text-decoration: none;   
   color: inherit !important;          
   display: inline-block;   
   width: 100%;             
-  height: 100%;           
-}
-.link:visited,
-.link:active,
-.link:hover {
-  color: inherit !important;
+  height: 100%;     
 }
 
+.button:visited,
+.button:active,
+.button:hover {
+  color: inherit !important;
+}
 .entrar {
     font-family: 'Cinzel', serif;
     font-size: 0.68rem;

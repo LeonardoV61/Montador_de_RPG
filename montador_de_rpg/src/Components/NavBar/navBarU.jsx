@@ -1,10 +1,11 @@
 import { useState, useEffect } from 'react';
-import { Link } from 'react-router-dom';
+import { Link, useNavigate } from 'react-router-dom';
 import logo from '../../assets/Hydra.png';
 import styles from './styles.NavBar.module.css'
 
 
 export default function NavBar() {
+  const navigate = useNavigate();
   const [scrolled, setScrolled] = useState(false);
 
   useEffect(() => {
@@ -34,8 +35,7 @@ export default function NavBar() {
             <li><Link to="/" onClick={() => Location.reload()}>Mesa</Link></li>
           </div>
         </div>
-        
-        <button className={styles.btnDouradoCheio}><Link to="/menu" onClick={() => Location.reload()} className={styles.link}>Perfil</Link></button>
+        <button className={`${styles.btnDouradoCheio} ${styles.link}`} onClick={() => navigate('/jogo')}>Jogar Agora</button>
     </nav>
     </>
   )

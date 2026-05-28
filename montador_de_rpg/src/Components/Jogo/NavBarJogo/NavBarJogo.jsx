@@ -11,13 +11,13 @@ export default function NavBarJogo() {
       <header className={styles.navBar}>
          <div className={styles.logo}><div className={styles.logoSimbolo}><span>✦</span></div>Bastionland</div>
          <div className={styles.titulo}><div className={styles.pontoAtivo}></div>Sessão IV · A Marcha do Bastião Perdido</div>
+         <NavBarJogadores />
          <div className={styles.botoes}>
             <button className={`${styles.botao} ${(abaAtiva == "Mapa") && styles.ativo}`} onClick={() => setAbaAtiva("Mapa")}>Mapa</button>
             <button className={`${styles.botao} ${(abaAtiva == "Notas") && styles.ativo}`} onClick={() => setAbaAtiva("Notas")}>Notas</button>
             <button className={`${styles.botao} ${(abaAtiva == "Fichas") && styles.ativo}`} onClick={() => setAbaAtiva("Fichas")}>Fichas</button>
             <button className={`${styles.botao} ${(abaAtiva == "Config") && styles.ativo}`} onClick={() => setAbaAtiva("Config")}>⚙</button>
          </div>
-         <NavBarJogadores />
       </header>
       </>
    )

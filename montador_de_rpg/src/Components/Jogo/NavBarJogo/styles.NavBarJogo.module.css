@@ -45,6 +45,7 @@
   font-size: 0.65rem;
   letter-spacing: 0.1em;
   color: var(--branco);
+  margin-left: 16vw;
 }
 .pontoAtivo {
   width: 7px;

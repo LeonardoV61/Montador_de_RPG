@@ -1,0 +1,33 @@
+.app {
+    display: flex;
+    min-height: 100vh;
+    width: 100vw;
+    margin-top: 8rem;
+    overflow-y: auto; 
+}
+
+.main {
+    flex: 1;                     
+    padding: 1rem 2rem 4rem 2rem;          
+    display: flex;
+    flex-direction: column;
+    gap: 2rem;                   
+    overflow-y: visible;       
+    max-height: none;          
+}
+
+.grid {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr); 
+    gap: 2rem;
+    width: 100%;
+    grid-auto-rows: minmax(auto, 35vh);
+}
+
+.grid > :nth-child(2n+1) {
+    grid-column: span 2;
+}
+
+.grid > :nth-child(2n) {
+    grid-column: span 1;
+}

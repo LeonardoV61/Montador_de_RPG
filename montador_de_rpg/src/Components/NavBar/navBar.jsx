@@ -1,10 +1,11 @@
 import { useState, useEffect } from 'react';
-import { Link } from 'react-router-dom';
+import { Link, useNavigate } from 'react-router-dom';
 import logo from '../../assets/Hydra.png';
 import styles from './styles.NavBar.module.css'
 
 
 export default function NavBar() {
+  const navigate = useNavigate();
   const [scrolled, setScrolled] = useState(false);
 
   useEffect(() => {
@@ -40,11 +41,11 @@ export default function NavBar() {
           </div>
         </div>
         {localStorage.getItem("authenticated") === "true" ? (
-          <button className={styles.btnDouradoCheio}><Link to="/menu" onClick={() => Location.reload()} className={styles.link}>Perfil</Link></button>
+          <button className={`${styles.btnDouradoCheio} ${styles.link}`} onClick={() => navigate('/menu')}>Perfil</button>
         ):(
           <div className={styles.links}>
               <li><Link to="/login" onClick={() => Location.reload()}>Entrar</Link></li>
-              <button className={styles.btnDouradoCheio} to="/jogo" onClick={() => Location.reload()} className={styles.link}>Jogar Agora</button>
+              <button className={`${styles.btnDouradoCheio} ${styles.link}`} onClick={() => navigate('/jogo')}>Jogar Agora</button>
           </div>
         )}
     </nav>

@@ -1,4 +1,5 @@
 import { useState, useEffect } from "react";
+import styles from "../Components/PainelUser/Css/styles.UserMenu.module.css"
 import NavBarU from "../Components/NavBar/navBarU.jsx";
 import Recepcao from "../Components/PainelUser/Recepcao/Recepcao.jsx";
 import IndicadorC from "../Components/PainelUser/Indicadores/IndicadorC.jsx";
@@ -9,7 +10,7 @@ import AtividadeP from "../Components/PainelUser/Atividade/AtividadeP.jsx";
 import BarraL from "../Components/PainelUser/BarraLateral/BarraL.jsx";
 import Wiki from "../Components/PainelUser/Wiki/Wiki.jsx"
 import Personagens from "../Components/PainelUser/Personagens/Personagens.jsx"
-import PerfilJogador from "../Components/PainelUser/Perfil/Perfil.jsx";
+import Perfil from "../Components/PainelUser/Perfil/Perfil.jsx";
 import HeronPadrao from "../assets/perfil/Heron.png"; 
 
 export default function UserMenu() {
@@ -37,18 +38,17 @@ export default function UserMenu() {
       setPosY(perfil.posY || 0);
     }
   }, []);
-
   return (
-    <div className="app">
+    <div className={styles.app}>
       <BarraL roleAtiva={roleAtiva} setRoleAtiva={setRoleAtiva} menuAtivo={menuAtivo} setMenuAtivo={setMenuAtivo} nome={nome} imagem={imagem} zoom={zoom} posX={posX} posY={posY}/>
-      <main className="main">
+      <main className={styles.main}>
         <NavBarU />
         {roleAtiva === "mestre" ? (
           menuAtivo === "dashboard" && (
             <>
               <Recepcao nome={nome}/>
               <IndicadorC />
-              <section className="grid">
+              <section className={styles.grid}>
                 <CampanhasP />
                 <AmigoP />
                 <TarefaP />
@@ -67,7 +67,7 @@ export default function UserMenu() {
               <>
                 <Recepcao nome={nome}/>
                 <IndicadorC />
-                <section className="grid">
+                <section className={styles.grid}>
                   <AtividadeP />
                   <AmigoP />
                   <CampanhasP />
