@@ -18,7 +18,7 @@ export default function Inicio({ onExplorar }) {
               <button className={styles.btnContorno}>Ver a mesa →</button>
             </div>
         </div>
-        <button className={styles.explorar} onClick={onExplorar}>Explorar</button>
+            <button className={styles.explorar} onClick={onExplorar}>Explorar</button>
     </section>
     </>
   )

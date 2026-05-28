@@ -5,7 +5,7 @@
     justify-content: center;
     align-items: center;
     text-align: center;
-    padding: 8rem 2rem 1rem;
+    padding: calc(14vh + 0.8rem) 2rem 1rem;
     overflow: hidden;
 }
 
@@ -138,7 +138,7 @@ h1 em {
 }
 .explorar {
   position: absolute;
-  bottom: -2rem;
+  bottom: calc(35vh - 270px);
   left: 50%;
   transform: translateX(-50%);
   width: 150px;
@@ -163,7 +163,7 @@ h1 em {
     content: '';
     display: block;
     width: 1px;
-    height: 36px;
+    height: 4.5vh;
     background: linear-gradient(to bottom, var(--dourado2), transparent);
 }
 .explorar:hover {

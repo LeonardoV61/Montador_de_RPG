@@ -42,3 +42,7 @@ body::before {
 *::-webkit-scrollbar-thumb {
   background: var(--fundo3);
 }
+
+*:focus, *:focus-visible {
+    outline: none;
+}
