@@ -1,7 +1,7 @@
 import { useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { LayoutDashboard, Users, Map, BookOpen, Skull, Gem } from "lucide-react";
-import Heron from "../../assets/perfil/Heron.png"
+import Heron from "../../../assets/perfil/Heron.png"
 import styles from "./styles.BarraL.module.css";
 
 export default function BarraL(){

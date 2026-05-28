@@ -2,14 +2,14 @@ import { createBrowserRouter } from "react-router-dom";
 import Home from "../pages/Home.jsx";
 import LoginUser from "../pages/LoginUser.jsx";
 import UserMenu from "../pages/UserMenu.jsx";
-import MasterPanel from "../pages/MasterPanel.jsx";
 import PlayerPanel from "../pages/PlayerPanel.jsx";
-import LoginAdm from "../pages/LoginAdm.jsx";
-import AdmMenu from "../pages/AdmMenu.jsx";
-import AdmPanel from "../pages/AdmPanel.jsx";
 import Jogo from "../pages/Jogo/Jogo.jsx"
 import ErrorPage from "../pages/ErrorPage.jsx";
 import { ProtectedRoute } from "./ProtecaoManeira.jsx";
+/* import MasterPanel from "../pages/MasterPanel.jsx"; */
+/* import LoginAdm from "../pages/LoginAdm.jsx";
+import AdmMenu from "../pages/AdmMenu.jsx";
+import AdmPanel from "../pages/AdmPanel.jsx"; */
 
 const Router = () =>
   createBrowserRouter([
@@ -37,17 +37,17 @@ const Router = () =>
       element: <PlayerPanel />,
       errorElement: <ErrorPage />,
     },
-    {
+    /* {
       path: "/master",
       element: <MasterPanel />,
       errorElement: <ErrorPage />,
-    },
-    {
+    }, */
+    /* {
       path: "/loginadm",
       element: <LoginAdm />,
       errorElement: <ErrorPage />,
-    },
-    {
+    }, */
+    /* {
       path: "/adm",
       element: (
         <ProtectedRoute>
@@ -55,8 +55,8 @@ const Router = () =>
         </ProtectedRoute>
       ),
       errorElement: <ErrorPage />,
-    },
-    {
+    }, */
+    /* {
       path: "/adm/painel",
       element: (
         <ProtectedRoute>
@@ -64,7 +64,7 @@ const Router = () =>
         </ProtectedRoute>
       ),
       errorElement: <ErrorPage />,
-    },
+    }, */
     {
       path: "/jogo",
       element: (

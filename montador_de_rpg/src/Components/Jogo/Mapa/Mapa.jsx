@@ -82,6 +82,15 @@ export default function Mapa() {
       }
    };
    function canvasMouseUp(e) { dragging = false; };
+   const [ctxMenuX, setCtxMenuX] = useState(0);
+   const [ctxMenuY, setCtxMenuY] = useState(0);
+   function canvasCtxMenu(e) {
+      e.preventDefault();
+      setCtxMenuX(e.clientX>window.innerWidth/2?e.clientX-172:e.clientX)
+      setCtxMenuY(e.clientY>window.innerHeight/2?e.clientY-165:e.clientY)
+      setContextoAberto(true);
+   }
+   document.addEventListener('click', () => setContextoAberto(false))
 
    function zoomMap(f) { mapScale = Math.min(Math.max(mapScale*f, 0.35), 3); drawHexMap(); }
    function resetMapView() { mapOffsetX=0; mapOffsetY=0; mapScale=1; drawHexMap(); }
@@ -95,9 +104,10 @@ export default function Mapa() {
 
    return (
    <>
-   <main className={styles.mapa} id="map" onContextMenu={() => setContextoAberto(true)} onClick={() => setContextoAberto(false)}>
+   <main className={styles.mapa} id="map" onClick={() => setContextoAberto(false)}>
       <canvas ref={canvasRef} className={styles.mapaHexagonal} onWheel={(e) => canvasWheel(e)} onClick={(e) => canvasClick(e)}
-      onMouseDown={(e) => canvasMouseDown(e)} onMouseMove={(e) => canvasMouseMove(e)} onMouseUp={(e) => canvasMouseUp(e)} ></canvas>
+      onMouseDown={(e) => canvasMouseDown(e)} onMouseMove={(e) => canvasMouseMove(e)} onMouseUp={(e) => canvasMouseUp(e)}
+      onContextMenu={(e) => canvasCtxMenu(e)} ></canvas>
 
       <MapaFerramentas />
 
@@ -126,7 +136,7 @@ export default function Mapa() {
       </div>
       <div className={styles.nomeCena}>Região de Bastionland · Mapa Hexagonal</div>
    </main>
-   {contextoAberto && <MenuContexto setContextoAberto={setContextoAberto}/>}
+   {contextoAberto && <MenuContexto posicao={{"top": ctxMenuY, "left": ctxMenuX}} setContextoAberto={setContextoAberto}/>}
    </>
   )
 }

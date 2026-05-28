@@ -1,4 +1,6 @@
-import styles from '../Components/Css/styles.AdmMenu.module.css'
+import styles from '<div styleName={} />
+<Components />
+<OldComponents></OldComponents>/Css/styles.AdmMenu.module.css'
 import { Link } from 'react-router-dom';
 import { useState } from 'react';
 

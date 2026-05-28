@@ -5,7 +5,7 @@ export default function MenuContexto(props) {
 
   return (
     <>
-    <div className={styles.menuContexto} id="menuContexto">
+    <div style={props.posicao} className={styles.menuContexto} id="menuContexto">
       <div className={styles.menuContextoItem} onClick={() => props.setContextoAberto(false)}>✦ Mover para cá</div>
       <div className={styles.menuContextoItem} onClick={() => props.setContextoAberto(false)}>🎲 Rolar Exploração</div>
       <div className={styles.menuContextoDivisor}></div>
