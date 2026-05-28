@@ -1,14 +1,10 @@
-import { useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { LayoutDashboard, Users, User, Map, Album, Sparkles,  PawPrint, BookOpen, Skull, Gem, Backpack } from "lucide-react";
 import Heron from "../../assets/perfil/Heron.png"
 import styles from "./styles.BarraL.module.css";
 
-export default function BarraL(){
+export default function BarraL({ roleAtiva, setRoleAtiva, menuAtivo, setMenuAtivo, nome, imagem, zoom, posX, posY}){
     const navigate = useNavigate();
-
-    const [roleAtiva, setRoleAtiva] = useState("mestre");
-    const [menuAtivo, setMenuAtivo] = useState("dashboard");
 
     function handleLogout() {
         localStorage.removeItem("authenticated");
@@ -19,9 +15,15 @@ export default function BarraL(){
         <>
           <aside className={styles.sidebar}>
             <div className={styles.bottomUser}>
-                <div className={`${styles.avatar} ${styles.small}`}><img src={Heron} alt="Avatar Heron" /></div>
+                <div className={`${styles.avatar} ${styles.small}`} style={{ overflow: "hidden", position: "relative" }}>
+                    <img
+                        src={imagem}
+                        alt={`Avatar ${nome}`}
+                        style={{ transform: `translate(${posX}%, ${posY}%) scale(${zoom})`, width: "100%", height: "100%", objectFit: "cover" }}
+                    />
+                </div>
                 <div>
-                    <h4>HERON</h4>
+                    <h4>{nome}</h4>
                 </div>
             </div>
             <div>
