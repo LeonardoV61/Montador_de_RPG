@@ -1,0 +1,47 @@
+.diario {
+  padding: 0.7rem 0.9rem;
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  gap: 0.5rem;
+  overflow-y: auto;
+}
+.diarioRegistro {
+  background: var(--fundo2);
+  border: 1px solid var(--fundo3);
+  padding: 0.5rem 0.7rem;
+  cursor: pointer;
+  transition: border-color 0.15s;
+}
+.diarioRegistro:hover {
+  border-color: var(--dourado2);
+}
+.diarioRegistroTitulo {
+  font-family: 'Cinzel',serif;
+  font-size: 0.68rem;
+  letter-spacing: 0.12em;
+  color: var(--branco);
+  margin-bottom: 0.2rem;
+  text-transform: uppercase;
+}
+.diarioRegistroTexto {
+  font-size: 0.8rem;
+  font-style: italic;
+  color: var(--branco);
+  line-height: 1.4;
+  display: -webkit-box;
+  -webkit-line-clamp: 2;
+  -webkit-box-orient: vertical;
+  overflow: hidden;
+}
+.diarioRegistroEtiqueta {
+  display: inline-block;
+  margin-top: 0.3rem;
+  font-family: 'Cinzel',serif;
+  font-size: 0.48rem;
+  letter-spacing: 0.1em;
+  color: var(--dourado2);
+  border: 1px solid var(--dourado2);
+  padding: 1px 5px;
+  text-transform: uppercase;
+}

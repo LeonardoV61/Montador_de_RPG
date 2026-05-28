@@ -1,12 +1,12 @@
 import { Outlet, useLocation } from "react-router-dom";
 import { useState, useEffect } from "react";
 import { Link } from "react-router-dom";
-import CriaCateg from "../Components/Adm/Criacao/Categoria";
-import CriaProd from "../Components/Adm/Criacao/Produtos";
-import CriaBanner from "../Components/Adm/Criacao/Banner";
+import CriaCateg from "../Components/OldComponents/Adm/Criacao/Categoria";
+import CriaProd from "../Components/OldComponents/Adm/Criacao/Produtos";
+import CriaBanner from "../Components/OldComponents/Adm/Criacao/Banner";
 import styles from '../Components/Css/styles.AdmPainel.module.css';
-import AdmProdutoModal from "../Components/Adm/MenorComp/AdmProdutoModal";
-import AdmEditProductModal from "../Components/Adm/MenorComp/AdmEditProductModal";
+import AdmProdutoModal from "../Components/OldComponents/Adm/MenorComp/AdmProdutoModal";
+import AdmEditProductModal from "../Components/OldComponents/Adm/MenorComp/AdmEditProductModal";
 
 export default function AdmPanel() {
     const local = useLocation();

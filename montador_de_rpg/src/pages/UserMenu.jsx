@@ -1,15 +1,15 @@
 import { useState, useEffect } from "react";
 import NavBarU from "../Components/NavBar/navBarU.jsx";
-import Recepcao from "../Components/Recepcao/Recepcao.jsx";
-import IndicadorC from "../Components/Indicadores/IndicadorC.jsx";
-import CampanhasP from "../Components/Campanhas/CampanhaP.jsx";
-import AmigoP from "../Components/Amigos/AmigoP.jsx";
-import TarefaP from "../Components/Tarefas/TarefaP.jsx";
-import AtividadeP from "../Components/Atividade/AtividadeP.jsx";
-import BarraL from "../Components/BarraLateral/BarraL.jsx";
-import Wiki from "../Components/Wiki/Wiki.jsx"
-import Personagens from "../Components/Personagens/Personagens.jsx"
-import Perfil from "../Components/Perfil/Perfil.jsx";
+import Recepcao from "../Components/PainelUser/Recepcao/Recepcao.jsx";
+import IndicadorC from "../Components/PainelUser/Indicadores/IndicadorC.jsx";
+import CampanhasP from "../Components/PainelUser/Campanhas/CampanhaP.jsx";
+import AmigoP from "../Components/PainelUser/Amigos/AmigoP.jsx";
+import TarefaP from "../Components/PainelUser/Tarefas/TarefaP.jsx";
+import AtividadeP from "../Components/PainelUser/Atividade/AtividadeP.jsx";
+import BarraL from "../Components/PainelUser/BarraLateral/BarraL.jsx";
+import Wiki from "../Components/PainelUser/Wiki/Wiki.jsx"
+import Personagens from "../Components/PainelUser/Personagens/Personagens.jsx"
+import PerfilJogador from "../Components/PainelUser/Perfil/Perfil.jsx";
 import HeronPadrao from "../assets/perfil/Heron.png"; 
 
 export default function UserMenu() {

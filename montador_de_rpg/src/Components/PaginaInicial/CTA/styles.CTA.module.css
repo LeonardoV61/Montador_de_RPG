@@ -1,0 +1,68 @@
+.cta {
+    text-align: center;
+    padding: 6rem 3rem; /* 5.8 */
+    /* position: relative;
+    overflow: hidden; */
+}
+.cta::before {
+    content: '⚔';
+    position: absolute;
+    font-size: 20rem;
+    opacity: 0.02;
+    /* left: 50%; */
+    top: 50%;
+    transform: translate(-50%, -50%);
+    pointer-events: none;
+}
+
+.cta h2 {
+    font-family: 'Cinzel', serif;
+    font-size: clamp(1.8rem, 4vw, 3rem);
+    font-weight: 700;
+    color: var(--branco);
+    margin-bottom: 1rem;
+}
+.cta h2 em {
+    font-style: normal;
+    color: var(--dourado);
+}
+
+.cta p {
+    font-size: 1.1rem;
+    font-style: italic;
+    color: var(--branco);
+    max-width: 420px;
+    margin: 0 auto 2.5rem;
+    line-height: 1.7;
+}
+
+.link {
+  text-decoration: none;   
+  color: inherit !important;          
+  display: inline-block;   
+  width: 100%;             
+  height: 100%;           
+}
+.link:visited,
+.link:active,
+.link:hover {
+  color: inherit !important;
+}
+
+.btnDouradoCheio {
+    font-family: 'Cinzel', serif;
+    font-size: 0.8rem;
+    letter-spacing: 0.18em;
+    text-transform: uppercase;
+    padding: 1rem 2.4rem;
+    background: var(--dourado);
+    color: var(--fundo);
+    border: none;
+    cursor: pointer;
+    font-weight: 600;
+    transition: all 0.2s;
+}
+.btnDouradoCheio:hover {
+    background: var(--dourado2);
+    transform: translateY(-1px);
+}

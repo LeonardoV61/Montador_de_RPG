@@ -68,7 +68,7 @@
 }
 
 .formBtn:hover {
-    background: var(--douradoClaro);
+    background: var(--dourado2);
     transform: translateY(-1px);
 }
 

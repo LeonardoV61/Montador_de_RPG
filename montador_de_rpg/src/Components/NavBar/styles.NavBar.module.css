@@ -7,7 +7,7 @@ nav {
     align-items: center;
     padding: .8em 3rem;
     background: rgba(20, 18, 15, 0.92);
-    border-bottom: 1px solid var(--douradoEscuro);
+    border-bottom: 1px solid var(--dourado2);
     backdrop-filter: blur(6px);
 }
 
@@ -18,13 +18,13 @@ nav {
     display: flex;
     justify-content: space-between;
     align-items: center;
-    padding: .8em 3rem; /* Padding original */
-    border-bottom: 1px solid var(--douradoEscuro);
+    padding: .4em 2rem; /* Padding original */
+    border-bottom: 1px solid var(--dourado2);
     backdrop-filter: blur(6px);
     transition: padding 0.2s ease, background 0.2s ease;
 }
 .navScrolled {
-    padding: 0.5rem 3rem; /* Padding reduzido */
+    padding: 0.4rem 2rem 0; /* Padding reduzido */
 }
 .navContents{
     display: flex;
@@ -43,7 +43,7 @@ nav {
 }
 .logo div {
     width: 28px; height: 28px;
-    border: 1px solid var(--douradoEscuro);
+    border: 1px solid var(--dourado2);
     display: flex;
     align-items: center;
     justify-content: center;
@@ -74,7 +74,7 @@ nav {
     transition: color 0.2s;
 }
 .links a:hover {
-    color: var(--douradoClaro);
+    color: var(--dourado2);
 }
 
 .link {
@@ -122,7 +122,7 @@ nav {
     transition: all 0.2s;
 }
 .btnDouradoCheio:hover {
-    background: var(--douradoClaro);
+    background: var(--dourado2);
     transform: translateY(-1px);
 }
 

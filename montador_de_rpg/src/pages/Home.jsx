@@ -1,11 +1,11 @@
 import { useRef } from "react";
 import NavBar from "../Components/NavBar/navBar.jsx";
-import Inicio from "../Components/Inicio/Inicio.jsx";
-import Divisor from "../Components/Divisor/Divisor.jsx"
-import Recursos from "../Components/Recursos/Recursos.jsx";
-import Fluxo from "../Components/Fluxo/Fluxo.jsx";
-import Sistemas from "../Components/Sistemas/Sistemas.jsx";
-import CTA from "../Components/CTA/CTA.jsx";
+import Inicio from "../Components/PaginaInicial/Inicio/Inicio.jsx";
+import Divisor from "../Components/PaginaInicial/Divisor/Divisor.jsx"
+import Recursos from "../Components/PaginaInicial/Recursos/Recursos.jsx";
+import Fluxo from "../Components/PaginaInicial/Fluxo/Fluxo.jsx";
+import Sistemas from "../Components/PaginaInicial/Sistemas/Sistemas.jsx";
+import CTA from "../Components/PaginaInicial/CTA/CTA.jsx";
 import Footer from "../Components/Footer/Footer.jsx";
 
 export default function Home() {

@@ -1,0 +1,28 @@
+.menuContexto {
+  position: fixed;
+  background: rgba(14,12,10,0.98);
+  border: 1px solid var(--dourado2);
+  min-width: 160px;
+  z-index: 1000;
+}
+
+.menuContextoItem {
+  font-family: 'Cinzel',serif;
+  font-size: 0.65rem;
+  letter-spacing: 0.1em;
+  color: var(--branco);
+  padding: 0.5rem 0.9rem;
+  cursor: pointer;
+  text-transform: uppercase;
+  transition: all 0.12s;
+}
+.menuContextoItem:hover {
+  background: rgba(201,162,39,0.1);
+  color: var(--dourado);
+}
+
+.menuContextoDivisor {
+  height: 1px;
+  background: var(--fundo3);
+  margin: 2px 0;
+}

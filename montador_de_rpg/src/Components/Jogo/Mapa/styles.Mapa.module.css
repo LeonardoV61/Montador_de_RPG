@@ -1,0 +1,126 @@
+.mapa {
+  width: stretch;
+  position: relative;
+  overflow: hidden;
+  background: #0c0b09;
+  cursor: grab;
+}
+.mapa:active {
+  cursor: grabbing;
+}
+.mapaHexagonal {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+}
+
+.mapaZoom {
+  position: absolute;
+  bottom: 1rem;
+  left: 1rem;
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+  z-index: 30;
+}
+.zoomBotao {
+  width: 28px;
+  height: 28px;
+  background: rgba(14,12,10,0.9);
+  border: 1px solid var(--fundo3);
+  color: var(--cinzaClaro);
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 0.9rem;
+  transition: all 0.15s;
+}
+.zoomBotao:hover {
+  border-color: var(--dourado2);
+  color: var(--dourado);
+}
+.nomeCena {
+  position: absolute;
+  bottom: 1rem;
+  left: 50%;
+  transform: translateX(-50%);
+  font-family: 'Cinzel',serif;
+  font-size: 0.58rem;
+  letter-spacing: 0.2em;
+  color: var(--dourado2);
+  text-transform: uppercase;
+  background: rgba(14,12,10,0.7);
+  border: 1px solid var(--fundo3);
+  padding: 0.3rem 0.8rem;
+  pointer-events: none;
+  z-index: 30;
+}
+
+/* iniciativa */
+.iniciativa {
+  position: absolute;
+  top: 0.7rem;
+  right: 0.7rem;
+  background: rgba(14,12,10,0.94);
+  border: 1px solid var(--dourado2);
+  padding: 0.4rem 0.6rem;
+  z-index: 30;
+  display: flex;
+  flex-direction: column;
+  gap: 0.3rem;
+  min-width: 120px;
+}
+.iniciativaTitulo {
+  font-family: 'Cinzel',serif;
+  font-size: 0.52rem;
+  letter-spacing: 0.2em;
+  color: var(--dourado2);
+  text-transform: uppercase;
+  padding-bottom: 0.3rem;
+  border-bottom: 1px solid var(--fundo3);
+  margin-bottom: 0.1rem;
+}
+.iniciativaPersonagem {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  padding: 0.2rem 0;
+}
+.iniciativaPersonagem.atual {
+  background: rgba(201,162,39,0.07);
+  margin: 0 -0.3rem;
+  padding: 0.2rem 0.3rem;
+}
+.iniciativaPonto {
+  width: 8px;
+  height: 8px;
+  border-radius: 50%;
+  flex-shrink: 0;
+}
+.iniciativaPonto.jogador {
+  background: var(--dourado);
+}
+.iniciativaPonto.inimigo {
+  background: var(--vermelho);
+}
+.iniciativaPonto.npc {
+  background: var(--cinzaClaro);
+}
+.iniciativaNome {
+  font-family: 'Cinzel',serif;
+  font-size: 0.6rem;
+  letter-spacing: 0.08em;
+  color: var(--branco);
+  flex: 1;
+}
+.iniciativaPersonagem.atual .iniciativaNome {
+  color: var(--dourado);
+}
+.iniciativaNum {
+  font-family: 'Cinzel',serif;
+  font-size: 0.65rem;
+  color: var(--branco);
+}

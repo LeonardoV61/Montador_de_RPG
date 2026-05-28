@@ -1,8 +1,0 @@
-.lateralPersonagem {
-  flex: 0 0 260px;
-  background: var(--fundo);
-  border-right: 1px solid var(--douradoEscuro);
-  display: flex;
-  flex-direction: column;
-  overflow: hidden;
-}

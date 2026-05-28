@@ -1,0 +1,43 @@
+.sistemas {
+    background: var(--fundo2);
+    border-top: 1px solid var(--fundo3);
+    border-bottom: 1px solid var(--fundo3);
+    padding: 3rem;
+    margin-top: 6rem;
+    text-align: center;
+}
+
+.titulo {
+    font-family: 'Cinzel', serif;
+    font-size: 0.68rem;
+    letter-spacing: 0.3em;
+    text-transform: uppercase;
+    color: var(--branco);
+    margin-bottom: 1.5rem;
+}
+
+.listagem {
+    display: flex;
+    gap: 1rem;
+    justify-content: center;
+    flex-wrap: wrap;
+}
+
+.sistema {
+    padding: 0.5rem 1.4rem;
+    border: 1px solid var(--dourado2);
+    font-family: 'Cinzel', serif;
+    font-size: 0.72rem;
+    letter-spacing: 0.15em;
+    color: var(--dourado);
+    background: rgba(201,162,39,0.06);
+    text-transform: uppercase;
+}
+
+.sistema.emBreve {
+    border-color: var(--cinza);
+    color: var(--cinzaClaro);
+    background: transparent;
+    font-style: italic;
+    letter-spacing: 0.1em;
+}

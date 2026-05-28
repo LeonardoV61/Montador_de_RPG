@@ -1,0 +1,121 @@
+.recursos {
+    position: relative;
+    z-index: 1;
+    max-width: 1100px;
+    margin: 0 auto;
+    padding: 3rem 3rem;
+}
+
+.recursosNome {
+    font-family: 'Cinzel', serif;
+    font-size: 0.68rem;
+    letter-spacing: 0.35em;
+    text-transform: uppercase;
+    color: var(--dourado);
+    margin-bottom: 0.8rem;
+    text-align: center;
+}
+
+.recursosFrase {
+    font-family: 'Cinzel', serif;
+    font-size: clamp(1.5rem, 3vw, 2.4rem);
+    font-weight: 600;
+    color: var(--branco);
+    text-align: center;
+    margin-bottom: 0.6rem;
+}
+
+.recursosDescricao {
+    text-align: center;
+    font-size: 1.05rem;
+    font-style: italic;
+    color: var(--branco);
+    max-width: 500px;
+    margin: 0 auto 3.5rem;
+    line-height: 1.7;
+}
+
+/* .grade {
+    display: grid;
+    /* Criamos 4 colunas iguais 
+    grid-template-columns: repeat(4, 1fr); 
+    gap: 2px;
+    background: var(--fundo3);
+}
+
+/* Seleciona o 5º elemento (o primeiro da segunda linha) 
+.grade > :nth-child(5) {
+    /* Empurra ele para a segunda coluna, centralizando o par 
+    grid-column-start: 2;
+}  */
+
+.grade {
+    display: grid;
+    grid-template-columns: repeat(4, 1fr);
+    /* Removemos o background e o gap do pai */
+    background: transparent;
+    gap: 0; 
+}
+
+.grade > div {
+    background: var(--fundo3);
+    /* Aqui criamos o contorno cinza claro */
+    border: 2px solid rgba(255, 255, 255, 0.2); /* Ajuste para o seu cinza claro */
+    padding: 20px;
+    
+    /* Esse ajuste faz com que as bordas dos vizinhos se sobreponham, 
+       mantendo a linha com 1px em vez de 2px */
+    margin: -0.5px; 
+    
+    transition: all 0.3s ease;
+}
+
+/* Mantém a animação e garante que o card focado fique por cima das bordas */
+.grade > div:hover {
+    background: var(--fundo-selecionado);
+    z-index: 10;
+    outline: 4px solid var(--dourado2); /* Exemplo de destaque na seleção */
+    outline-offset: -3px;
+}
+
+/* Lógica do Funil */
+.grade > :nth-child(5) {
+    grid-column-start: 2;
+}
+
+
+.recurso {
+    background: var(--fundo2);
+    padding: 2.2rem 1.8rem;
+    transition: background 0.2s;
+}
+.recurso:hover {
+    background: var(--fundo3);
+}
+
+.icone {
+    width: 40px; height: 40px;
+    background: rgba(201,162,39,0.1);
+    border: 1px solid var(--dourado2);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    margin-bottom: 1.2rem;
+    font-size: 1.1rem;
+    color: var(--dourado);
+}
+
+.titulo {
+    font-family: 'Cinzel', serif;
+    font-size: 0.9rem;
+    font-weight: 600;
+    color: var(--branco);
+    letter-spacing: 0.05em;
+    margin-bottom: 0.7rem;
+}
+
+.texto {
+    font-size: 0.95rem;
+    line-height: 1.7;
+    color: var(--branco);
+}

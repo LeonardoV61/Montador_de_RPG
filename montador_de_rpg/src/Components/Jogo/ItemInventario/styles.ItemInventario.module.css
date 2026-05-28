@@ -1,0 +1,38 @@
+.inventarioItem {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  padding: 0.35rem 0;
+  border-bottom: 1px solid rgba(61,57,48,0.5);
+  font-size: 0.82rem;
+}
+.inventarioItem:last-child {
+  border-bottom: none;
+}
+
+.inventarioItemIcone {
+  width: 20px;
+  height: 20px;
+  border: 1px solid var(--fundo3);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 0.7rem;
+  color: var(--cinzaClaro);
+  flex-shrink: 0;
+}
+
+.inventarioItemNome {
+  color: var(--branco);
+  flex: 1;
+}
+
+.inventarioItemInfo {
+  font-family: 'Cinzel',serif;
+  font-size: 0.5rem;
+  letter-spacing: 0.1em;
+  color: var(--dourado2);
+  border: 1px solid var(--dourado2);
+  padding: 1px 5px;
+  text-transform: uppercase;
+}
