@@ -1,5 +1,9 @@
 import { useState } from "react";
 import { Search, BookOpen, DownloadCloud, CheckCircle, ChevronLeft, Library, Bookmark } from "lucide-react";
+import T20 from "../../../assets/livros/Tormenta20.png"
+import T20R from "../../../assets/livros/Tormenta20-Resumo-de-Regras.png"
+import T20V from "../../../assets/livros/Tormenta20-A-Voz-das-Mares.png"
+import MytB from "../../../assets/livros/Mythic_BastionLand.png"
 import styles from "./styles.Compendio.module.css";
 
 export default function Compendio() {
@@ -9,47 +13,47 @@ export default function Compendio() {
   // Estado para quando um livro é aberto para leitura em tela cheia
   const [livroAberto, setLivroAberto] = useState(null);
 
-  // Mock de dados dos livros com banners (capas)
+  // Mock de dados dos livros adaptado com as variáveis de imagem importadas
   const [livros, setLivros] = useState([
     {
       id: "livro-1",
-      titulo: "LIVRO DOS JOGADORES",
-      versao: "v1.5.0",
-      categoria: "Core Rulebook",
-      descricao: "As regras essenciais para criação de personagens, perícias, magias e equipamentos fundamentais.",
-      bannerUrl: "https://images.unsplash.com/photo-1544947950-fa07a98d237f?q=80&w=400", // Substitua pelas imagens reais do seu RPG
+      titulo: "TORMENTA 20",
+      versao: "v2.0",
+      categoria: "Livro de Regras",
+      descricao: "O regulamento essencial para criar heróis, conjurar magias e explorar o mundo de Arton.",
+      bannerUrl: T20, 
       instalado: true,
-      sinopse: "Este tomo contém os pilares fundamentais da aventura. Explore raças ancestrais, classes heróicas e mecânicas de combate projetadas para guiar tanto jogadores novatos quanto veteranos pelos caminhos mais sombrios do grimório."
+      sinopse: "Este tomo contém os pilares fundamentais da maior saga de fantasia do Brasil. Explore raças ancestrais, classes heróicas e mecânicas de combate projetadas para guiar tanto jogadores novatos quanto veteranos pelos caminhos perigosos de Arton."
     },
     {
       id: "livro-2",
-      titulo: "GUIA DOS MONSTROS ANCESTRAIS",
-      versao: "v1.2.1",
-      categoria: "Bestiário",
-      descricao: "Centenas de criaturas, demônios e feras lendárias com fichas prontas para desafiar seus jogadores.",
-      bannerUrl: "https://images.unsplash.com/photo-1512820790803-83ca734da794?q=80&w=400",
+      titulo: "TORMENTA 20 - RESUMO DE REGRAS",
+      versao: "v1.0",
+      categoria: "Suplemento",
+      descricao: "Guia rápido de consulta e tabelas essenciais para acelerar o ritmo dos seus combates.",
+      bannerUrl: T20R, 
       instalado: true,
-      sinopse: "Os sussurros nas tavernas eram reais. O Guia dos Monstros reúne a ecologia, fraquezas e perfis de combate das criaturas mais temidas do reino. Ideal para Mestres que desejam povoar suas masmorras com perigos memoráveis."
+      sinopse: "Não perca tempo folheando centenas de páginas no meio do combate. O Resumo de Regras traz tabelas de condições, modificadores de perícias e as manobras de combate mais utilizadas de forma direta e visual para jogadores e Mestres."
     },
     {
       id: "livro-3",
-      titulo: "CINZAS DE BAROVIA (AVENTURA)",
-      versao: "Módulo Oficial",
+      titulo: "TORMENTA 20 - A VOZ DAS MARES",
+      versao: "v1.0",
       categoria: "Campanha",
-      descricao: "Uma campanha completa do nível 1 ao 10 ambientada no reino das brumas eternas.",
-      bannerUrl: "https://images.unsplash.com/photo-1576872381149-78ef7871f4b8?q=80&w=400",
+      descricao: "Uma aventura marítima cheia de mistérios, piratas e os perigos ancestrais dos oceanos.",
+      bannerUrl: T20V, 
       instalado: false,
-      sinopse: "Um mal antigo desperta além das montanhas. Esta crônica de campanha oferece mapas detalhados, encontros balanceados, NPCs marcantes e ganchos de história sombrios para guiar seu grupo através de uma jornada de horror e sobrevivência."
+      sinopse: "Os segredos do Mar Negro chamam por você. Esta crônica de campanha oferece mapas de embarcações, encontros costeiros balanceados, NPCs marcantes e ganchos de história sombrios envolvendo o ecossistema marinho de Arton."
     },
     {
       id: "livro-4",
-      titulo: "TESOUROS & RELÍQUIAS PERDIDAS",
-      versao: "Suplemento",
-      categoria: "Expansão",
-      descricao: "Novo arsenal de itens mágicos, artefatos amaldiçoados e regras de criação de itens para alquimistas.",
-      bannerUrl: "https://images.unsplash.com/photo-1532012197267-da84d127e765?q=80&w=400",
+      titulo: "MYTHIC BASTIONLAND",
+      versao: "v1.0",
+      categoria: "Livro de Regras",
+      descricao: "Explore mitos arturianos, cavalaria e monstros estranhos em uma terra enigmática.",
+      bannerUrl: MytB, 
       instalado: false,
-      sinopse: "Desenterre segredos esquecidos pelo tempo. Este suplemento expande as opções de recompensas da mesa, introduzindo tabelas de loot inteligente, runas de aprimoramento e artefatos lendários com personalidades próprias."
+      sinopse: "Você é um Cavaleiro encarregado de proteger o Reino e manter a ordem em um cenário místico e perigoso. Um sistema focado em exploração hexagonal, glória, herança e combates brutais contra anomalias imponentes."
     }
   ]);
 
@@ -100,7 +104,7 @@ export default function Compendio() {
           </div>
 
           <div className={styles.rodapeProtegido}>
-            <span>Licença de uso pessoal ativa. Propriedade vinculada à sua conta mística.</span>
+            <span>Licença de uso pessoal activa. Propriedade vinculada à sua conta mística.</span>
           </div>
 
         </div>
@@ -179,12 +183,9 @@ export default function Compendio() {
                   <p className={styles.descricaoLivroShort}>{livro.descricao}</p>
                   
                   {/* Botão de Ação Dinâmico */}
-                  {livro.instalated || livro.instalado ? (
-                    <button 
-                      className={styles.btnAbrirLivro}
-                      onClick={() => setLivroAberto(livro)}
-                    >
-                      <BookOpen size={14} /> Abrir Compêndio
+                  {livro.instalado ? (
+                    <button className={styles.btnAbrirLivro} onClick={() => setLivroAberto(livro)}>
+                      <BookOpen size={14} /> Abrir Livro
                     </button>
                   ) : (
                     <button 

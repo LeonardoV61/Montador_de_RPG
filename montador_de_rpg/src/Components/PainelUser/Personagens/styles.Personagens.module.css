@@ -91,7 +91,7 @@
   border-color: #b3924e;
 }
 
-/* --- PAINEL ROlÁVEL --- */
+/* --- PAINEL ROLÁVEL --- */
 .painelRolavel {
   flex: 1;
   overflow-y: auto;
@@ -158,7 +158,8 @@
   padding: 1.2rem;
   display: flex;
   flex-direction: column;
-  gap: 1.5rem;
+  justify-content: flex-start; 
+  height: 100%; 
   transition: all 0.2s;
 }
 
@@ -168,7 +169,6 @@
   box-shadow: 0 4px 20px rgba(0,0,0,0.6);
 }
 
-/* Customização para Cards de NPCs */
 .cardNpc {
   background: #070707;
   border-color: #161616;
@@ -210,6 +210,10 @@
   border-radius: 3px;
 }
 
+.cardCorpo {
+  margin-bottom: 1.5rem;
+}
+
 .cardCorpo h4 {
   font-family: 'Cinzel', serif;
   font-size: 1.1rem;
@@ -237,6 +241,7 @@
 }
 
 .btnAcaoCard {
+  margin-top: auto; 
   background: #121212;
   border: 1px solid #252525;
   color: #fff;
@@ -246,6 +251,7 @@
   border-radius: 4px;
   cursor: pointer;
   transition: all 0.15s;
+  width: 100%; 
 }
 
 .btnAcaoCard:hover {
@@ -268,9 +274,7 @@
   border-color: #444;
 }
 
-/* ==========================================================================
-   TELA DE LEITURA COMPLETA (ESTILO INTERFACE DA WIKI)
-   ========================================================================== */
+/* --- TELA DE LEITURA COMPLETA --- */
 .telaLeituraWiki {
   width: 100%;
   height: 100%;
@@ -320,7 +324,7 @@
   border: 1px solid rgba(179, 146, 78, 0.3);
   color: #b3924e;
   font-size: 0.75rem;
-  padding: 0.25rem 0.7rem;
+  padding: 0.25rem 0.7 Conditioning;
   border-radius: 4px;
   font-weight: bold;
 }
@@ -334,7 +338,6 @@
   border-radius: 4px;
 }
 
-/* Corpo do Artigo */
 .corpoLeitura {
   flex: 1;
   padding: 3rem 4rem;
@@ -374,7 +377,7 @@
   font-size: 1.1rem;
   line-height: 1.8;
   white-space: pre-wrap;
-  max-width: 850px; /* Evita linhas longas demais para uma leitura confortável */
+  max-width: 850px;
 }
 
 .rodapeProtegido {
@@ -389,13 +392,12 @@
   color: #444;
 }
 
-/* Animação suave para a transição de tela */
 @keyframes entrarTelaWiki {
   from { opacity: 0; transform: scale(0.99); }
   to { opacity: 1; transform: scale(1); }
 }
 
-/* Ajustes de Responsividade */
+/* --- RESPONSIVIDADE --- */
 @media (max-width: 768px) {
   .headerLeitura {
     flex-direction: column;
@@ -409,10 +411,6 @@
   .tituloArtigoNpc {
     font-size: 1.8rem;
   }
-}
-
-/* --- RESPONSIVO --- */
-@media (max-width: 768px) {
   .headerMenu {
     flex-direction: column;
     height: auto;
