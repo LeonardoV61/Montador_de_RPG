@@ -73,7 +73,7 @@ export default function BarraL({ roleAtiva, setRoleAtiva, menuAtivo, setMenuAtiv
                         Anotações
                     </a>
                     
-                    <a href="#" className={menuAtivo === "pnjs" ? styles.active : ""} onClick={(e) => { e.preventDefault(); setMenuAtivo("pnjs"); }}>
+                    <a href="#" className={menuAtivo === "eventos" ? styles.active : ""} onClick={(e) => { e.preventDefault(); setMenuAtivo("eventos"); }}>
                         <Skull size={18} />
                         PNJs & Encontros
                     </a>

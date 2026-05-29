@@ -13,7 +13,16 @@ import GeradorMapa from "../Components/PainelUser/Mapas/GeradorMapa.jsx";
 import Compendio from "../Components/PainelUser/Compendio/Compendio.jsx";
 import Personagens from "../Components/PainelUser/Personagens/Personagens.jsx"
 import Perfil from "../Components/PainelUser/Perfil/Perfil.jsx";
+import Regras from "../Components/PainelUser/Regras/Regras.jsx";
+import CodexArcano from "../Components/PainelUser/Codex/CodexArcano.jsx";
+import Bestiario from "../Components/PainelUser/Bestiario/Bestiario.jsx";
+import Habilidades from "../Components/PainelUser/Habilidades/Habilidades.jsx";
+import Diario from "../Components/PainelUser/Diário/Diario.jsx";
+import GerenciadorNarrativo from "../Components/PainelUser/Eventos/GerenciadorNarrativo.jsx";
+import Eventos from "../Components/PainelUser/EventosJ/Eventos.jsx";
 import HeronPadrao from "../assets/perfil/Heron.png"; 
+
+
 
 
 export default function UserMenu() {
@@ -77,6 +86,24 @@ export default function UserMenu() {
               <Compendio />
             </>
           )
+          ||
+          menuAtivo === "codexArcano" && (
+            <>
+              <CodexArcano />
+            </>
+          )
+          ||
+          menuAtivo === "bestiario" && (
+            <>
+              <Bestiario />
+            </>
+          )
+          ||
+          menuAtivo === "eventos" && (
+            <>
+              <GerenciadorNarrativo />
+            </>
+          )
         ) : (
           menuAtivo === "dashboard" && (
               <>
@@ -88,20 +115,47 @@ export default function UserMenu() {
                   <CampanhasP />
                 </section>
               </>
-            ) 
-            ||
+          ) 
+          ||
           menuAtivo === "personagens" && (
             <>
               <Personagens />
             </>
           )
-            ||
+          ||
           menuAtivo === "perfil" && (
             <>
             <Perfil nome={nome} setNome={setNome} imagem={imagem} setImagem={setImagem} zoom={zoom} setZoom={setZoom} posX={posX} setPosX={setPosX} posY={posY} setPosY={setPosY}/>
             </>
           )
-        )}
+          ||
+          menuAtivo === "regras" && (
+            <>
+            <Regras />
+            </>
+          )
+          ||
+          menuAtivo === "habilidades" && (
+            <>
+              <Habilidades />
+            </>
+          )
+          ||
+          menuAtivo === "diario" && (
+            <>
+              <Diario />
+            </>
+          )
+                    ||
+          menuAtivo === "eventos" && (
+            <>
+              <Eventos />
+            </>
+          )
+
+
+          )}
+
 
       </main>
     </div>
