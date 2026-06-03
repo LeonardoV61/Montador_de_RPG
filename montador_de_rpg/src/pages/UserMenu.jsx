@@ -20,7 +20,9 @@ import Habilidades from "../Components/PainelUser/Habilidades/Habilidades.jsx";
 import Diario from "../Components/PainelUser/Diário/Diario.jsx";
 import GerenciadorNarrativo from "../Components/PainelUser/Eventos/GerenciadorNarrativo.jsx";
 import Eventos from "../Components/PainelUser/EventosJ/Eventos.jsx";
+import Anotacao from "../Components/PainelUser/Anotacao/Anotacao.jsx";
 import HeronPadrao from "../assets/perfil/Heron.png"; 
+
 
 
 
@@ -104,6 +106,13 @@ export default function UserMenu() {
               <GerenciadorNarrativo />
             </>
           )
+          ||
+          menuAtivo === "anotacoes" && (
+            <>
+              <Anotacao />
+            </>
+          )
+
         ) : (
           menuAtivo === "dashboard" && (
               <>

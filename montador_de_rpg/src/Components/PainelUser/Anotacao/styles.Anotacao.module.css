@@ -1,0 +1,533 @@
+/* ==========================================================================
+   ESTILIZAÇÃO DO CANVAS (Otimizado & Corrigido)
+   ========================================================================= */
+
+.canvasContainer {
+  position: relative;
+  width: 100%;
+  height: 100%;
+  min-height: 85vh;
+  background-color: #080c14;
+  color: #e4e4e7;
+  overflow: hidden;
+  user-select: none;
+  font-family: system-ui, -apple-system, sans-serif;
+  box-sizing: border-box;
+}
+
+/* Cursores Dinâmicos */
+.cursorSelect { cursor: default; }
+.cursorHand { cursor: grab; }
+.cursorPanning { cursor: grabbing; }
+.cursorEraser { cursor: cell; }
+.cursorPen { cursor: crosshair; }
+
+.canvasDotGrid {
+  position: absolute;
+  inset: 0;
+  pointer-events: none;
+  z-index: 0;
+  background-image: radial-gradient(rgba(147, 197, 253, 0.08) 1.2px, transparent 1.2px);
+  background-size: 22px 22px;
+}
+
+.canvasBoard {
+  position: absolute;
+  width: 8000px; /* Definido tamanho massivo para navegação expandida */
+  height: 8000px;
+  top: 0;
+  left: 0;
+  transform-origin: 0 0;
+}
+
+/* Sidebar Toolbar Lateral Esquerda */
+.toolbarSidebar {
+  position: absolute;
+  left: 16px;
+  top: 50%;
+  transform: translateY(-50%);
+  background-color: #0b0f19;
+  border: 1px solid #1e293b;
+  padding: 8px;
+  border-radius: 9999px;
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  z-index: 50;
+  box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.5);
+}
+
+.sidebarButton {
+  background: transparent;
+  border: 1px solid transparent;
+  width: 38px;
+  height: 38px;
+  border-radius: 9999px;
+  color: #a1a1aa;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: all 0.2s ease;
+}
+
+.sidebarButton:hover {
+  background-color: rgba(30, 41, 59, 0.6);
+  color: #f4f4f5;
+}
+
+.sidebarButtonActive {
+  background-color: #1e293b !important;
+  color: #f4f4f5 !important;
+  border-color: #3b82f6 !important;
+}
+
+.sidebarDivider {
+  border: 0;
+  border-top: 1px solid #1e293b;
+  margin: 4px 6px;
+}
+
+/* Estados Ativos da Barra Lateral */
+.toolActiveGreen {
+  background-color: rgba(16, 185, 129, 0.15) !important;
+  border: 1px solid rgba(16, 185, 129, 0.4) !important;
+  color: #10b981 !important;
+}
+
+.toolActiveRed {
+  background-color: rgba(239, 68, 68, 0.15) !important;
+  border: 1px solid rgba(239, 68, 68, 0.4) !important;
+  color: #ef4444 !important;
+}
+
+/* Container relativo para alinhar popovers com os botões correspondentes */
+.sidebarButtonContainer {
+  position: relative;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
+/* Popovers Flutuantes Dinâmicos e Alinhados (Unificado) */
+.shapesPopover {
+  position: absolute;
+  left: 54px; /* Move para o lado exterior direito da barra lateral */
+  top: 50%;
+  transform: translateY(-50%); /* Centraliza verticalmente com o botão que o disparou */
+  width: 260px;
+  background-color: #0d1321;
+  border: 1px solid #1e293b;
+  border-radius: 16px;
+  padding: 16px;
+  z-index: 100;
+  box-shadow: 0 20px 25px -5px rgba(0, 0, 0, 0.6);
+}
+
+.menuSectionHeader {
+  font-size: 10px;
+  font-weight: 700;
+  color: #64748b;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  margin-bottom: 10px;
+  margin-top: 0;
+}
+
+/* Grades de Seleção Internas */
+.gridPaleta {
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  gap: 8px;
+}
+
+.colorCircleButton {
+  width: 34px;
+  height: 34px;
+  border-radius: 50%;
+  border: 1px solid #1e293b;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 16px;
+  transition: transform 0.15s ease;
+}
+
+.colorCircleButton:hover {
+  transform: scale(1.1);
+}
+
+/* Novas Classes: Menu de Formas Básicas & Setas */
+.shapeGrid {
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  gap: 8px;
+  margin-bottom: 12px;
+}
+
+.shapeGridButton {
+  background: #131a2c;
+  border: 1px solid #1e293b;
+  border-radius: 8px;
+  height: 40px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: #e4e4e7;
+  cursor: pointer;
+  transition: all 0.2s ease;
+}
+
+.shapeGridButton:hover {
+  background-color: #1e293b;
+  border-color: #3b82f6;
+  color: #ffffff;
+}
+
+.menuShapeIcon {
+  width: 18px;
+  height: 18px;
+  border: 1.5px solid #3b82f6;
+  background: rgba(59, 130, 246, 0.2);
+  border-radius: 3px;
+  box-sizing: border-box;
+}
+
+/* Ajustes Geométricos para Ícones de Pré-visualização do Menu */
+.shapeDiamond {
+  transform: rotate(45deg);
+  width: 12px;
+  height: 12px;
+  border-radius: 0;
+}
+
+.shapeTriangle {
+  border: none !important;
+  background: #3b82f6 !important;
+  clip-path: polygon(50% 0%, 0% 100%, 100% 100%);
+}
+
+.shapeHexagon {
+  border: none !important;
+  background: #3b82f6 !important;
+  clip-path: polygon(50% 0%, 100% 25%, 100% 75%, 50% 100%, 0% 75%, 0% 25%);
+}
+
+.shapePentagon {
+  border: none !important;
+  background: #3b82f6 !important;
+  clip-path: polygon(50% 0%, 100% 38%, 82% 100%, 18% 100%, 0% 38%);
+}
+
+.shapeCylinder {
+  width: 14px;
+  height: 18px;
+  border: 1.5px solid #3b82f6;
+  background: rgba(59, 130, 246, 0.2);
+  border-radius: 4px / 8px;
+  box-sizing: border-box;
+}
+
+
+/* ==========================================================================
+   ELEMENTOS INTERNOS DO CANVAS
+   ========================================================================= */
+
+/* 1. Elemento Quadro Card (Agrupamento) */
+.quadroCard {
+  width: 100%;
+  height: 100%;
+  border: 1.5px solid #1e293b;
+  background-color: rgba(13, 19, 33, 0.4);
+  border-radius: 12px;
+  display: flex;
+  flex-direction: column;
+  position: relative;
+  box-sizing: border-box;
+}
+
+.quadroTitle {
+  position: absolute;
+  top: -14px;
+  left: 12px;
+  padding: 2px 14px;
+  background-color: #111827;
+  border: 1px solid #1e293b;
+  border-radius: 6px;
+  font-size: 11px;
+  font-weight: 600;
+  color: #94a3b8;
+  white-space: nowrap;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.quadroTitleInput {
+  background: transparent;
+  border: none;
+  outline: none;
+  color: #f3f4f6;
+  font-size: 11px;
+  font-weight: 600;
+  font-family: inherit;
+  width: auto;
+  min-width: 100px;
+  text-align: center;
+}
+
+.quadroEspacoInterno {
+  flex: 1;
+  width: 100%;
+  height: 100%;
+}
+
+/* 2. Elemento Post-it Card */
+.postItCard {
+  width: 100%;
+  height: 100%;
+  color: #18181b;
+  padding: 12px;
+  border-radius: 8px;
+  box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.3);
+  display: flex;
+  box-sizing: border-box;
+}
+
+.postItTextarea {
+  width: 100%;
+  height: 100%;
+  background: transparent;
+  resize: none;
+  border: none;
+  outline: none;
+  color: #18181b;
+  font-family: inherit;
+  font-size: 14px;
+  line-height: 1.4;
+}
+
+/* 3. Elemento Texto Livre Container */
+.textoContainer {
+  width: 100%;
+  height: 100%;
+  padding: 4px;
+  box-sizing: border-box;
+}
+
+.textoAreaInput {
+  width: 100%;
+  height: 100%;
+  background: transparent;
+  resize: none;
+  border: none;
+  outline: none;
+  color: #e4e4e7;
+  font-size: 14px;
+  font-family: inherit;
+}
+
+/* 4. Elemento Embed Card */
+.embedCard {
+  width: 100%;
+  height: 100%;
+  background-color: #0b0f19;
+  border: 1px solid #1e293b;
+  border-radius: 12px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 6px;
+  box-sizing: border-box;
+}
+
+
+/* ==========================================================================
+   SISTEMA DE ALÇAS DE REDIMENSIONAMENTO (8 DIREÇÕES)
+   ========================================================================== */
+
+.canvasElement {
+  position: absolute;
+  box-sizing: border-box;
+}
+
+.elementSelected {
+  box-shadow: 0 0 0 2px #3b82f6 !important;
+  border-radius: 4px;
+}
+
+.handleDot {
+  position: absolute;
+  width: 8px;
+  height: 8px;
+  background-color: #ffffff;
+  border: 2px solid #3b82f6;
+  border-radius: 50%;
+  z-index: 100;
+  transform: translate(-50%, -50%);
+  transition: background-color 0.15s ease, transform 0.15s ease;
+}
+
+.handleDot:hover {
+  background-color: #3b82f6;
+  transform: translate(-50%, -50%) scale(1.3);
+}
+
+.handleTL { top: 0;    left: 0;    cursor: nwse-resize; }
+.handleTC { top: 0;    left: 50%;  cursor: ns-resize;   }
+.handleTR { top: 0;    left: 100%; cursor: nesw-resize; }
+.handleMR { top: 50%;  left: 100%; cursor: ew-resize;   }
+.handleBR { top: 100%; left: 100%; cursor: nwse-resize; }
+.handleBC { top: 100%; left: 50%;  cursor: ns-resize;   }
+.handleBL { top: 100%; left: 0;    cursor: nesw-resize; }
+.handleML { top: 50%;  left: 0;    cursor: ew-resize;   }
+
+/* Propriedades Flutuantes Extra Elementos */
+.propertyToolbar {
+  position: absolute;
+  bottom: -45px;
+  left: 50%;
+  transform: translateX(-50%);
+  background-color: #0b0f19;
+  border: 1px solid #1e293b;
+  padding: 6px 10px;
+  border-radius: 8px;
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  z-index: 95;
+}
+
+.propItem {
+  font-size: 12px;
+  cursor: pointer;
+  color: #94a3b8;
+}
+.propItemActiveGreen {
+  color: #10b981;
+  font-weight: bold;
+}
+
+
+/* ==========================================================================
+   NOVA SEÇÃO: SISTEMA DE EXPORTAÇÃO DE QUADROS (Conforme imagem enviada)
+   ========================================================================= */
+
+.modalExportar {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  width: 320px;
+  background-color: #0b0f19;
+  border: 1px solid #1e293b;
+  border-radius: 16px;
+  padding: 20px;
+  z-index: 200;
+  box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.7);
+  font-family: inherit;
+}
+
+.modalHeader {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 20px;
+}
+
+.modalTitle {
+  font-size: 13px;
+  font-weight: 600;
+  color: #ffffff;
+}
+
+.modalSection {
+  margin-bottom: 18px;
+}
+
+.modalSectionTitle {
+  font-size: 10px;
+  font-weight: 700;
+  color: #475569;
+  letter-spacing: 0.05em;
+  text-transform: uppercase;
+  margin-bottom: 8px;
+}
+
+.modalOptionGroup {
+  display: flex;
+  gap: 8px;
+}
+
+.modalOptionButton {
+  flex: 1;
+  background: transparent;
+  border: 1px solid #1e293b;
+  border-radius: 8px;
+  padding: 8px 10px;
+  color: #94a3b8;
+  font-size: 11px;
+  font-weight: 500;
+  cursor: pointer;
+  transition: all 0.15s ease;
+  text-align: center;
+}
+
+.modalOptionButton:hover {
+  border-color: #3b82f6;
+  color: #ffffff;
+}
+
+.modalOptionButtonActive {
+  border-color: #10b981 !important;
+  color: #10b981 !important;
+  background-color: rgba(16, 185, 129, 0.04);
+}
+
+/* Botões de Ação Final do Menu de Exportação */
+.btnPrimaryExport {
+  width: 100%;
+  background-color: #10b981;
+  color: #042f1a;
+  border: none;
+  border-radius: 8px;
+  padding: 10px;
+  font-size: 12px;
+  font-weight: 600;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  margin-top: 14px;
+  transition: background-color 0.15s ease;
+}
+
+.btnPrimaryExport:hover {
+  background-color: #059669;
+}
+
+.btnSecondaryExport {
+  width: 100%;
+  background-color: #131a2c;
+  color: #e4e4e7;
+  border: 1px solid #1e293b;
+  border-radius: 8px;
+  padding: 10px;
+  font-size: 12px;
+  font-weight: 600;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  margin-top: 8px;
+  transition: all 0.15s ease;
+}
+
+.btnSecondaryExport:hover {
+  background-color: #1e293b;
+  border-color: #475569;
+}
