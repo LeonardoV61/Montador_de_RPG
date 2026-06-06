@@ -362,6 +362,43 @@
 }
 
 /* ==========================================================================
+   SELETOR DE CAMPANHAS INTEGRADAS (Herdado de Loots para o Codex)
+   ========================================================================== */
+.controleCampanhaWrapper {
+  display: flex;
+  align-items: center;
+  gap: 1rem;
+  background: #0f0b0a;
+  padding: 1rem 1.5rem;
+  border: 1px solid rgba(179, 146, 78, 0.15);
+  border-radius: 6px;
+}
+
+.seletorCampanha {
+  background: #090706;
+  border: 1px solid #221d2a;
+  color: #fff;
+  padding: 0.55rem 1rem;
+  border-radius: 4px;
+  font-family: 'Cinzel', serif, sans-serif;
+  font-size: 0.9rem;
+  cursor: pointer;
+  outline: none;
+  transition: border-color 0.2s;
+}
+
+.seletorCampanha:focus {
+  border-color: #b3924e;
+}
+
+@media (max-width: 768px) {
+  .controleCampanhaWrapper {
+    flex-direction: column;
+    align-items: stretch;
+  }
+}
+
+/* ==========================================================================
    GRID DE CONJURAÇÃO & CARD DESIGN (SUBSTITUI CAPAS VERTICAIS POR RUNAS)
    ========================================================================== */
 .gridLivros {

@@ -1,18 +1,26 @@
 import { useState, useRef } from "react";
-import { Search, Shield, Swords, DownloadCloud, CheckCircle, ChevronLeft, Skull, Heart, Eye, PlusCircle, UploadCloud } from "lucide-react";
+import { Search, Shield, Swords, DownloadCloud, CheckCircle, ChevronLeft, Skull, Heart, Eye, PlusCircle, UploadCloud, ShieldAlert } from "lucide-react";
 import styles from "./styles.Bestiario.module.css";
 
 export default function Bestiario() {
   const [abaAtiva, setAbaAtiva] = useState("instalados");
   const [busca, setBusca] = useState("");
+  const [campanhaAtiva, setCampanhaAtiva] = useState("campanha-1"); // Novo estado da campanha ativa
   const [criaturaAberta, setCriaturaAberta] = useState(null);
   
   const fileInputRef = useRef(null);
 
-  // Estado inicial simulando monstros e ameaças do sistema
+  // Novo estado com os índices de Campanhas ativas (idêntico ao Loots e Codex)
+  const [campanhas] = useState([
+    { id: "campanha-1", nome: "Crônicas de Arton: Coração de Rubi" },
+    { id: "campanha-2", nome: "O Despertar de Tenebra" }
+  ]);
+
+  // Estado inicial atualizado com o vínculo de "campanhaId"[cite: 5]
   const [criaturas, setCriaturas] = useState([
     {
       id: "monstro-1",
+      campanhaId: "campanha-1", // Vinculado à campanha 1
       titulo: "DRAGÃO VERMELHO ANCIÃO",
       nd: "ND 20",
       categoria: "Monstro (Fogo)",
@@ -29,6 +37,7 @@ export default function Bestiario() {
     },
     {
       id: "monstro-2",
+      campanhaId: "campanha-1", // Vinculado à campanha 1
       titulo: "GOLEM DE FERRO",
       nd: "ND 10",
       categoria: "Construto",
@@ -45,6 +54,7 @@ export default function Bestiario() {
     },
     {
       id: "monstro-3",
+      campanhaId: "campanha-2", // Vinculado à campanha 2
       titulo: "DEVORADOR DE MENTES",
       nd: "ND 7",
       categoria: "Aberração",
@@ -61,6 +71,7 @@ export default function Bestiario() {
     },
     {
       id: "monstro-externo-1",
+      campanhaId: "campanha-1", // Vinculado à campanha 1
       titulo: "MUTANTE DA TORMENTA HOMEBREW",
       nd: "ND 15",
       categoria: "Lefeudo",
@@ -79,7 +90,7 @@ export default function Bestiario() {
 
   function handleInstalarCriatura(id) {
     setCriaturas(criaturas.map(c => c.id === id ? { ...c, instalado: true } : c));
-    alert("Materializando ameaça... Ficha técnica do monstro sincronizada ao seu painel de mestre!");
+    alert("Materializando Ameaça... Ficha técnica do monstro sincronizada ao seu painel de mestre!");
   }
 
   function handleImportarCriatura(event) {
@@ -88,6 +99,7 @@ export default function Bestiario() {
 
     const novaCriatura = {
       id: `monstro-externa-${Date.now()}`,
+      campanhaId: campanhaAtiva, // Vincula automaticamente à campanha selecionada no momento da importação
       titulo: arquivo.name.replace(/\.[^/.]+$/, "").toUpperCase(),
       nd: "ND ?",
       categoria: "Homebrew",
@@ -107,7 +119,7 @@ export default function Bestiario() {
     alert(`Ameaça customizada "${arquivo.name}" foi catalogada no Bestiário Proibido!`);
   }
 
-  // --- TELA DE LEITURA COMPLETA DA CRIATURA (ESTILO WIKI MATRIX / FICHA DO MONSTRO) ---
+  // --- TELA DE LEITURA COMPLETA DA CRIATURA ---
   if (criaturaAberta) {
     return (
       <div className={styles.containerGeral}>
@@ -128,7 +140,6 @@ export default function Bestiario() {
           <div className={styles.corpoLeitura}>
             <div className={styles.layoutLeituraLivro}>
               
-              {/* Painel Lateral Esquerdo de Atributos do Monstro */}
               <div className={styles.fichaTecnicaMagia}>
                 <div className={styles.runaIconWrapper}>
                   <Skull size={48} className={styles.runaIconVisual} />
@@ -139,10 +150,11 @@ export default function Bestiario() {
                   <div><strong>Iniciativa:</strong> <p>{criaturaAberta.iniciativa}</p></div>
                   <div><strong>Deslocamento:</strong> <p>{criaturaAberta.deslocamento}</p></div>
                   <div><strong>Sentidos:</strong> <p>{criaturaAberta.sentidos}</p></div>
+                  {/* Informação extra exibindo qual campanha é dona deste monstro */}
+                  <div><strong>Origem:</strong> <p>{campanhas.find(c => c.id === criaturaAberta.campanhaId)?.nome || "Geral"}</p></div>
                 </div>
               </div>
               
-              {/* Corpo de Texto Direito (Ficha de Combate) */}
               <div className={styles.textoLeituraWrapper}>
                 <div className={styles.tituloAlinhamento}>
                   <Swords size={28} className={styles.iconSelo} />
@@ -169,16 +181,19 @@ export default function Bestiario() {
     );
   }
 
-  // Filtros de Aba e Input de Busca
+  // Filtros de Aba, Input de Busca e CAMPANHA ATIVA (Com a correção de variável aplicada)
   const criaturasFiltradas = criaturas.filter(c => {
+    const naCampanha = c.campanhaId === campanhaAtiva; // Trava por campanha
+    
     let correspondeAba = true;
     if (abaAtiva === "instalados") correspondeAba = c.instalado && !c.externo;
-    if (abaAtiva === "externos") correspondeAba = c.externo;
+    if (abaAtiva === "externos") correspondeAba = c.externo; 
     if (abaAtiva === "todos") correspondeAba = !c.externo;
 
     const correspondeBusca = c.titulo.toLowerCase().includes(busca.toLowerCase()) || 
                              c.categoria.toLowerCase().includes(busca.toLowerCase());
-    return correspondeAba && correspondeBusca;
+                             
+    return naCampanha && correspondeAba && correspondeBusca;
   });
 
   return (
@@ -251,41 +266,64 @@ export default function Bestiario() {
             )}
           </div>
 
+          {/* NOVO: Painel Seletor de Campanhas Conectadas (Fiel ao Loots) */}
+          <div className={styles.controleCampanhaWrapper}>
+            <label htmlFor="select-campanha-modulo" style={{fontSize: '0.75rem', textTransform: 'uppercase', color: '#786666', letterSpacing: '0.5px', fontWeight: 'bold'}}>CAMPANHA SELECIONADA:</label>
+            <select 
+              id="select-campanha-modulo"
+              className={styles.seletorCampanha}
+              value={campanhaAtiva}
+              onChange={(e) => setCampanhaAtiva(e.target.value)}
+            >
+              {campanhas.map(c => (
+                <option key={c.id} value={c.id}>{c.nome}</option>
+              ))}
+            </select>
+          </div>
+
+          {/* Grid de Cards */}
           <div className={styles.gridLivros}>
-            {criaturasFiltradas.map(criatura => (
-              <div key={criatura.id} className={styles.cardLivro}>
-                
-                {/* Visual Header do Card (Representando o Display Místico de Combate) */}
-                <div className={styles.capaLivroContainer}>
-                  <div className={styles.backgroundRunaVisual} />
-                  <Skull className={styles.imagemCapaIcone} size={40} />
-                  <div className={styles.overlayCapa}>
-                    <span className={styles.badgeCategoriaCapa}>{criatura.categoria}</span>
-                  </div>
-                </div>
-
-                <div className={styles.livroInfoCorpo}>
-                  <div className={styles.livroMetaHeader}>
-                    <span className={styles.livroVersao}>{criatura.nd}</span>
-                    <span className={styles.badgeMana}>{criatura.pv}</span>
-                  </div>
+            {criaturasFiltradas.length > 0 ? (
+              criaturasFiltradas.map(criatura => (
+                <div key={criatura.id} className={styles.cardLivro}>
                   
-                  <h4>{criatura.titulo}</h4>
-                  <p className={styles.descricaoLivroShort}>{criatura.descricao}</p>
-                  
-                  {criatura.instalado ? (
-                    <button className={styles.btnAbrirLivro} onClick={() => setCriaturaAberta(criatura)}>
-                      <Swords size={14} /> Detalhar Monstro
-                    </button>
-                  ) : (
-                    <button className={styles.btnInstalarLivro} onClick={() => handleInstalarCriatura(criatura.id)}>
-                      <DownloadCloud size={14} /> Sintonizar Ameaça
-                    </button>
-                  )}
-                </div>
+                  <div className={styles.capaLivroContainer}>
+                    <div className={styles.backgroundRunaVisual} />
+                    <Skull className={styles.imagemCapaIcone} size={40} />
+                    <div className={styles.overlayCapa}>
+                      <span className={styles.badgeCategoriaCapa}>{criatura.categoria}</span>
+                    </div>
+                  </div>
 
+                  <div className={styles.livroInfoCorpo}>
+                    <div className={styles.livroMetaHeader}>
+                      <span className={styles.livroVersao}>{criatura.nd}</span>
+                      <span className={styles.badgeMana}>{criatura.pv}</span>
+                    </div>
+                    
+                    <h4>{criatura.titulo}</h4>
+                    <p className={styles.descricaoLivroShort}>{criatura.descricao}</p>
+                    
+                    {criatura.instalado ? (
+                      <button className={styles.btnAbrirLivro} onClick={() => setCriaturaAberta(criatura)}>
+                        <Swords size={14} /> Detalhar Monstro
+                      </button>
+                    ) : (
+                      <button className={styles.btnInstalarLivro} onClick={() => handleInstalarCriatura(criatura.id)}>
+                        <DownloadCloud size={14} /> Sintonizar Ameaça
+                      </button>
+                    )}
+                  </div>
+
+                </div>
+              ))
+            ) : (
+              /* Fallback visual caso não existam monstros nos parâmetros da campanha atual */
+              <div className={styles.caixaAlertaLeitura} style={{gridColumn: '1/-1'}}>
+                <ShieldAlert size={18} style={{color: '#ff6b7a'}} />
+                <span>Nenhuma criatura ou ameaça mística localizada sob estes parâmetros nesta campanha.</span>
               </div>
-            ))}
+            )}
           </div>
 
         </div>
