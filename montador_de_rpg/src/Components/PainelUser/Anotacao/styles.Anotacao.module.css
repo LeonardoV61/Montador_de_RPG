@@ -1,5 +1,5 @@
 /* ==========================================================================
-   ESTILIZAÇÃO DO CANVAS (Otimizado & Corrigido)
+   1. CORE / CANVAS E GRIDS
    ========================================================================= */
 
 .canvasContainer {
@@ -7,12 +7,51 @@
   width: 100%;
   height: 100%;
   min-height: 85vh;
-  background-color: #080c14;
+  background-color: #0a0902;
   color: #e4e4e7;
   overflow: hidden;
   user-select: none;
   font-family: system-ui, -apple-system, sans-serif;
   box-sizing: border-box;
+}
+
+.canvasBoard {
+  position: absolute;
+  width: 8000px;
+  height: 8000px;
+  top: 0;
+  left: 0;
+  transform-origin: 0 0;
+}
+
+/* Variações do Grid Baseado em Pontos */
+
+
+.canvasDotGrid {
+  position: absolute;
+  inset: 0;
+  pointer-events: none;
+  z-index: 0;
+  background-image: radial-gradient(rgba(255, 255, 255, 0.15) 1.2px, transparent 1.2px);
+  background-size: 22px 22px;
+}
+
+.canvasGridSmall {
+  position: absolute;
+  inset: 0;
+  pointer-events: none;
+  z-index: 0;
+  background-image: radial-gradient(rgba(255, 255, 255, 0.15) 1px, transparent 1px);
+  background-size: 14px 14px;
+}
+
+.canvasDotGrid, .canvasGridSmall {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  pointer-events: none;
+  z-index: 0; 
 }
 
 /* Cursores Dinâmicos */
@@ -22,25 +61,11 @@
 .cursorEraser { cursor: cell; }
 .cursorPen { cursor: crosshair; }
 
-.canvasDotGrid {
-  position: absolute;
-  inset: 0;
-  pointer-events: none;
-  z-index: 0;
-  background-image: radial-gradient(rgba(147, 197, 253, 0.08) 1.2px, transparent 1.2px);
-  background-size: 22px 22px;
-}
 
-.canvasBoard {
-  position: absolute;
-  width: 8000px; /* Definido tamanho massivo para navegação expandida */
-  height: 8000px;
-  top: 0;
-  left: 0;
-  transform-origin: 0 0;
-}
+/* ==========================================================================
+   2. TOOLBAR & SIDEBAR POPUPS
+   ========================================================================= */
 
-/* Sidebar Toolbar Lateral Esquerda */
 .toolbarSidebar {
   position: absolute;
   left: 16px;
@@ -55,6 +80,13 @@
   gap: 8px;
   z-index: 50;
   box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.5);
+}
+
+.sidebarButtonContainer {
+  position: relative;
+  display: flex;
+  justify-content: center;
+  align-items: center;
 }
 
 .sidebarButton {
@@ -77,9 +109,9 @@
 }
 
 .sidebarButtonActive {
-  background-color: #1e293b !important;
+  background-color: #5b52276b !important;
   color: #f4f4f5 !important;
-  border-color: #3b82f6 !important;
+  border-color: #a3740a !important;
 }
 
 .sidebarDivider {
@@ -88,40 +120,17 @@
   margin: 4px 6px;
 }
 
-/* Estados Ativos da Barra Lateral */
-.toolActiveGreen {
-  background-color: rgba(16, 185, 129, 0.15) !important;
-  border: 1px solid rgba(16, 185, 129, 0.4) !important;
-  color: #10b981 !important;
-}
-
-.toolActiveRed {
-  background-color: rgba(239, 68, 68, 0.15) !important;
-  border: 1px solid rgba(239, 68, 68, 0.4) !important;
-  color: #ef4444 !important;
-}
-
-/* Container relativo para alinhar popovers com os botões correspondentes */
-.sidebarButtonContainer {
-  position: relative;
-  display: flex;
-  justify-content: center;
-  align-items: center;
-}
-
-/* Popovers Flutuantes Dinâmicos e Alinhados (Unificado) */
 .shapesPopover {
   position: absolute;
-  left: 54px; /* Move para o lado exterior direito da barra lateral */
-  top: 50%;
-  transform: translateY(-50%); /* Centraliza verticalmente com o botão que o disparou */
-  width: 260px;
-  background-color: #0d1321;
-  border: 1px solid #1e293b;
-  border-radius: 16px;
-  padding: 16px;
+  left: 56px;          /* Afasta o menu para o lado direito da sidebar */
+  bottom: -10px;       /* Alinha verticalmente com o botão da caneta */
+  width: 190px;
+  background-color: #0b0f19; /* Mesma cor do fundo do modal de exportação */
+  border: 1px solid #1e293b; /* Borda padrão do site */
+  border-radius: 12px;       /* Bordas arredondadas e suaves */
+  padding: 12px;
   z-index: 100;
-  box-shadow: 0 20px 25px -5px rgba(0, 0, 0, 0.6);
+  box-shadow: 0 10px 25px -5px rgba(0, 0, 0, 0.5);
 }
 
 .menuSectionHeader {
@@ -134,7 +143,11 @@
   margin-top: 0;
 }
 
-/* Grades de Seleção Internas */
+
+/* ==========================================================================
+   3. DESIGN GRIDS (PALETAS E ELEMENTOS INTERNOS)
+   ========================================================================= */
+
 .gridPaleta {
   display: grid;
   grid-template-columns: repeat(4, 1fr);
@@ -158,7 +171,6 @@
   transform: scale(1.1);
 }
 
-/* Novas Classes: Menu de Formas Básicas & Setas */
 .shapeGrid {
   display: grid;
   grid-template-columns: repeat(4, 1fr);
@@ -194,96 +206,33 @@
   box-sizing: border-box;
 }
 
-/* Ajustes Geométricos para Ícones de Pré-visualização do Menu */
-.shapeDiamond {
-  transform: rotate(45deg);
-  width: 12px;
-  height: 12px;
-  border-radius: 0;
-}
 
-.shapeTriangle {
-  border: none !important;
-  background: #3b82f6 !important;
-  clip-path: polygon(50% 0%, 0% 100%, 100% 100%);
-}
+/* ==========================================================================
+   4. GEOMETRIAS CUSTOMIZADAS (CLIP-PATHS)
+   ========================================================================= */
 
-.shapeHexagon {
-  border: none !important;
-  background: #3b82f6 !important;
-  clip-path: polygon(50% 0%, 100% 25%, 100% 75%, 50% 100%, 0% 75%, 0% 25%);
-}
-
-.shapePentagon {
-  border: none !important;
-  background: #3b82f6 !important;
-  clip-path: polygon(50% 0%, 100% 38%, 82% 100%, 18% 100%, 0% 38%);
-}
-
-.shapeCylinder {
-  width: 14px;
-  height: 18px;
-  border: 1.5px solid #3b82f6;
-  background: rgba(59, 130, 246, 0.2);
-  border-radius: 4px / 8px;
-  box-sizing: border-box;
-}
+.shapeDiamond { transform: rotate(45deg); width: 12px; height: 12px; border-radius: 0; }
+.shapeTriangle { border: none !important; background: #3b82f6 !important; clip-path: polygon(50% 0%, 0% 100%, 100% 100%); }
+.shapeHexagon { border: none !important; background: #3b82f6 !important; clip-path: polygon(50% 0%, 100% 25%, 100% 75%, 50% 100%, 0% 75%, 0% 25%); }
+.shapePentagon { border: none !important; background: #3b82f6 !important; clip-path: polygon(50% 0%, 100% 38%, 82% 100%, 18% 100%, 0% 38%); }
+.shapeStar { border: none !important; background: #3b82f6 !important; clip-path: polygon(50% 0%, 61% 35%, 98% 35%, 68% 57%, 79% 91%, 50% 70%, 21% 91%, 32% 57%, 2% 35%, 39% 35%); }
 
 
 /* ==========================================================================
-   ELEMENTOS INTERNOS DO CANVAS
+   5. COMPONENTES DO METAVERSO (POST-IT, TEXTO, EMBEDS)
    ========================================================================= */
 
-/* 1. Elemento Quadro Card (Agrupamento) */
-.quadroCard {
-  width: 100%;
-  height: 100%;
-  border: 1.5px solid #1e293b;
-  background-color: rgba(13, 19, 33, 0.4);
-  border-radius: 12px;
-  display: flex;
-  flex-direction: column;
-  position: relative;
+.canvasElement {
+  position: absolute;
   box-sizing: border-box;
 }
 
-.quadroTitle {
-  position: absolute;
-  top: -14px;
-  left: 12px;
-  padding: 2px 14px;
-  background-color: #111827;
-  border: 1px solid #1e293b;
-  border-radius: 6px;
-  font-size: 11px;
-  font-weight: 600;
-  color: #94a3b8;
-  white-space: nowrap;
-  display: flex;
-  align-items: center;
-  justify-content: center;
+.elementSelected {
+  box-shadow: 0 0 0 2px #3b82f6 !important;
+  border-radius: 4px;
 }
 
-.quadroTitleInput {
-  background: transparent;
-  border: none;
-  outline: none;
-  color: #f3f4f6;
-  font-size: 11px;
-  font-weight: 600;
-  font-family: inherit;
-  width: auto;
-  min-width: 100px;
-  text-align: center;
-}
-
-.quadroEspacoInterno {
-  flex: 1;
-  width: 100%;
-  height: 100%;
-}
-
-/* 2. Elemento Post-it Card */
+/* Post-it */
 .postItCard {
   width: 100%;
   height: 100%;
@@ -308,27 +257,11 @@
   line-height: 1.4;
 }
 
-/* 3. Elemento Texto Livre Container */
-.textoContainer {
-  width: 100%;
-  height: 100%;
-  padding: 4px;
-  box-sizing: border-box;
-}
+/* Texto Livre */
+.textoContainer { width: 100%; height: 100%; padding: 4px; box-sizing: border-box; }
+.textoAreaInput { width: 100%; height: 100%; background: transparent; resize: none; border: none; outline: none; color: #e4e4e7; font-size: 14px; font-family: inherit; }
 
-.textoAreaInput {
-  width: 100%;
-  height: 100%;
-  background: transparent;
-  resize: none;
-  border: none;
-  outline: none;
-  color: #e4e4e7;
-  font-size: 14px;
-  font-family: inherit;
-}
-
-/* 4. Elemento Embed Card */
+/* Embed Cards */
 .embedCard {
   width: 100%;
   height: 100%;
@@ -343,20 +276,65 @@
   box-sizing: border-box;
 }
 
-
 /* ==========================================================================
-   SISTEMA DE ALÇAS DE REDIMENSIONAMENTO (8 DIREÇÕES)
-   ========================================================================== */
+   6. ESTRUTURA QUADRO (ESTILO ABA ANEXADA - IGUAL À IMAGEM_78ADC0)
+   ========================================================================= */
 
-.canvasElement {
-  position: absolute;
-  box-sizing: border-box;
+.quadroWrapper {
+  display: flex;
+  flex-direction: column;
+  width: 100%;
+  height: 100%;
+  position: relative;
 }
 
-.elementSelected {
-  box-shadow: 0 0 0 2px #3b82f6 !important;
-  border-radius: 4px;
+.quadroTitle {
+  align-self: flex-start;
+  padding: 6px 16px;
+  font-weight: 700;
+  font-size: 13px;
+  color: #ffffff;
+  border-top: 1.5px solid;
+  border-left: 1.5px solid;
+  border-right: 1.5px solid;
+  border-bottom: none;
+  border-top-left-radius: 12px;
+  border-top-right-radius: 12px;
+  margin-bottom: -1.5px; 
+  z-index: 2;
+  white-space: nowrap;
 }
+
+.quadroCard {
+  flex: 1;
+  border: 1.5px solid;
+  border-top-left-radius: 0px; 
+  border-top-right-radius: 8px;
+  border-bottom-right-radius: 8px;
+  border-bottom-left-radius: 8px;
+  background-color: rgba(13, 19, 33, 0.4);
+  z-index: 1;
+}
+
+.quadroTitleInput {
+  background: transparent;
+  border: none;
+  color: white;
+  font-weight: 700;
+  font-size: 13px;
+  outline: none;
+  padding: 0;
+  width: auto;
+  min-width: 120px;
+}
+
+/* No seletor dos seus cartões, post-its ou quadros, garanta que exista isso: */
+.elementoCard, .postit, .quadro {
+  box-sizing: border-box; /* Faz com que a borda fique para DENTRO dos 198px */
+}
+/* ==========================================================================
+   7. ALÇAS DE REDIMENSIONAMENTO & PROPRIEDADES FLUTUANTES
+   ========================================================================= */
 
 .handleDot {
   position: absolute;
@@ -370,11 +348,7 @@
   transition: background-color 0.15s ease, transform 0.15s ease;
 }
 
-.handleDot:hover {
-  background-color: #3b82f6;
-  transform: translate(-50%, -50%) scale(1.3);
-}
-
+.handleDot:hover { background-color: #3b82f6; transform: translate(-50%, -50%) scale(1.3); }
 .handleTL { top: 0;    left: 0;    cursor: nwse-resize; }
 .handleTC { top: 0;    left: 50%;  cursor: ns-resize;   }
 .handleTR { top: 0;    left: 100%; cursor: nesw-resize; }
@@ -384,7 +358,6 @@
 .handleBL { top: 100%; left: 0;    cursor: nesw-resize; }
 .handleML { top: 50%;  left: 0;    cursor: ew-resize;   }
 
-/* Propriedades Flutuantes Extra Elementos */
 .propertyToolbar {
   position: absolute;
   bottom: -45px;
@@ -400,19 +373,12 @@
   z-index: 95;
 }
 
-.propItem {
-  font-size: 12px;
-  cursor: pointer;
-  color: #94a3b8;
-}
-.propItemActiveGreen {
-  color: #10b981;
-  font-weight: bold;
-}
+.propItem { font-size: 12px; cursor: pointer; color: #94a3b8; background: transparent; border: none; }
+.propItemActiveGreen { color: #10b981 !important; font-weight: bold; }
 
 
 /* ==========================================================================
-   NOVA SEÇÃO: SISTEMA DE EXPORTAÇÃO DE QUADROS (Conforme imagem enviada)
+   8. COMPONENTES DE EXPORTAÇÃO COMPLETA
    ========================================================================= */
 
 .modalExportar {
@@ -427,107 +393,24 @@
   padding: 20px;
   z-index: 200;
   box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.7);
-  font-family: inherit;
 }
 
-.modalHeader {
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-  margin-bottom: 20px;
-}
-
-.modalTitle {
-  font-size: 13px;
-  font-weight: 600;
-  color: #ffffff;
-}
-
-.modalSection {
-  margin-bottom: 18px;
-}
-
-.modalSectionTitle {
-  font-size: 10px;
-  font-weight: 700;
-  color: #475569;
-  letter-spacing: 0.05em;
-  text-transform: uppercase;
-  margin-bottom: 8px;
-}
-
-.modalOptionGroup {
-  display: flex;
-  gap: 8px;
-}
+.modalHeader { display: flex; justify-content: space-between; align-items: center; margin-bottom: 20px; }
+.modalTitle { font-size: 13px; font-weight: 600; color: #ffffff; }
+.modalSection { margin-bottom: 18px; }
+.modalSectionTitle { font-size: 10px; font-weight: 700; color: #475569; letter-spacing: 0.05em; text-transform: uppercase; margin-bottom: 8px; }
+.modalOptionGroup { display: flex; gap: 8px; }
 
 .modalOptionButton {
-  flex: 1;
-  background: transparent;
-  border: 1px solid #1e293b;
-  border-radius: 8px;
-  padding: 8px 10px;
-  color: #94a3b8;
-  font-size: 11px;
-  font-weight: 500;
-  cursor: pointer;
-  transition: all 0.15s ease;
-  text-align: center;
+  flex: 1; background: transparent; border: 1px solid #1e293b; border-radius: 8px;
+  padding: 8px 10px; color: #94a3b8; font-size: 11px; font-weight: 500; cursor: pointer; transition: all 0.15s ease; text-align: center;
 }
+.modalOptionButton:hover { border-color: #3b82f6; color: #ffffff; }
+.modalOptionButtonActive { border-color: #10b981 !important; color: #10b981 !important; background-color: rgba(16, 185, 129, 0.04); }
 
-.modalOptionButton:hover {
-  border-color: #3b82f6;
-  color: #ffffff;
-}
-
-.modalOptionButtonActive {
-  border-color: #10b981 !important;
-  color: #10b981 !important;
-  background-color: rgba(16, 185, 129, 0.04);
-}
-
-/* Botões de Ação Final do Menu de Exportação */
 .btnPrimaryExport {
-  width: 100%;
-  background-color: #10b981;
-  color: #042f1a;
-  border: none;
-  border-radius: 8px;
-  padding: 10px;
-  font-size: 12px;
-  font-weight: 600;
-  cursor: pointer;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  gap: 8px;
-  margin-top: 14px;
-  transition: background-color 0.15s ease;
+  width: 100%; background-color: #10b981; color: #042f1a; border: none; border-radius: 8px;
+  padding: 10px; font-size: 12px; font-weight: 600; cursor: pointer; display: flex; align-items: center; justify-content: center; gap: 8px; margin-top: 14px;
 }
+.btnPrimaryExport:hover { background-color: #059669; }
 
-.btnPrimaryExport:hover {
-  background-color: #059669;
-}
-
-.btnSecondaryExport {
-  width: 100%;
-  background-color: #131a2c;
-  color: #e4e4e7;
-  border: 1px solid #1e293b;
-  border-radius: 8px;
-  padding: 10px;
-  font-size: 12px;
-  font-weight: 600;
-  cursor: pointer;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  gap: 8px;
-  margin-top: 8px;
-  transition: all 0.15s ease;
-}
-
-.btnSecondaryExport:hover {
-  background-color: #1e293b;
-  border-color: #475569;
-}

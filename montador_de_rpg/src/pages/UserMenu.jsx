@@ -21,7 +21,9 @@ import Diario from "../Components/PainelUser/Diário/Diario.jsx";
 import GerenciadorNarrativo from "../Components/PainelUser/Eventos/GerenciadorNarrativo.jsx";
 import Eventos from "../Components/PainelUser/EventosJ/Eventos.jsx";
 import Anotacao from "../Components/PainelUser/Anotacao/Anotacao.jsx";
+import Loots from "../Components/PainelUser/Loot/Loots.jsx";
 import HeronPadrao from "../assets/perfil/Heron.png"; 
+
 
 
 
@@ -112,6 +114,12 @@ export default function UserMenu() {
               <Anotacao />
             </>
           )
+          ||
+          menuAtivo === "itens" && (
+            <>
+              <Loots />
+            </>
+          )
 
         ) : (
           menuAtivo === "dashboard" && (
@@ -155,14 +163,12 @@ export default function UserMenu() {
               <Diario />
             </>
           )
-                    ||
+          ||
           menuAtivo === "eventos" && (
             <>
               <Eventos />
             </>
           )
-
-
           )}
 
 
