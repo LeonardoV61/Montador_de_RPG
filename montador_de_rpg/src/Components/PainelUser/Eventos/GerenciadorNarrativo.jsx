@@ -8,6 +8,9 @@ export default function GerenciadorNarrativo() {
   const [filtroEstado, setFiltroEstado] = useState("ativos"); // "ativos" (Na Sessão) ou "banco" (Banco de Ideias/Todos)
   const [busca, setBusca] = useState("");
   
+  // ESTADO DO SELETOR DE CAMPANHA (Adicionado para integração)
+  const [campanhaSelecionada, setCampanhaSelecionada] = useState("all");
+  
   // Estados de visualização detalhada
   const [pnjAberto, setPnjAberto] = useState(null);
   const [encontroAberto, setEncontroAberto] = useState(null);
@@ -15,11 +18,24 @@ export default function GerenciadorNarrativo() {
   const fileInputRef = useRef(null);
 
   // BANCO DE DADOS INTEGRADO
-  const [pnjs, setPnjs] = useState([
-    { id: "p1", titulo: "REI THORALDI OLDENBURG", versao: "Monarca", categoria: "Aliado Político", descricao: "O governante idoso de Valkaria. Embora debilitado, sua mente estratégica continua afiada.", ativo: true, alinhamento: "Leal e Bom", localizacao: "Trono de Marfim", faccao: "Corte Real", atitude: "Amistoso", historia: "O Rei precisa que os jogadores investiguem discretamente o sumiço do Arquiduque.\n\nSegredos do Mestre:\n• Ele está sendo envenenado por seu conselheiro." },
-    { id: "p2", titulo: "ELARA, A SOMBRA", versao: "Assassina", categoria: "Antagonista / Rival", descricao: "Uma ladina letal caçada em três reinos. Sua lealdade pertence unicamente ao ouro.", ativo: true, alinhamento: "Neutro e Mau", localizacao: "Submundo", faccao: "Sindicato da Adaga", atitude: "Inóspito", historia: "Contratada para roubar o mesmo artefato que os heróis buscam.\n\nSegredos:\n• Pode mudar de lado se o grupo pagar o dobro." },
-    { id: "p3", titulo: "MESTRE ORION", versao: "Arquimago", categoria: "Mentor Místico", descricao: "Ancião da torre arcana oriental. Detém o conhecimento para decifrar as escrituras antigas.", ativo: false, alinhamento: "Neutro Puro", localizacao: "Torre de Marfim", faccao: "Conselho dos Seis", atitude: "Indiferente", historia: "Não se importa com disputas políticas, apenas com o equilíbrio mágico." }
-  ]);
+const [pnjs, setPnjs] = useState([
+  { 
+    id: "p1", 
+    campanhaId: "v", // <--- IMPORTANTE: Adicione isso
+    titulo: "REI THORALDI", 
+    versao: "Monarca", 
+    ativo: true, 
+    // ... restante dos campos
+  },
+  { 
+    id: "p2", 
+    campanhaId: "o", // <--- IMPORTANTE: Adicione isso
+    titulo: "ELARA, A SOMBRA", 
+    versao: "Assassina", 
+    ativo: true, 
+    // ... restante dos campos
+  }
+]);
 
   const [encontros, setEncontros] = useState([
     { id: "e1", titulo: "EMBOSCADA NA PONTE QUEBRADA", nivel: "Nível 4 (Médio)", categoria: "Combate Tático", descricao: "Bandidos posicionados nas colinas cortaram as cordas da ponte suspensa. Grupo encurralado.", recompensa: "300 XP / Joias", ativo: true, tipoCena: "Combate / Terreno Perigoso", ameacas: "4x Salteadores, 1x Atirador (Elara a Sombra espreita aqui)", perigos: "Queda no rio (CD 15)", duracao: "45 min", detalhes: "Ponto de Virada Narrativo:\nSe Elara (PNJ) estiver ativa na sessão, ela lidera este ataque pelas sombras." },
@@ -80,7 +96,7 @@ export default function GerenciadorNarrativo() {
     );
   }
 
-  // --- SUB-TELA: DETALHES DO ENCONTRO (CORRIGIDO AQUI) ---
+  // --- SUB-TELA: DETALHES DO ENCONTRO ---
   if (encontroAberto) {
     return (
       <div className={styles.containerGeral}>
@@ -89,7 +105,7 @@ export default function GerenciadorNarrativo() {
             <button className={styles.btnVoltar} onClick={() => setEncontroAberto(null)}><ChevronLeft size={16} /> Voltar ao Painel</button>
             <div className={styles.tagGrupo}>
               <span className={styles.tagCampanhaLeitura}>{encontroAberto.categoria}</span>
-              <span className={styles.tagPapelLeitura}>{encontroAberto.nivel}</span> {/* CORRIGIDO: de encontroAvertido para encontroAberto */}
+              <span className={styles.tagPapelLeitura}>{encontroAberto.nivel}</span>
               <span className={styles.tagRecompensaLeitura}>{encontroAberto.recompensa}</span>
             </div>
           </div>
@@ -117,14 +133,26 @@ export default function GerenciadorNarrativo() {
     );
   }
 
+  // 1. Adicione a propriedade campanhaId aos seus dados (ex: {id: "p1", campanhaId: "v", ...})
+  // Se não quiser mudar todos os dados agora, o código abaixo trata "all" como exibição geral.
+
   const atoresFiltrados = pnjs.filter(p => {
+    // Verifica se pertence à campanha (ou se está selecionado 'all')
+    const naCampanha = campanhaSelecionada === "all" || p.campanhaId === campanhaSelecionada;
+    // Verifica o estado (Ativos ou Banco)
     const batimentoAtivo = filtroEstado === "ativos" ? p.ativo : !p.ativo;
-    return batimentoAtivo && (p.titulo.toLowerCase().includes(busca.toLowerCase()) || p.categoria.toLowerCase().includes(busca.toLowerCase()));
+    // Verifica o texto da busca
+    const buscaTexto = p.titulo.toLowerCase().includes(busca.toLowerCase());
+    
+    return naCampanha && batimentoAtivo && buscaTexto;
   });
 
   const cenasFiltradas = encontros.filter(e => {
+    const naCampanha = campanhaSelecionada === "all" || e.campanhaId === campanhaSelecionada;
     const batimentoAtivo = filtroEstado === "ativos" ? e.ativo : !e.ativo;
-    return batimentoAtivo && (e.titulo.toLowerCase().includes(busca.toLowerCase()) || e.categoria.toLowerCase().includes(busca.toLowerCase()));
+    const buscaTexto = e.titulo.toLowerCase().includes(busca.toLowerCase());
+    
+    return naCampanha && batimentoAtivo && buscaTexto;
   });
 
   return (
@@ -161,11 +189,28 @@ export default function GerenciadorNarrativo() {
           <div className={styles.subHeaderInterno}>
             <div>
               <h3>{subAba === "atores" ? "Personagens Não Jogáveis Governamentais" : "Cenas e Confrontos de Turno"}</h3>
-              <p>Elementos sob o controle total do mestre configurados para reagir às decisões do grupo.</p>
+              <p>Elements sob o controle total do mestre configurados para reagir às decisões do grupo.</p>
             </div>
             <button className={styles.btnImportar} onClick={() => fileInputRef.current.click()}>
               <UploadCloud size={16} /> Improvisar Elemento (.json)
             </button>
+          </div>
+
+          {/* ==========================================================================
+             COMPONENTE IMPLEMENTADO: CONTROLE E DIVISOR DE CAMPANHAS INTEGRADO
+             ========================================================================== */}
+          <div className={styles.controleCampanhaWrapper}>
+            <span className={styles.tagCampanhaLeitura}>Campanha Ativa:</span>
+            <select 
+              className={styles.seletorCampanha} 
+              value={campanhaSelecionada} 
+              onChange={(e) => setCampanhaSelecionada(e.target.value)}
+            >
+              <option value="all">⚔️ Todas as Campanhas / Crônicas</option>
+              <option value="v">Valkaria Prime (Principal)</option>
+              <option value="o">Ordem do Caos (Paralela)</option>
+              <option value="l">Legado de Marfim (Arquivada)</option>
+            </select>
           </div>
 
           <div className={styles.gridLivros}>
