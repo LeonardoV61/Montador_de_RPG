@@ -292,6 +292,28 @@
   box-shadow: 0 0 15px rgba(179, 146, 78, 0.3);
   transform: translateY(-1px);
 }
+/* Botão Secundário (Ex: Atualizar Senha) */
+.btnSecundario {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  background: transparent;
+  color: #b3924e;
+  border: 1px solid #b3924e;
+  padding: 0.75rem;
+  font-size: 0.95rem;
+  font-weight: bold;
+  border-radius: 6px;
+  cursor: pointer;
+  transition: all 0.2s ease;
+  width: 100%; /* Ocupa a largura total do bloco acompanhando os inputs */
+}
+
+.btnSecundario:hover {
+  background: rgba(179, 146, 78, 0.1);
+  box-shadow: 0 0 10px rgba(179, 146, 78, 0.2);
+}
 
 /* ==========================================================================
    AJUSTE INTERMEDIÁRIO (Telas menores que 1080px)

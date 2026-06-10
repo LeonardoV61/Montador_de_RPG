@@ -1,9 +1,9 @@
 import { useState, useRef, useEffect } from "react";
-import { Upload, Save, User, Link2, Unlink } from "lucide-react";
+import { Upload, Save, User, Link2, Unlink, Lock, Key } from "lucide-react"; // Importei os ícones Lock e Key
 import styles from "./styles.PerfilJogador.module.css";
 import Chrome from "../../../assets/icons/google-icon.svg";
 import Disc from "../../../assets/icons/discord-icon.svg";
-import HeronPadrao from "../../../assets/perfil/Heron.png";
+// import HeronPadrao from "../../../assets/perfil/Heron.png"; // Mantido comentado se não estiver em uso
 
 export default function PerfilJogador({ nome, setNome, imagem, setImagem, zoom, setZoom, posX, setPosX, posY, setPosY }) {
   const fileInputRef = useRef(null);
@@ -14,6 +14,11 @@ export default function PerfilJogador({ nome, setNome, imagem, setImagem, zoom, 
   const [localZoom, setLocalZoom] = useState(zoom);
   const [localPosX, setLocalPosX] = useState(posX);
   const [localPosY, setLocalPosY] = useState(posY);
+
+  // --- ESTADOS DE REDEFINIR SENHA ---
+  const [senhaAtual, setSenhaAtual] = useState("");
+  const [novaSenha, setNovaSenha] = useState("");
+  const [confirmarSenha, setConfirmarSenha] = useState("");
 
   // --- ESTADO DE CONTAS VINCULADAS ---
   const [contas, setContas] = useState([
@@ -58,6 +63,27 @@ export default function PerfilJogador({ nome, setNome, imagem, setImagem, zoom, 
         return conta;
       })
     );
+  }
+
+  // Handler para Redefinir Senha
+  function handleRedefinirSenha() {
+    if (!senhaAtual || !novaSenha || !confirmarSenha) {
+      alert("Por favor, preencha todos os campos de senha.");
+      return;
+    }
+    if (novaSenha !== confirmarSenha) {
+      alert("A nova senha e a confirmação não coincidem!");
+      return;
+    }
+    
+    // Aqui você faria a chamada para sua API/Backend atualizar a senha de fato
+    console.log("Senha alterada com sucesso. (Mock)");
+    alert("Sua senha foi redefinida com sucesso!");
+    
+    // Limpa os campos após o sucesso
+    setSenhaAtual("");
+    setNovaSenha("");
+    setConfirmarSenha("");
   }
 
   function handleSalvar() {
@@ -176,7 +202,63 @@ export default function PerfilJogador({ nome, setNome, imagem, setImagem, zoom, 
             </div>
           </div>
 
-          {/* Bloco 2: Lista de Vínculos de Contas */}
+          {/* NOVO BLOCO: Redefinir Senha */}
+          <div className={styles.blocoConfig}>
+            <h3 className={styles.subtituloSecao}>Segurança</h3>
+            
+            <div className={styles.inputGroup}>
+              <label htmlFor="senhaAtual">Senha Atual</label>
+              <div className={styles.inputIconWrapper}>
+                <Lock size={18} className={styles.inputIcon} />
+                <input 
+                  id="senhaAtual"
+                  type="password" 
+                  value={senhaAtual} 
+                  onChange={(e) => setSenhaAtual(e.target.value)} 
+                  placeholder="Sua senha atual"
+                />
+              </div>
+            </div>
+
+            <div className={styles.inputGroup}>
+              <label htmlFor="novaSenha">Nova Senha</label>
+              <div className={styles.inputIconWrapper}>
+                <Key size={18} className={styles.inputIcon} />
+                <input 
+                  id="novaSenha"
+                  type="password" 
+                  value={novaSenha} 
+                  onChange={(e) => setNovaSenha(e.target.value)} 
+                  placeholder="Sua nova senha"
+                />
+              </div>
+            </div>
+
+            <div className={styles.inputGroup}>
+              <label htmlFor="confirmarSenha">Confirmar Nova Senha</label>
+              <div className={styles.inputIconWrapper}>
+                <Key size={18} className={styles.inputIcon} />
+                <input 
+                  id="confirmarSenha"
+                  type="password" 
+                  value={confirmarSenha} 
+                  onChange={(e) => setConfirmarSenha(e.target.value)} 
+                  placeholder="Repita a nova senha"
+                />
+              </div>
+            </div>
+
+            <button 
+              type="button" 
+              className={styles.btnSecundario} // Recomendo criar esta classe no CSS
+              onClick={handleRedefinirSenha}
+              style={{ marginTop: "10px" }}
+            >
+              Atualizar Senha
+            </button>
+          </div>
+
+          {/* Bloco 3: Lista de Vínculos de Contas */}
           <div className={styles.blocoConfig}>
             <h3 className={styles.subtituloSecao}>Vincular Contas Externas</h3>
             <div className={styles.listaContas}>

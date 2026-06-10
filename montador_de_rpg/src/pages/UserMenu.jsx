@@ -22,8 +22,8 @@ import GerenciadorNarrativo from "../Components/PainelUser/Eventos/GerenciadorNa
 import Eventos from "../Components/PainelUser/EventosJ/Eventos.jsx";
 import Anotacao from "../Components/PainelUser/Anotacao/Anotacao.jsx";
 import Loots from "../Components/PainelUser/Loot/Loots.jsx";
+import Inventario from "../Components/PainelUser/Inventário/inventario.jsx";
 import HeronPadrao from "../assets/perfil/Heron.png"; 
-
 
 
 
@@ -167,6 +167,12 @@ export default function UserMenu() {
           menuAtivo === "eventos" && (
             <>
               <Eventos />
+            </>
+          )
+                    ||
+          menuAtivo === "inventario" && (
+            <>
+              <Inventario />
             </>
           )
           )}
