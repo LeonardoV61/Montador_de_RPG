@@ -1,5 +1,5 @@
 import { useState } from "react";
-import { Search, ShieldAlert, Sword, Coins, Shield, Flame, Trash2, Eye, CheckCircle, ChevronLeft, Package, UserCheck } from "lucide-react";
+import { Search, ShieldAlert, Sword, Coins, Flame, Eye, Package } from "lucide-react";
 import styles from "./styles.inventario.module.css";
 
 export default function Inventario() {
@@ -7,337 +7,214 @@ export default function Inventario() {
   const [busca, setBusca] = useState("");
   const [itemAberto, setItemAberto] = useState(null);
 
-  // Moedas do Jogador/Grupo
-  const [carteira, setCarteira] = useState({ TQ: 50, TO: 2450, TL: 5 }); // Tibares de Cobre, Ouro e Platina
-  const capacidadeMaxima = 50; // Peso/Espaço máximo do inventário
+  // Setor conectado: Lista de campanhas sincronizada com os diários e crônicas do jogo
+  const campanhasDisponiveis = ["A MALDIÇÃO DE OAKVALE", "O TRONO DESPEDAÇADO"];
+  const [campanhaAtiva, setCampanhaAtiva] = useState("A MALDIÇÃO DE OAKVALE");
 
-  // Estrutura de dados adaptada para Inventário de Personagem/Grupo
-  const [itensInventario, setItensInventario] = useState([
+  // Conexão de moedas por sistema de campanha ativo
+  const sistemasMoedas = {
+    "A MALDIÇÃO DE OAKVALE": { TQ: 50, TO: 2450, TL: 5 }, 
+    "O TRONO DESPEDAÇADO": { PC: 120, PO: 380 }           
+  };
+
+  const capacidadeMaxima = 50; 
+
+  const [itensInventario] = useState([
     {
       id: "inv-1",
-      titulo: "LÂMINA RÚNICA DE VECTARIA",
+      campanha: "A MALDIÇÃO DE OAKVALE",
+      titulo: "LÂMINA RÚNICA DE VECTARIA EXEMPLAR", 
       subtitulo: "Arma Marcial (Espada Longa)",
       categoria: "Raro",
       tipo: "equipamento",
-      descricao: "Forjada sob a influência do Cometa de Éter. Runas azuladas piscam na lâmina.",
+      descricao: "Forjada sob a influência do Cometa de Éter. Runas azuladas piscam na lâmina e emitem sussurros rítmicos em dialeto celestial antigo.",
       custo: "1.500 TO",
       peso: 2,
-      quantidade: 1,
-      equipado: true,
       propriedades: "+1 no acerto, causa +1d6 de dano de eletricidade",
-      efeitoCompleto: "Esta lâmina canaliza fúria elemental. Uma vez por cena, o portador pode gastar uma ação de movimento para imbuir a arma com eletricidade estática, aumentando a margem de ameaça em +2 contra alvos vestindo armadura metálica."
     },
     {
       id: "inv-2",
-      titulo: "POÇÃO DE MANA MAIOR",
-      subtitulo: "Consumível (Alquimia)",
+      campanha: "A MALDIÇÃO DE OAKVALE",
+      titulo: "POÇÃO DE CURA MAIOR",
+      subtitulo: "Consumível Alquímico",
       categoria: "Comum",
       tipo: "consumivel",
-      descricao: "Um líquido azul efervescente que cheira a menta e estática.",
-      custo: "150 TO",
+      descricao: "Líquido vermelho efervescente com aroma espesso de cereja e ferro. Restaura instantaneamente 3d8+3 Pontos de Vida do usuário.",
+      custo: "50 TO",
       peso: 0.5,
-      quantidade: 4,
-      equipado: false,
-      propriedades: "Recupera 2d4+2 PM imediatamente ao ser ingerida.",
-      efeitoCompleto: "Uma mistura refinada de essência de cristal de mana destilada. Ingerir esta poção requer uma ação padrão. Se consumida durante um descanso curto, duplica a taxa de recuperação natural de mana daquele descanso."
     },
     {
       id: "inv-3",
-      titulo: "ESCUDO DA ALVORADA",
-      subtitulo: "Equipamento (Escudo Pesado)",
+      campanha: "O TRONO DESPEDAÇADO",
+      titulo: "ESCUDO DO JURAMENTO QUEBRADO",
+      subtitulo: "Escudo Pesado",
       categoria: "Épico",
       tipo: "equipamento",
-      descricao: "Ostenta o brasão do sol nascente. Irradia um calor reconfortante.",
-      custo: "3.800 TO",
-      peso: 5,
-      quantidade: 1,
-      equipado: false,
-      propriedades: "+3 na Defesa, Resistência a Fogo 5",
-      efeitoCompleto: "Abençoado pelos clérigos da luz. Quando o portador realiza uma ação de Defender, todos os aliados adjacentes recebem +1 de bônus na Defesa até o início do próximo turno do portador."
+      descricao: "Pertenceu ao Sir Gareth antes de sua queda trágica. Oferece proteção física estendida e concede vantagem em salvamentos contra profanadores.",
+      custo: "3.200 PO", 
+      peso: 4,
     }
   ]);
 
-  // Calcula o peso total atual carregado no inventário
-  const pesoTotal = itensInventario.reduce((acc, item) => acc + (item.peso * item.quantidade), 0);
+  // Filtro inteligente por conexão de Campanha, Aba de Categoria e Input de busca
+  const itensFiltrados = itensInventario.filter((item) => {
+    const pertenceCampanha = item.campanha === campanhaAtiva;
+    
+    const pertenceAba = 
+      abaAtiva === "todos" || 
+      (abaAtiva === "equipamentos" && item.tipo === "equipamento") || 
+      (abaAtiva === "consumiveis" && item.tipo === "consumivel");
 
-  function handleAlternarEquipar(id) {
-    setItensInventario(itensInventario.map(item => 
-      item.id === id ? { ...item, equipado: !item.equipado } : item
+    const correspondeBusca = 
+      item.titulo.toLowerCase().includes(busca.toLowerCase()) ||
+      item.subtitulo.toLowerCase().includes(busca.toLowerCase());
+
+    return pertenceCampanha && pertenceAba && correspondeBusca;
+  });
+
+  // Cálculo dinâmico de peso baseado na campanha conectada selecionada
+  const pesoAtual = itensInventario
+    .filter(item => item.campanha === campanhaAtiva)
+    .reduce((acc, curr) => acc + curr.peso, 0);
+
+  const renderizarMoedasCampanha = () => {
+    const moedas = sistemasMoedas[campanhaAtiva] || {};
+    const obterCorMoeda = (sigla) => {
+      if (sigla.includes("O")) return "#d97706"; 
+      if (sigla.includes("P") || sigla.includes("L")) return "#cbd5e1"; 
+      if (sigla.includes("Q") || sigla.includes("C")) return "#b45309"; 
+      return "#a855f7";
+    };
+
+    return Object.entries(moedas).map(([sigla, valor]) => (
+      <div key={sigla} className={styles.itemMoeda}>
+        <Coins size={16} color={obterCorMoeda(sigla)} /> 
+        <span>{valor} {sigla}</span>
+      </div>
     ));
-  }
+  };
 
-  function handleUsarConsumivel(id) {
-    setItensInventario(itensInventario.map(item => {
-      if (item.id === id) {
-        if (item.quantidade > 1) {
-          return { ...item, quantidade: item.quantidade - 1 };
-        }
-        return null; // Será filtrado abaixo se chegar a zero
-      }
-      return item;
-    }).filter(Boolean));
-    
-    alert("Item consumido com sucesso!");
-  }
-
-  function handleRemoverItem(id) {
-    if (confirm("Deseja realmente remover/descartar este item do inventário?")) {
-      setItensInventario(itensInventario.filter(item => item.id !== id));
-      setItemAberto(null);
-    }
-  }
-
-  // --- TELA DE INSPEÇÃO COMPLETA DO ITEM (WIKI DESIGN MÁTRICO) ---
   if (itemAberto) {
-    // Busca o item atualizado no estado caso ele tenha mudado (ex: equipado/consumido)
-    const itemAtual = itensInventario.find(i => i.id === itemAberto.id) || itemAberto;
-    
     return (
       <div className={styles.containerGeral}>
         <div className={styles.telaLeituraWiki}>
-          
           <div className={styles.headerLeitura}>
             <button className={styles.btnVoltar} onClick={() => setItemAberto(null)}>
-              <ChevronLeft size={16} /> Voltar à Algibeira
+               Voltar ao Arsenal
             </button>
-            <div className={styles.tagGrupo}>
-              <span className={styles.tagCampanhaLeitura}>{itemAtual.categoria}</span>
-              <span className={styles.tagPapelLeitura}>{itemAtual.subtitulo}</span>
-              <span className={styles.tagPmLeitura}>{itemAtual.peso} Kg</span>
-              {itemAtual.equipado && <span className={styles.tagEquipadoLeitura}>Equipado</span>}
-            </div>
+            <span className={styles.badgeCategoriaLeitura}>{itemAberto.categoria}</span>
           </div>
-
           <div className={styles.corpoLeitura}>
-            <div className={styles.layoutLeituraLivro}>
-              
-              {/* Ficha Lateral Técnica */}
-              <div className={styles.fichaTecnicaMagia}>
-                <div className={styles.runaIconWrapper}>
-                  {itemAtual.tipo === "equipamento" ? (
-                    <Sword size={48} className={styles.runaIconVisual} />
-                  ) : (
-                    <Flame size={48} className={styles.runaIconVisual} />
-                  )}
-                </div>
-                <div className={styles.atributosGrid}>
-                  <div><strong>Propriedades Especiais:</strong> <p>{itemAtual.propriedades}</p></div>
-                  <div><strong>Quantidade em Posse:</strong> <p>x{itemAtual.quantidade}</p></div>
-                  <div><strong>Valor Estimado:</strong> <p>{itemAtual.custo}</p></div>
-                </div>
-                
-                {/* Ações dentro da Ficha de Inspeção */}
-                <div className={styles.botoesAcaoFicha}>
-                  {itemAtual.tipo === "equipamento" ? (
-                    <button 
-                      className={`${styles.btnFichaAcao} ${itemAtual.equipado ? styles.btnDesequipar : styles.btnEquipar}`}
-                      onClick={() => handleAlternarEquipar(itemAtual.id)}
-                    >
-                      <UserCheck size={14} /> {itemAtual.equipado ? "Desequipar" : "Equipar Item"}
-                    </button>
-                  ) : (
-                    <button className={`${styles.btnFichaAcao} ${styles.btnUsar}`} onClick={() => handleUsarConsumivel(itemAtual.id)}>
-                      <Flame size={14} /> Usar Consumível
-                    </button>
-                  )}
-                  <button className={`${styles.btnFichaAcao} ${styles.btnDeletar}`} onClick={() => handleRemoverItem(itemAtual.id)}>
-                    <Trash2 size={14} /> Descartar do Jogo
-                  </button>
-                </div>
+            <h1 className={styles.tituloItemAberto}>{itemAberto.titulo}</h1>
+            <p className={styles.subtituloItemAberto}>{itemAberto.subtitulo} • {itemAberto.custo}</p>
+            <div className={styles.divisorEstilizado} />
+            
+            <p className={styles.descricaoCompleta}>{itemAberto.descricao}</p>
+            
+            {itemAberto.propriedades && (
+              <div className={styles.caixaPropriedades}>
+                <strong>Propriedades Mágicas/Técnicas:</strong>
+                <p>{itemAberto.propriedades}</p>
               </div>
-              
-              {/* Descrição Detalhada à Direita */}
-              <div className={styles.textoLeituraWrapper}>
-                <div className={styles.tituloAlinhamento}>
-                  <Package size={28} className={styles.iconSelo} />
-                  <h1 className={styles.tituloArtigoNpc}>{itemAtual.titulo}</h1>
-                </div>
-                <div className={styles.divisorEstilizado} />
-                <p className={styles.textoLoreNpc}>{itemAtual.efeitoCompleto}</p>
-                
-                <div className={styles.caixaAlertaLeitura}>
-                  <Shield size={18} />
-                  <span>Item integrado à carga geral de atributos físicos da sua ficha de personagem.</span>
-                </div>
-              </div>
-
-            </div>
+            )}
           </div>
-
-          <div className={styles.rodapeProtegido}>
-            <span>O Inventário Pessoal calcula dinamicamente penalidades de sobrecarga baseadas nas regras do sistema.</span>
-          </div>
-
         </div>
       </div>
     );
   }
 
-  // Filtros de Inventário
-  const itensFiltrados = itensInventario.filter(item => {
-    let correspondeAba = true;
-    if (abaAtiva === "equipados") correspondeAba = item.equipado;
-    if (abaAtiva === "consumiveis") correspondeAba = item.tipo === "consumivel";
-
-    const correspondeBusca = item.titulo.toLowerCase().includes(busca.toLowerCase()) || 
-                             item.subtitulo.toLowerCase().includes(busca.toLowerCase()) ||
-                             item.categoria.toLowerCase().includes(busca.toLowerCase());
-                             
-    return correspondeAba && correspondeBusca;
-  });
-
   return (
     <div className={styles.containerGeral}>
-      
-      {/* HEADER DE SELEÇÃO E FILTROS */}
-      <div className={styles.headerMenu}>
-        <div className={styles.abasPrincipais}>
-          <button 
-            className={`${styles.btnAbaPrincipal} ${abaAtiva === "todos" ? styles.abaPrincipalAtiva : ""}`}
-            onClick={() => { setAbaAtiva("todos"); setBusca(""); }}
-          >
-            <Package size={16} /> Todos os Itens
-          </button>
-          <button 
-            className={`${styles.btnAbaPrincipal} ${abaAtiva === "equipados" ? styles.abaPrincipalAtiva : ""}`}
-            onClick={() => { setAbaAtiva("equipados"); setBusca(""); }}
-          >
-            <UserCheck size={16} /> Equipados
-          </button>
-          <button 
-            className={`${styles.btnAbaPrincipal} ${abaAtiva === "consumiveis" ? styles.abaPrincipalAtiva : ""}`}
-            onClick={() => { setAbaAtiva("consumiveis"); setBusca(""); }}
-          >
-            <Flame size={16} /> Consumíveis
-          </button>
+      {/* SECTOR LATERAL CONECTADO */}
+      <aside className={styles.sidebarCampanhas}>
+        <div className={styles.labelSecao}>CAMPANHAS ATIVAS</div>
+        <div className={styles.listaCampanhasLayout}>
+          {campanhasDisponiveis.map((campanha) => (
+            <button
+              key={campanha}
+              className={`${styles.itemCampanhaBtn} ${campanhaAtiva === campanha ? styles.itemCampanhaAtivo : ""}`}
+              onClick={() => setCampanhaAtiva(campanha)}
+            >
+              <Package size={18} className={styles.iconeCampanhaBtn} />
+              <span className={styles.nomeCampanhaTexto}>{campanha}</span>
+            </button>
+          ))}
         </div>
+      </aside>
 
-        <div className={styles.buscaWrapper}>
-          <Search size={18} className={styles.buscaIcon} />
-          <input 
-            type="text" 
-            placeholder="Buscar na mochila (arma, poção, raro...)" 
-            value={busca}
-            onChange={(e) => setBusca(e.target.value)}
-          />
-        </div>
-      </div>
-
-      {/* PAINEL GRID */}
-      <div className={styles.painelRolavel}>
-        <div className={styles.secaoLayout}>
-          
-          {/* Subheader Interno com Indicador de Carga */}
-          <div className={styles.subHeaderInterno}>
-            <div>
-              <h3>
-                {abaAtiva === "todos" && "Algibeira & Mochila de Viagem"}
-                {abaAtiva === "equipados" && "Equipamentos Ativos no Corpo"}
-                {abaAtiva === "consumiveis" && "Bolsa de Alquimia e Suprimentos"}
-              </h3>
-              <p>Gerencie seus pertences, armamentos e capacidade de carga ativa</p>
-            </div>
-
-            {/* Mostrador de Peso de RPG */}
-            <div className={styles.containerCapacidade}>
-              <div className={styles.metaCarga}>
-                <span>Carga: <strong>{pesoTotal.toFixed(1)}</strong> / {capacidadeMaxima} Kg</span>
-              </div>
-              <div className={styles.barraProgressoCarga}>
+      {/* PAINEL CENTRAL DE CONTEÚDO */}
+      <div className={styles.painelPrincipalConteudo}>
+        <header className={styles.headerMenu}>
+          <div className={styles.blocoInfoEsquerda}>
+            <h2 className={styles.tituloPainel}>MOCHILA DE AVENTUREIRO</h2>
+            <div className={styles.barraCapacidadeContainer}>
+              <span className={styles.textoCapacidade}>Carga: {pesoAtual} / {capacidadeMaxima} Kg</span>
+              <div className={styles.trilhoBarra}>
                 <div 
                   className={styles.preenchimentoBarra} 
-                  style={{ width: `${Math.min((pesoTotal / capacidadeMaxima) * 100, 100)}%`, 
-                           backgroundColor: pesoTotal > capacidadeMaxima ? '#ff4d4d' : '#b3924e' }}
+                  style={{ width: `${Math.min((pesoAtual / capacidadeMaxima) * 100, 100)}%` }}
                 />
               </div>
             </div>
           </div>
 
-          {/* Painel de Moedas Dinâmico */}
-          <div className={styles.painelMoedas}>
-            <span className={styles.tituloMoedas}>TESOURO DISPONÍVEL:</span>
-            <div className={styles.gradeMoedas}>
-              <div className={`${styles.moedaBox} ${styles.platina}`}>
-                <Coins size={14} /> <span>{carteira.TL} TL</span>
-              </div>
-              <div className={`${styles.moedaBox} ${styles.ouro}`}>
-                <Coins size={14} /> <span>{carteira.TO} TO</span>
-              </div>
-              <div className={`${styles.moedaBox} ${styles.cobre}`}>
-                <Coins size={14} /> <span>{carteira.TQ} TQ</span>
-              </div>
-            </div>
+          <div className={styles.grupoMoedas}>
+            {renderizarMoedasCampanha()}
+          </div>
+        </header>
+
+        <div className={styles.areaFiltrosAcoes}>
+          <div className={styles.abasTipoFiltro}>
+            <button className={`${styles.abaBotao} ${abaAtiva === "todos" ? styles.abaBotaoAtiva : ""}`} onClick={() => setAbaAtiva("todos")}>Todos</button>
+            <button className={`${styles.abaBotao} ${abaAtiva === "equipamentos" ? styles.abaBotaoAtiva : ""}`} onClick={() => setAbaAtiva("equipamentos")}>Equipamentos</button>
+            <button className={`${styles.abaBotao} ${abaAtiva === "consumiveis" ? styles.abaBotaoAtiva : ""}`} onClick={() => setAbaAtiva("consumiveis")}>Consumíveis</button>
           </div>
 
-          {/* Grid de Cards baseados no Design Mátrico */}
-          <div className={styles.gridLivros}>
+          <div className={styles.caixaPesquisaGeral}>
+            <Search size={18} className={styles.iconeLupa} />
+            <input 
+              type="text" 
+              placeholder="Buscar itens na mochila..." 
+              value={busca}
+              onChange={(e) => setBusca(e.target.value)}
+              className={styles.inputFiltroTexto}
+            />
+          </div>
+        </div>
+
+        <div className={styles.containerListaScroll}>
+          <div className={styles.gradeItensDoArsenal}>
             {itensFiltrados.length > 0 ? (
-              itensFiltrados.map(item => (
-                <div key={item.id} className={`${styles.cardLivro} ${item.equipado ? styles.cardEquipadoBorder : ""}`}>
-                  
-                  {/* Visual Header do Card */}
-                  <div className={styles.capaLivroContainer}>
-                    <div className={styles.backgroundRunaVisual} />
-                    {item.tipo === "equipamento" ? (
-                      <Sword className={styles.imagemCapaIcone} size={40} />
-                    ) : (
-                      <Flame className={styles.imagemCapaIcone} size={40} />
-                    )}
-                    <div className={styles.overlayCapa}>
-                      <span className={`${styles.badgeCategoriaCapa} ${styles['raridade-' + item.categoria.toLowerCase()] || ""}`}>
-                        {item.categoria}
+              itensFiltrados.map((item) => (
+                <div key={item.id} className={styles.cardItemArsenal}>
+                  <div className={styles.cardItemCorpoInfo}>
+                    <div className={styles.linhaSuperiorCard}>
+                      <span className={styles.badgeTipoItem}>
+                        {item.tipo === "equipamento" ? <Sword size={14} /> : <Flame size={14} />} {item.tipo.toUpperCase()}
                       </span>
-                      {item.equipado && <span className={styles.badgeEquipadoCapa}>PRONTO</span>}
-                    </div>
-                  </div>
-
-                  <div className={styles.livroInfoCorpo}>
-                    <div className={styles.livroMetaHeader}>
-                      <span className={styles.livroVersao}>{item.subtitulo}</span>
-                      <span className={styles.badgeMana}>
-                        {item.peso * item.quantidade} Kg (x{item.quantidade})
-                      </span>
+                      <span className={styles.tagPesoItem}>{item.peso} Kg</span>
                     </div>
                     
-                    <h4>{item.titulo}</h4>
-                    <p className={styles.descricaoLivroShort} style={{color: '#b3924e', fontStyle: 'italic', marginBottom: '4px'}}>
-                      {item.propriedades}
-                    </p>
-                    <p className={styles.descricaoLivroShort}>{item.descricao}</p>
+                    <h3 className={styles.itemTituloArsenal}>{item.titulo}</h3>
                     
-                    <div className={styles.grupoBotoesCard}>
+                    <div className={styles.blocoFixoRodapeCard}>
+                      <p className={styles.itemSubtituloArsenal}>{item.subtitulo} • {item.custo}</p>
                       <button className={styles.btnAbrirLivro} onClick={() => setItemAberto(item)}>
-                        <Eye size={14} /> Inspecionar
+                        <Eye size={16} /> Inspecionar Item
                       </button>
-                      
-                      {item.tipo === "equipamento" ? (
-                        <button 
-                          className={`${styles.btnInstalarLivro} ${item.equipado ? styles.btnAtivoAcao : ""}`} 
-                          onClick={() => handleAlternarEquipar(item.id)}
-                        >
-                          <UserCheck size={14} /> {item.equipado ? "Desequipar" : "Equipar"}
-                        </button>
-                      ) : (
-                        <button className={styles.btnInstalarLivro} onClick={() => handleUsarConsumivel(item.id)}>
-                          <Flame size={14} /> Usar (1)
-                        </button>
-                      )}
                     </div>
                   </div>
-
                 </div>
               ))
             ) : (
-              <div className={styles.caixaAlertaLeitura} style={{gridColumn: '1/-1'}}>
-                <ShieldAlert size={18} />
-                <span>Nenhum item localizado na mochila sob estes parâmetros de busca.</span>
+              <div className={styles.caixaAlertaLeitura} style={{ gridColumn: '1/-1' }}>
+                <ShieldAlert size={20} />
+                <span>Nenhum item localizado na mochila sob este sistema ou campanha.</span>
               </div>
             )}
           </div>
-
         </div>
       </div>
-
     </div>
   );
 }

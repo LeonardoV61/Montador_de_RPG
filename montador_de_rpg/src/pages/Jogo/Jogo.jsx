@@ -1,4 +1,4 @@
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import { createContext, useContext } from 'react';
 import styles from './styles.Jogo.module.css';
 import NavBarJogo from '../../Components/Jogo/NavBarJogo/NavBarJogo.jsx'
@@ -10,6 +10,12 @@ export const ContextoRegistros = createContext(null);
 
 export default function Jogo() {
    const roleNaSessao = localStorage.getItem("role_sessao_ativa") || "jogador";
+   useEffect(() => {
+      if(roleNaSessao != null){
+         localStorage.removeItem("role_sessao_ativa");
+      }
+   });
+   
    const [registros, setRegistros] = useState([
       {
          "id": 1,
@@ -77,12 +83,11 @@ export default function Jogo() {
 
   return (
       <>
-         <NavBarJogo />
+         <NavBarJogo roleAtiva={roleNaSessao}/>
          <ContextoRegistros.Provider value={{ registros, setRegistros }}>
             <div className={styles.jogo}>
                <LateralPersonagem />
                <Mapa />
-               {/* 2. Repassa a role obtida para o seu componente de histórico lateral */}
                <LateralHistorico roleAtiva={roleNaSessao} />
             </div>
          </ContextoRegistros.Provider>

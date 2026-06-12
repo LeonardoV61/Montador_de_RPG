@@ -27,24 +27,13 @@ export default function Diario() {
   const [rascunhoTitulo, setRascunhoTitulo] = useState("");
   const [rascunhoConteudo, setRascunhoConteudo] = useState("");
 
-  function handleMudarCampanha(campanhaNome) {
+  function handleMudarCampanha(campanhaNome) {a
     setCampanhaAtiva(campanhaNome);
     const paginasDestaCampanha = paginas.filter(pag => pag.campanha === campanhaNome);
     setPaginaAtiva(paginasDestaCampanha[0] || null);
     setModoEdicao(false);
   }
-
-  function handleCriarCampanha() {
-    const nomeNovaCampanha = window.prompt("Nome da Nova Campanha:");
-    if (nomeNovaCampanha && nomeNovaCampanha.trim() !== "") {
-      const nomeFormatado = nomeNovaCampanha.toUpperCase();
-      if (!campanhas.includes(nomeFormatado)) {
-        setCampanhas([...campanhas, nomeFormatado]);
-        handleMudarCampanha(nomeFormatado);
-      }
-    }
-  }
-
+  
   function handleSelecionarPagina(pagina) {
     setPaginaAtiva(pagina);
     setModoEdicao(false);
@@ -105,10 +94,6 @@ export default function Diario() {
               </button>
             ))}
           </div>
-
-          <button className={styles.btnNovaCampanha} onClick={handleCriarCampanha}>
-            <Plus size={14} /> Iniciar Nova Jornada
-          </button>
         </div>
 
         {/* Lista de Páginas do Diário (filtradas pela campanha ativa) */}

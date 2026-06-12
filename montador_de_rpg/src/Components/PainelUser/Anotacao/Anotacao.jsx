@@ -51,8 +51,10 @@ const elementoNoLasso = (el, pontosLasso) => {
   
   return cantos.some(canto => pontoNoPoligono(canto, pontosLasso));
 };
+
+  
  
-export default function AnotacaoCanvas() {
+export default function AnotacaoCanvas({ modoJogo }) {
   // --- ESTADO REINTEGRADO: GESTÃO DE CAMPANHAS ---
   const [campanhas, setCampanhas] = useState([
     { id: 1, nome: "Crônica Principal", elementos: [], linhas: [], cor: '#3b82f6', favorita: true },
@@ -440,46 +442,82 @@ export default function AnotacaoCanvas() {
     if (estilo === 'pontilhado') return '2,4';
     return 'none';
   };
+
+  // Correção se o seu CSS usar hífens:
+  const classeContainer = modoJogo 
+    ? `${styles.canvasContainer} ${styles.canvasModoJogo}` 
+    : styles.canvasContainer;
  
   return (
-    <div style={{ display: 'flex', width: '100vw', height: '100vh' }}>
-      {/* SIDEBAR EXTERNA REDESENHADA */}
-      <aside className={styles.sidebar}>
-        {/* LOGO / HEADER */}
-        <div className={styles.sidebarHeader}>
-          <div className={styles.sidebarLogo}>
-            <div className={styles.sidebarLogoIcon}>
-              <LayoutGrid size={14} />
-            </div>
-            <span className={styles.sidebarLogoText}>Canvas</span>
-          </div>
-        </div>
- 
-        {/* BARRA DE PESQUISA */}
-        <div className={styles.sidebarSearchWrapper}>
-          <Search size={13} className={styles.sidebarSearchIcon} />
-          <input
-            type="text"
-            className={styles.sidebarSearchInput}
-            placeholder="Buscar campanha..."
-            value={buscaCampanha}
-            onChange={(e) => setBuscaCampanha(e.target.value)}
-          />
-          {buscaCampanha && (
-            <button className={styles.sidebarSearchClear} onClick={() => setBuscaCampanha("")}>×</button>
-          )}
-        </div>
- 
- 
-        {/* LISTA DE CAMPANHAS */}
-        <div className={styles.sidebarList}>
-          {/* FAVORITAS */}
-          {favoritadas.length > 0 && (
-            <div className={styles.sidebarSection}>
-              <div className={styles.sidebarSectionLabel}>
-                <Star size={10} /> Favoritas
+    <div className={classeContainer}>
+      {!modoJogo && (
+        <aside className={styles.sidebar}>
+          {/* LOGO / HEADER */}
+          <div className={styles.sidebarHeader}>
+            <div className={styles.sidebarLogo}>
+              <div className={styles.sidebarLogoIcon}>
+                <LayoutGrid size={14} />
               </div>
-              {favoritadas.map(c => (
+              <span className={styles.sidebarLogoText}>Canvas</span>
+            </div>
+          </div>
+  
+          {/* BARRA DE PESQUISA */}
+          <div className={styles.sidebarSearchWrapper}>
+            <Search size={13} className={styles.sidebarSearchIcon} />
+            <input
+              type="text"
+              className={styles.sidebarSearchInput}
+              placeholder="Buscar campanha..."
+              value={buscaCampanha}
+              onChange={(e) => setBuscaCampanha(e.target.value)}
+            />
+            {buscaCampanha && (
+              <button className={styles.sidebarSearchClear} onClick={() => setBuscaCampanha("")}>×</button>
+            )}
+          </div>
+  
+  
+          {/* LISTA DE CAMPANHAS */}
+          <div className={styles.sidebarList}>
+            {/* FAVORITAS */}
+            {favoritadas.length > 0 && (
+              <div className={styles.sidebarSection}>
+                <div className={styles.sidebarSectionLabel}>
+                  <Star size={10} /> Favoritas
+                </div>
+                {favoritadas.map(c => (
+                  <div
+                    key={c.id}
+                    onClick={() => selecionarCampanha(c.id)}
+                    className={`${styles.sidebarItem} ${c.id === campanhaAtivaId ? styles.sidebarItemActive : ''}`}
+                  >
+                    <span className={styles.sidebarItemDot} style={{ backgroundColor: c.cor }} />
+                    <span className={styles.sidebarItemName}>{c.nome}</span>
+                    <div className={styles.sidebarItemActions}>
+                      <button className={styles.sidebarItemBtn} onClick={(e) => toggleFavorita(e, c.id)} title="Desfavoritar">
+                        <Star size={11} fill={c.favorita ? c.cor : 'none'} stroke={c.cor} />
+                      </button>
+                    </div>
+                  </div>
+                ))}
+              </div>
+            )}
+  
+            {/* TODAS / OUTRAS */}
+            <div className={styles.sidebarSection}>
+              {favoritadas.length > 0 && (
+                <div className={styles.sidebarSectionLabel}>
+                  <Clock size={10} /> Recentes
+                </div>
+              )}
+              {outras.length === 0 && favoritadas.length === 0 && (
+                <div className={styles.sidebarEmpty}>
+                  <FolderOpen size={28} />
+                  <span>Nenhuma campanha encontrada</span>
+                </div>
+              )}
+              {outras.map(c => (
                 <div
                   key={c.id}
                   onClick={() => selecionarCampanha(c.id)}
@@ -488,54 +526,27 @@ export default function AnotacaoCanvas() {
                   <span className={styles.sidebarItemDot} style={{ backgroundColor: c.cor }} />
                   <span className={styles.sidebarItemName}>{c.nome}</span>
                   <div className={styles.sidebarItemActions}>
-                    <button className={styles.sidebarItemBtn} onClick={(e) => toggleFavorita(e, c.id)} title="Desfavoritar">
-                      <Star size={11} fill={c.favorita ? c.cor : 'none'} stroke={c.cor} />
+                    <button className={styles.sidebarItemBtn} onClick={(e) => toggleFavorita(e, c.id)} title="Favoritar">
+                      <Star size={11} fill="none" stroke={c.cor} />
                     </button>
                   </div>
                 </div>
               ))}
             </div>
-          )}
- 
-          {/* TODAS / OUTRAS */}
-          <div className={styles.sidebarSection}>
-            {favoritadas.length > 0 && (
-              <div className={styles.sidebarSectionLabel}>
-                <Clock size={10} /> Recentes
-              </div>
-            )}
-            {outras.length === 0 && favoritadas.length === 0 && (
-              <div className={styles.sidebarEmpty}>
-                <FolderOpen size={28} />
-                <span>Nenhuma campanha encontrada</span>
-              </div>
-            )}
-            {outras.map(c => (
-              <div
-                key={c.id}
-                onClick={() => selecionarCampanha(c.id)}
-                className={`${styles.sidebarItem} ${c.id === campanhaAtivaId ? styles.sidebarItemActive : ''}`}
-              >
-                <span className={styles.sidebarItemDot} style={{ backgroundColor: c.cor }} />
-                <span className={styles.sidebarItemName}>{c.nome}</span>
-                <div className={styles.sidebarItemActions}>
-                  <button className={styles.sidebarItemBtn} onClick={(e) => toggleFavorita(e, c.id)} title="Favoritar">
-                    <Star size={11} fill="none" stroke={c.cor} />
-                  </button>
-                </div>
-              </div>
-            ))}
           </div>
-        </div>
- 
-        {/* RODAPÉ DA SIDEBAR */}
-        <div className={styles.sidebarFooter}>
-          <div className={styles.sidebarFooterInfo}>
-            <span className={styles.sidebarFooterCount}>{campanhas.length} campanha{campanhas.length !== 1 ? 's' : ''}</span>
-            <ChevronRight size={12} style={{ color: '#334155' }} />
+  
+          {/* RODAPÉ DA SIDEBAR */}
+          <div className={styles.sidebarFooter}>
+            <div className={styles.sidebarFooterInfo}>
+              <span className={styles.sidebarFooterCount}>{campanhas.length} campanha{campanhas.length !== 1 ? 's' : ''}</span>
+              <ChevronRight size={12} style={{ color: '#334155' }} />
+            </div>
           </div>
-        </div>
-      </aside>
+        </aside>
+      )}
+
+
+
       <div 
         id="canvas-container"
         className={`${styles.canvasContainer} ${

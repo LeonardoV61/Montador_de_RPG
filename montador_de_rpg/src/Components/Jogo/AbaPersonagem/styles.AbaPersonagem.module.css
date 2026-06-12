@@ -1,133 +1,201 @@
-.personagem {
-  padding: 0.7rem 0.9rem;
-  overflow-y: auto;
-  scrollbar-width: thin;
-  scrollbar-color: var(--fundo3) transparent;
+.personagemContainer {
+  height: 100%;
+  max-height: 100%; /* Força a não ultrapassar o pai */
+  display: flex;
+  flex-direction: column;
+  background: rgba(10, 8, 7, 0.4);
+  color: #cccccc;
+  font-family: 'Inter', system-ui, sans-serif;
+  overflow: hidden; /* Evita que o contêiner estoure a tela */
 }
-.personagem::-webkit-scrollbar {
-  width: 3px;
-}
-.personagem::-webkit-scrollbar-thumb {
-  background: var(--fundo3);
+
+.personagemHeader {
+  padding: 0.8rem;
+  background: rgba(9, 7, 6, 0.6);
+  flex-shrink: 0; /* Impede o cabeçalho de amassar */
 }
 
 .nome {
-  font-family: 'Cinzel',serif;
-  font-size: 0.95rem;
-  font-weight: 600;
-  color: var(--branco);
-  margin-bottom: 0.15rem;
+  font-family: 'Cinzel', serif;
+  font-size: 1.05rem;
+  font-weight: 700;
+  color: #b3924e;
+  letter-spacing: 0.05em;
+  text-transform: uppercase;
 }
+
 .titulo {
-  font-size: 0.82rem;
+  font-size: 0.75rem;
   font-style: italic;
-  color: var(--dourado);
-  margin-bottom: 0.7rem;
+  color: #8c723e;
+  margin-top: 0.15rem;
+}
+
+.divisorEstilizado {
+  height: 1px;
+  background: linear-gradient(to right, transparent, rgba(179, 146, 78, 0.35), transparent);
+  width: 100%;
+  margin: 0.2rem 0;
+  flex-shrink: 0;
+}
+
+.corpoFicha {
+  padding: 0.8rem;
+  overflow-y: auto; /* O scroll vertical fica EXCLUSIVO aqui dentro */
+  scrollbar-width: thin;
+  scrollbar-color: rgba(179, 146, 78, 0.3) transparent;
+  flex: 1; /* Consome o espaço restante perfeitamente */
+  display: flex;
+  flex-direction: column;
+  gap: 0.8rem;
+}
+
+/* Customização do scroll para navegadores Webkit (Chrome, Edge, Safari) */
+.corpoFicha::-webkit-scrollbar {
+  width: 4px;
+}
+.corpoFicha::-webkit-scrollbar-thumb {
+  background: rgba(179, 146, 78, 0.3);
+  border-radius: 2px;
 }
 
 .gradeAtributos {
   display: grid;
-  grid-template-columns: repeat(3,1fr);
+  grid-template-columns: repeat(3, 1fr);
   gap: 0.4rem;
-  margin-bottom: 0.7rem;
 }
+
 .atributo {
-  background: var(--fundo2);
-  border: 1px solid var(--fundo3);
-  padding: 0.4rem;
+  background: rgba(15, 12, 10, 0.8);
+  border: 1px solid rgba(179, 146, 78, 0.15);
+  border-radius: 4px;
+  padding: 0.4rem 0.2rem;
   text-align: center;
-  cursor: default;
-  transition: border-color 0.15s;
+  transition: all 0.2s ease;
 }
+
 .atributo:hover {
-  border-color: var(--dourado2);
+  border-color: #b3924e;
+  background: rgba(25, 20, 16, 0.9);
 }
+
 .atributoNome {
-  font-family: 'Cinzel',serif;
-  font-size: 0.5rem;
-  letter-spacing: 0.18em;
-  color: var(--branco);
-  text-transform: uppercase;
-  margin-bottom: 0.2rem;
+  font-family: 'Cinzel', serif;
+  font-size: 0.65rem;
+  color: #8c723e;
+  letter-spacing: 0.1em;
+  margin-bottom: 0.15rem;
 }
+
 .atributoValor {
-  font-family: 'Cinzel',serif;
+  font-family: 'Cinzel', serif;
   font-size: 1.1rem;
-  font-weight: 700;
-  color: var(--branco);
+  font-weight: bold;
+  color: #ffffff;
 }
+
 .atributoValor.baixo {
-  color: var(--vermelho);
+  color: #ef4444;
 }
 
 .atributoHP {
-  margin-bottom: 0.5rem;
+  background: rgba(15, 12, 10, 0.4);
+  padding: 0.5rem;
+  border-radius: 4px;
+  border: 1px solid rgba(179, 146, 78, 0.08);
 }
+
 .atributoHPCabecalho {
   display: flex;
   justify-content: space-between;
-  font-family: 'Cinzel',serif;
-  font-size: 0.55rem;
-  letter-spacing: 0.12em;
-  color: var(--branco);
-  margin-bottom: 0.25rem;
+  font-family: 'Cinzel', serif;
+  font-size: 0.65rem;
+  letter-spacing: 0.05em;
+  color: #e4e4e7;
+  margin-bottom: 0.3rem;
 }
+
 .atributoHPBarra {
   height: 6px;
-  background: var(--fundo3);
+  background: #1a1512;
+  border-radius: 3px;
   overflow: hidden;
+  border: 1px solid rgba(255, 255, 255, 0.05);
 }
+
 .barraHPNivel {
   height: 100%;
-  background: linear-gradient(to right,var(--vermelho),#c04020);
+  background: linear-gradient(to right, #991b1b, #ef4444);
   width: 65%;
+  box-shadow: 0 0 8px rgba(239, 68, 68, 0.4);
 }
 
 .atributoGloria {
   display: flex;
   align-items: center;
   justify-content: space-between;
-  margin-bottom: 0.5rem;
+  padding: 0.1rem 0.2rem;
 }
+
 .atributoGloriaTitulo {
-  font-family: 'Cinzel',serif;
-  font-size: 0.55rem;
-  letter-spacing: 0.15em;
-  color: var(--branco);
-  text-transform: uppercase;
+  font-family: 'Cinzel', serif;
+  font-size: 0.65rem;
+  letter-spacing: 0.1em;
+  color: #8c723e;
 }
+
 .atributoGloriaSimbolos {
   display: flex;
-  gap: 3px;
+  gap: 0.35rem;
 }
+
 .atributoGloriaSimbolo {
-  width: 10px;
-  height: 10px;
-  background: var(--dourado2);
+  width: 8px;
+  height: 8px;
+  border: 1px solid rgba(179, 146, 78, 0.4);
   transform: rotate(45deg);
+  background: transparent;
+  transition: all 0.2s;
 }
+
 .atributoGloriaSimbolo.aceso {
-  background: var(--dourado);
+  background: #b3924e;
+  box-shadow: 0 0 6px #b3924e;
+  border-color: #ffffff;
+}
+
+.subtituloSecao {
+  font-family: 'Cinzel', serif;
+  font-size: 0.65rem;
+  color: #8c723e;
+  letter-spacing: 0.05em;
+  display: block;
+  margin-bottom: 0.4rem;
 }
 
 .efeitos {
   display: flex;
-  gap: 0.25rem;
-  margin-top: 0.4rem;
+  gap: 0.4rem;
+  flex-wrap: wrap;
 }
+
 .efeito {
-  font-family: 'Cinzel',serif;
-  font-size: 0.48rem;
-  letter-spacing: 0.08em;
-  padding: 2px 5px;
-  border: 1px solid;
-  text-transform: uppercase;
+  font-size: 0.7rem;
+  padding: 0.15rem 0.5rem;
+  border-radius: 3px;
+  font-weight: 500;
+  background: rgba(255, 255, 255, 0.05);
+  border: 1px solid rgba(255, 255, 255, 0.1);
 }
+
 .efeito.ferido {
-  border-color: var(--vermelho);
-  color: var(--vermelho);
+  background: rgba(239, 68, 68, 0.1);
+  border-color: rgba(239, 68, 68, 0.25);
+  color: #f87171;
 }
+
 .efeito.emGloria {
-  border-color: var(--dourado2);
-  color: var(--dourado2);
+  background: rgba(179, 146, 78, 0.1);
+  border-color: rgba(179, 146, 78, 0.3);
+  color: #fcd34d;
 }

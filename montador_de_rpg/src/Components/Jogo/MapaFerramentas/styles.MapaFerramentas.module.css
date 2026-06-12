@@ -11,6 +11,10 @@
   padding: 0.35rem 0.6rem;
   z-index: 30;
   backdrop-filter: blur(4px);
+  
+  /* Trava os botões sem quebrar linha e sem encolher por pressão externa */
+  flex-wrap: nowrap !important;
+  flex-shrink: 0 !important;
 }
 .mapaFerramenta {
   background: transparent;
@@ -23,7 +27,8 @@
   cursor: pointer;
   transition: all 0.15s;
   text-transform: uppercase;
-  white-space: nowrap;
+  white-space: nowrap; /* Texto do botão fixo e legível */
+  flex-shrink: 0;
 }
 .mapaFerramenta:hover {
   color: var(--branco);
@@ -33,10 +38,4 @@
   color: var(--dourado);
   border-color: var(--dourado2);
   background: rgba(201,162,39,0.08);
-}
-.mapaFerramentasDivisor {
-  width: 1px;
-  height: 18px;
-  background: var(--fundo3);
-  margin: 0 0.2rem;
 }

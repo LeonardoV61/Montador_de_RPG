@@ -745,3 +745,11 @@
   color: #1e293b;
   font-weight: 500;
 }
+
+/* ==========================================================================
+   CONFIGURAÇÃO DINÂMICA DE ALTURA PARA O MODO JOGO
+   ========================================================================= */
+
+.canvasContainer.canvasModoJogo{
+  min-height: 83vh !important;
+}

@@ -5,14 +5,18 @@ import Anotacao from '../../PainelUser/Anotacao/Anotacao.jsx'; // Ferramenta de 
 import Diario from '../../PainelUser/Diário/Diario.jsx';     // Diário do Jogador (Campanhas/Folhas/Edição)
 
 export default function LateralHistorico({ roleAtiva }) {
-
    const [abaAtiva, setAbaAtiva] = useState("Chat");
    const [tituloAba, setTituloAba] = useState("Início da Sessão");
 
+   const anotacoesAberto = abaAtiva === "Anotacoes";
+
    return (
       <>
-      <aside className={styles.lateralHistorico}>
-         {/* Abas de Navegação Superior */}
+      {/* Placeholder: reserva 280px no fluxo flex, mantendo o .mapa sempre do mesmo tamanho */}
+      <div className={styles.lateralPlaceholder}></div>
+
+      {/* Barra real: absoluta, sempre visível, expande para a esquerda por cima do mapa */}
+      <aside className={`${styles.lateralHistorico} ${anotacoesAberto ? styles.expandido : ""}`}>
          <div className={styles.historicoAbas}>
             <button className={`${styles.historicoAba} ${(abaAtiva === "Chat") && styles.ativo}`} onClick={() => {
                setAbaAtiva("Chat");
@@ -29,27 +33,24 @@ export default function LateralHistorico({ roleAtiva }) {
                setTituloAba("Diario");
             }}>Diário</button>
 
-            {/* Nova Aba Dinâmica de Anotações adicionada ao Menu */}
             <button className={`${styles.historicoAba} ${(abaAtiva === "Anotacoes") && styles.ativo}`} onClick={() => {
                setAbaAtiva("Anotacoes");
                setTituloAba("Anotações");
             }}>Anotações</button>
          </div>
 
-         {/* Área de Exibição do Conteúdo da Aba */}
-         {abaAtiva === "Anotacoes" ? (
-            <div className={styles.containerAnotacaoDinamica}>
+         {anotacoesAberto ? (
+            <div className={`${styles.containerAnotacaoDinamica} modoJogoHistorico`}>
                {roleAtiva === "mestre" ? (
-                  /* Renderiza a ferramenta avançada do arquivo Anotacao.jsx se for Mestre */
-                  <Anotacao />
+                  <Anotacao modoJogo={true}/>
                ) : (
-                  /* Renderiza o diário focado em sessões do arquivo Diario.jsx se for Jogador */
-                  <Diario />
+                  <Diario modoJogo={true}/>
                )}
             </div>
          ) : (
-            /* Mantém o comportamento original para Chat, Rolagens e o histórico nativo */
-            <Historico aba={abaAtiva} titulo={tituloAba}/>
+            <div className={styles.historicoConteudo}>
+               <Historico aba={abaAtiva} />
+            </div>
          )}
       </aside>
       </>

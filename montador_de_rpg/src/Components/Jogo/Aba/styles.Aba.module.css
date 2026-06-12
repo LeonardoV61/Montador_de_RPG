@@ -1,31 +1,48 @@
-.aba {
-  border-bottom: 1px solid rgba(61,57,48,0.7);
-}
-.aba:last-child {
-  border-bottom: 0;
-}
-
-.aba .cabecalho {
+.trilhoBotao {
+  flex: 1;
   display: flex;
+  flex-direction: column;
   align-items: center;
-  justify-content: space-between;
-  padding: 0.6rem 0.9rem;
-  cursor: pointer;
-}
-
-.aba .cabecalhoTitulo {
-  font-family: 'Cinzel',serif;
-  font-size: 0.62rem;
-  letter-spacing: 0.2em;
-  text-transform: uppercase;
+  justify-content: center;
+  gap: 0.6rem;
+  background: transparent;
+  border: none;
+  border-bottom: 1px solid rgba(61,57,48,0.7);
   color: var(--dourado2);
+  cursor: pointer;
+  padding: 0.7rem 0;
+  font: inherit;
+  transition: background 0.15s, color 0.15s;
+}
+.trilhoBotao:last-child {
+  border-bottom: none;
+}
+.trilhoBotao:hover {
+  color: var(--dourado);
+  background: rgba(201,162,39,0.05);
+}
+.trilhoBotao.ativo {
+  color: var(--dourado);
+  background: rgba(201,162,39,0.08);
 }
 
-.aba .cabecalhoSeta {
+.trilhoIcone {
+  display: flex;
+}
+
+.trilhoTitulo {
+  font-family: 'Cinzel',serif;
   font-size: 0.6rem;
-  color: var(--cinza);
+  letter-spacing: 0.15em;
+  text-transform: uppercase;
+  writing-mode: vertical-rl;
+  text-orientation: upright;
+}
+
+.trilhoChevron {
+  color: var(--branco);
   transition: transform 0.2s;
 }
-.aba .cabecalhoSeta.aberto {
-  transform: rotate(90deg);
+.trilhoChevron.aberto {
+  transform: rotate(180deg);
 }

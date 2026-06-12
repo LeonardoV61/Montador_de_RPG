@@ -1,19 +1,12 @@
-import { useState } from 'react';
+import { ChevronRight } from 'lucide-react';
 import styles from './styles.Aba.module.css';
 
-export default function Aba(props) {
-
-    const [abaAberta, setAbaAberta] = useState(true);
-
+export default function Aba({ titulo, icone, ativo, onClick }) {
     return (
-        <>
-        <div className={styles.aba}>
-            <div className={styles.cabecalho} onClick={() => setAbaAberta(!abaAberta)}>
-                <span className={styles.cabecalhoTitulo}>{props.titulo}</span>
-                <span className={`${styles.cabecalhoSeta} ${abaAberta && styles.aberto}`}>▶</span>
-            </div>
-            { abaAberta && props.children }
-        </div>
-        </>
+        <button type="button" className={`${styles.trilhoBotao} ${ativo ? styles.ativo : ""}`} onClick={onClick}>
+            <span className={styles.trilhoIcone}>{icone}</span>
+            <span className={styles.trilhoTitulo}>{titulo}</span>
+            <ChevronRight size={14} className={`${styles.trilhoChevron} ${ativo ? styles.aberto : ""}`} />
+        </button>
     )
 }

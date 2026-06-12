@@ -5,4 +5,5 @@
   height: calc(100dvh - 42px);
   overflow: hidden;
   user-select: none;
+  position: relative; 
 }

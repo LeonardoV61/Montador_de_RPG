@@ -1,14 +1,32 @@
-.lateralHistorico {
+/* Reserva o espaço de 280px no layout flex (o .mapa nunca vê isso mudar) */
+.lateralPlaceholder {
   flex: 0 0 280px;
+}
+
+/* Barra real, sempre visível, sobreposta ao mapa quando expande */
+.lateralHistorico {
+  position: absolute;
+  top: 0;
+  right: 0;
+  height: 100%;
+  width: 280px;
   background: var(--fundo);
   border-left: 1px solid var(--dourado2);
   display: flex;
   flex-direction: column;
   overflow: hidden;
+  z-index: 60; /* acima do mapaFerramentas e da iniciativa (30) */
+  box-shadow: -8px 0 24px rgba(0,0,0,0.6);
+  transition: width 0.25s ease-in-out;
 }
+.lateralHistorico.expandido {
+  width: 850px; /* 280px da barra original + 700px de área extra para as notas */
+}
+
 .historicoAbas {
   display: flex;
   border-bottom: 1px solid var(--dourado2);
+  flex-shrink: 0;
 }
 .historicoAba {
   flex: 1;
@@ -27,10 +45,23 @@
   border-left: none;
   border-right: none;
 }
-.historicoAba .ativo {
+.historicoAba.ativo {
   color: var(--dourado);
   border-bottom-color: var(--dourado);
 }
 .historicoAba:hover:not(.ativo) {
   color: var(--branco);
+}
+
+.historicoConteudo {
+  flex: 1;
+  overflow: hidden;
+}
+
+/* Container que envelopa o componente de anotação/diário expandido */
+.containerAnotacaoDinamica {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  overflow: hidden;
 }
