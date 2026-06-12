@@ -1,10 +1,10 @@
 .navBar {
   height: 42px;
-  background: rgba(14,12,10,0.98);
+  background: rgba(14, 12, 10, 0.98);
   border-bottom: 1px solid var(--dourado2);
   display: flex;
   align-items: center;
-  justify-content: space-between;
+  justify-content: space-between; /* Distribui as 3 seções (Esquerda, Centro, Direita) */
   padding: 0 1rem;
   gap: 1rem;
   z-index: 100;
@@ -20,7 +20,9 @@
   align-items: center;
   gap: 0.5rem;
   flex-shrink: 0;
+  width: 200px; /* Largura fixa para equilibrar com o bloco da direita */
 }
+
 .logoSimbolo {
   width: 20px;
   height: 20px;
@@ -32,11 +34,13 @@
   font-size: 0.6rem;
   color: var(--dourado);
 }
+
 .logoSimbolo span {
   transform: rotate(-45deg);
   display: block;
 }
 
+/* O título agora fica no centro exato da tela */
 .titulo {
   display: flex;
   align-items: center;
@@ -45,23 +49,26 @@
   font-size: 0.65rem;
   letter-spacing: 0.1em;
   color: var(--branco);
-  margin-left: 16vw;
+  justify-content: center;
+  flex: 1; /* Ocupa o espaço central disponível */
 }
+
 .pontoAtivo {
   width: 7px;
   height: 7px;
   border-radius: 50%;
   background: #4caf69;
-  box-shadow: 0 0 6px rgba(76,175,105,0.5);
-  animation: pulsar 2s infinite;
+  box-shadow: 0 0 6px rgba(76, 175, 105, 0.6);
 }
-@keyframes pulsar {
-  0%,100% {
-    opacity: 1
-  }
-  50% {
-    opacity: .5
-  }
+
+/* NOVO: Container que agrupa a lista de jogadores colada com os botões */
+.grupoDireita {
+  display: flex;
+  align-items: center;
+  gap: 1.5rem; /* Espaçamento entre os avatares dos jogadores e o início dos botões */
+  justify-content: flex-end;
+  flex-shrink: 0;
+  width: 200px; /* Mesma largura da logo para deixar o título perfeitamente centralizado */
 }
 
 .botoes {
@@ -69,24 +76,24 @@
   align-items: center;
   gap: 0.4rem;
 }
+
 .botao {
   background: transparent;
-  border: 1px solid var(--fundo3);
-  color: var(--cinzaClaro);
-  font-family: 'Cinzel',serif;
-  font-size: 0.6rem;
-  letter-spacing: 0.1em;
-  padding: 0.3rem 0.8rem;
+  border: 1px solid transparent;
+  color: #a1a1aa;
+  font-size: 0.65rem;
+  padding: 4px 10px;
   cursor: pointer;
-  text-transform: uppercase;
-  transition: all 0.15s;
+  font-family: 'Cinzel', serif;
+  transition: all 0.2s ease;
 }
+
 .botao:hover {
+  color: var(--dourado);
+}
+
+.botao.ativo {
   border-color: var(--dourado2);
   color: var(--dourado);
-}
-.botao .ativo {
-  border-color: var(--dourado);
-  color: var(--dourado);
-  background: rgba(201,162,39,0.08);
+  background: rgba(213, 176, 110, 0.05);
 }

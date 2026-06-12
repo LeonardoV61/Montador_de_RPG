@@ -7,6 +7,13 @@ import styles from './styles.NavBar.module.css'
 export default function NavBar() {
   const navigate = useNavigate();
   const [scrolled, setScrolled] = useState(false);
+  
+      function handleLogout() {
+          localStorage.removeItem("authenticated");
+          localStorage.removeItem("perfil_rpg");
+          navigate("/");
+      }
+
 
   useEffect(() => {
     const handleScroll = () => {
@@ -35,7 +42,7 @@ export default function NavBar() {
             <li><Link to="/" onClick={() => Location.reload()}>Mesa</Link></li>
           </div>
         </div>
-        <button className={`${styles.btnDouradoCheio} ${styles.link}`} onClick={() => navigate('/jogo')}>Perfil</button>
+          <button className={styles.btnDouradoCheio} onClick={handleLogout}> Sair </button>
     </nav>
     </>
   )

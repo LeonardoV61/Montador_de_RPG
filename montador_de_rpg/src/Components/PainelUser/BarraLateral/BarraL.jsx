@@ -1,16 +1,13 @@
-import { useNavigate } from "react-router-dom";
 import { LayoutDashboard, Users, User, Map, Album, Sparkles,  PawPrint, BookOpen, Skull, Gem, Backpack } from "lucide-react";
 import Heron from "../../../assets/perfil/Heron.png"
 import styles from "./styles.BarraL.module.css";
+import { useEffect } from "react";
 
 export default function BarraL({ roleAtiva, setRoleAtiva, menuAtivo, setMenuAtivo, nome, imagem, zoom, posX, posY}){
-    const navigate = useNavigate();
 
-    function handleLogout() {
-        localStorage.removeItem("authenticated");
-        localStorage.removeItem("perfil_rpg");
-        navigate("/");
-    }
+    useEffect(() => {
+        setMenuAtivo("dashboard");
+        }, [roleAtiva, setMenuAtivo]);
 
     return(
         <>
@@ -83,9 +80,6 @@ export default function BarraL({ roleAtiva, setRoleAtiva, menuAtivo, setMenuAtiv
                         Itens & Loot
                     </a>
 
-                    <button className={styles.btnDouradoCheio} onClick={handleLogout}>
-                        Sair
-                    </button>
                 </div> ) : (
                 <div className={styles.menu}>
                     <p className={styles.menuTitle}>PRINCIPAL</p>
@@ -132,9 +126,7 @@ export default function BarraL({ roleAtiva, setRoleAtiva, menuAtivo, setMenuAtiv
                         Inventário
                     </a>
 
-                    <button className={styles.btnDouradoCheio} onClick={handleLogout}>
-                        Sair
-                    </button>
+                 
                 </div> )}
             </div>
           </aside>

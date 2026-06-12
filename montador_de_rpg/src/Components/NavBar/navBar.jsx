@@ -45,7 +45,7 @@ export default function NavBar() {
         ):(
           <div className={styles.links}>
               <li><Link to="/login" onClick={() => Location.reload()}>Entrar</Link></li>
-              <button className={`${styles.btnDouradoCheio} ${styles.link}`} onClick={() => navigate('/jogo')}>Jogar Agora</button>
+              <button className={`${styles.btnDouradoCheio} ${styles.link}`} onClick={() => navigate('/login')}>Jogar Agora</button>
           </div>
         )}
     </nav>

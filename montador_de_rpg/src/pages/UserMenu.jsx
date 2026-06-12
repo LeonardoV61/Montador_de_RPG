@@ -65,7 +65,7 @@ export default function UserMenu() {
               <Recepcao nome={nome}/>
               <IndicadorC />
               <section className={styles.grid}>
-                <CampanhasP />
+                <CampanhasP roleAtiva={roleAtiva}/>
                 <AmigoP />
                 <TarefaP />
                 <AtividadeP />

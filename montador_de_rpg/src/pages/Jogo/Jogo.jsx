@@ -9,7 +9,7 @@ import LateralHistorico from '../../Components/Jogo/LateralHistorico/LateralHist
 export const ContextoRegistros = createContext(null);
 
 export default function Jogo() {
-
+   const roleNaSessao = localStorage.getItem("role_sessao_ativa") || "jogador";
    const [registros, setRegistros] = useState([
       {
          "id": 1,
@@ -75,16 +75,17 @@ export default function Jogo() {
       }
    ]);
 
-   return (
+  return (
       <>
-        <NavBarJogo />
-        <ContextoRegistros.Provider value={{registros, setRegistros}}>
+         <NavBarJogo />
+         <ContextoRegistros.Provider value={{ registros, setRegistros }}>
             <div className={styles.jogo}>
-                <LateralPersonagem />
-                <Mapa />
-                <LateralHistorico />
+               <LateralPersonagem />
+               <Mapa />
+               {/* 2. Repassa a role obtida para o seu componente de histórico lateral */}
+               <LateralHistorico roleAtiva={roleNaSessao} />
             </div>
-        </ContextoRegistros.Provider>
-      </>
-   )
+         </ContextoRegistros.Provider>
+     </>
+   );
 }

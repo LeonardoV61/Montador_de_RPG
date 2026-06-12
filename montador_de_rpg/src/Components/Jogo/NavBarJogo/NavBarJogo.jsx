@@ -14,8 +14,6 @@ export default function NavBarJogo() {
          <NavBarJogadores />
          <div className={styles.botoes}>
             <button className={`${styles.botao} ${(abaAtiva == "Mapa") && styles.ativo}`} onClick={() => setAbaAtiva("Mapa")}>Mapa</button>
-            <button className={`${styles.botao} ${(abaAtiva == "Notas") && styles.ativo}`} onClick={() => setAbaAtiva("Notas")}>Notas</button>
-            <button className={`${styles.botao} ${(abaAtiva == "Fichas") && styles.ativo}`} onClick={() => setAbaAtiva("Fichas")}>Fichas</button>
             <button className={`${styles.botao} ${(abaAtiva == "Config") && styles.ativo}`} onClick={() => setAbaAtiva("Config")}>⚙</button>
          </div>
       </header>
