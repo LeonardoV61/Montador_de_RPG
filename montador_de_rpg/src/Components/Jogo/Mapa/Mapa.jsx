@@ -4,10 +4,15 @@ import styles from './styles.Mapa.module.css';
 import MapaFerramentas from '../MapaFerramentas/MapaFerramentas.jsx';
 import AvatarPersonagem from '../AvatarPersonagem/AvatarPersonagem.jsx'
 import MenuContexto from '../MenuContexto/MenuContexto';
+import { ContextoAbasPersonagem } from '../../../pages/Jogo/Jogo.jsx';
 
 export const ContextoAvatar = createContext(null);
 
 export default function Mapa() {
+
+   const { abasAbertas } = useContext(ContextoAbasPersonagem);
+   const dadosAberta = !!abasAbertas?.Dados;
+   const anotacoesAberta = !!abasAbertas?.Anotacoes;
 
    const [contextoAberto, setContextoAberto] = useState(false)
    const [avatarSelecionado, setAvatarSelecionado] = useState("Aldric")
@@ -84,6 +89,7 @@ export default function Mapa() {
    function canvasMouseUp(e) { dragging = false; };
    const [ctxMenuX, setCtxMenuX] = useState(0);
    const [ctxMenuY, setCtxMenuY] = useState(0);
+   const { abasPersonagemAbertas } = useContext(ContextoAbasPersonagem);
    function canvasCtxMenu(e) {
       e.preventDefault();
       setCtxMenuX(e.clientX>window.innerWidth/2?e.clientX-172:e.clientX)
@@ -120,7 +126,7 @@ export default function Mapa() {
       </ContextoAvatar.Provider>
 
       {/* <!-- iniciativa --> */}
-      <div className={styles.iniciativa}>
+      <div className={`${styles.iniciativa} ${anotacoesAberta ? styles.iniciativaDeslocada : ""}`}>
          <div className={styles.iniciativaTitulo}>Iniciativa</div>
          <div className={`${styles.iniciativaPersonagem} ${styles.atual}`}><div className={`${styles.iniciativaPonto} ${styles.jogador}`}></div><span className={styles.iniciativaNome}>Aldric</span><span className={styles.iniciativaNum}>18</span></div>
          <div className={styles.iniciativaPersonagem}><div className={`${styles.iniciativaPonto} ${styles.inimigo}`}></div><span className={styles.iniciativaNome}>Guarda 1</span><span className={styles.iniciativaNum}>14</span></div>
@@ -129,10 +135,10 @@ export default function Mapa() {
          <div className={styles.iniciativaPersonagem}><div className={`${styles.iniciativaPonto} ${styles.npc}`}></div><span className={styles.iniciativaNome}>Ancião</span><span className={styles.iniciativaNum}>3</span></div>
       </div>
 
-      <div className={styles.mapaZoom}>
-         <button className={styles.zoomBotao} /* onClick="zoomMap(1.2)" */>+</button>
-         <button className={styles.zoomBotao} /* onClick="zoomMap(0.83)" */>−</button>
-         <button className={styles.zoomBotao} /* onClick="resetMapView()" title="Reset" */>⌖</button>
+      <div className={`${styles.mapaZoom} ${dadosAberta ? styles.mapaZoomDeslocado : ""}`}>
+         <button className={styles.zoomBotao}>+</button>
+         <button className={styles.zoomBotao}>−</button>
+         <button className={styles.zoomBotao}>⌖</button>
       </div>
       <div className={styles.nomeCena}>Região de Bastionland · Mapa Hexagonal</div>
    </main>
@@ -140,3 +146,4 @@ export default function Mapa() {
    </>
   )
 }
+   

@@ -1,37 +1,9 @@
 .lateralPersonagem {
-  flex: 0 0 300px;
-  width: 300px;
-  height: 100%;
-  background: var(--fundo);
-  border-right: 1px solid var(--dourado2);
-  display: flex;
-  flex-direction: row;
-  overflow: hidden;
-  position: relative;
-}
-
-/* Faixa fina sempre visível, encostada na borda esquerda */
-.trilho {
   flex: 0 0 40px;
   width: 40px;
+  height: 100%;
   display: flex;
   flex-direction: column;
-  border-right: 1px solid rgba(61,57,48,0.7);
-}
-
-/* Painel que expande para a direita da faixa, sobrepondo o resto */
-.painel {
-  flex: 0 0 0px;
-  width: 0;
-  overflow: hidden;
-  transition: flex-basis 0.25s ease, width 0.25s ease;
-}
-.painelAberto {
-  flex: 0 0 260px;
-  width: 260px;
-}
-
-.painelConteudo {
-  width: 260px;
-  height: 100%;
+  position: relative;
+  border-right: 1px solid var(--dourado2);
 }

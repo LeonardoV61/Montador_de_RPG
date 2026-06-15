@@ -24,7 +24,13 @@
   flex-direction: column;
   gap: 2px;
   z-index: 30;
+  transition: left 0.25s ease;
 }
+
+.mapaZoomDeslocado {
+  left: calc(260px + 1rem);
+}
+
 .zoomBotao {
   width: 28px;
   height: 28px;
@@ -45,7 +51,7 @@
 .nomeCena {
   position: absolute;
   bottom: 1rem;
-  left: 50%;
+  left: calc(50vw - 40px + 1vw);
   transform: translateX(-50%);
   font-family: 'Cinzel',serif;
   font-size: 0.58rem;
@@ -72,6 +78,16 @@
   flex-direction: column;
   gap: 0.3rem;
   min-width: 120px;
+  transition: right 0.25s ease-in-out; 
+}
+
+.iniciativaDeslocada {
+  /* Explicação do cálculo: 
+     A barra expandida mede 850px, mas 280px já estão reservados no fluxo.
+     Subtraímos os 280px para descobrir quanto ela avançou por cima do mapa (570px).
+     Somamos 0.7rem (a margem original) para ela ficar coladinha à esquerda da nova borda.
+  */
+  right: calc(570px + 0.7rem);
 }
 .iniciativaTitulo {
   font-family: 'Cinzel',serif;

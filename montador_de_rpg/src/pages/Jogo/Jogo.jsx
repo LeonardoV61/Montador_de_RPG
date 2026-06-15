@@ -1,12 +1,13 @@
 import { useState, useEffect } from 'react';
 import { createContext, useContext } from 'react';
 import styles from './styles.Jogo.module.css';
-import NavBarJogo from '../../Components/Jogo/NavBarJogo/NavBarJogo.jsx'
-import LateralPersonagem from '../../Components/Jogo/LateralPersonagem/LateralPersonagem.jsx'
-import Mapa from '../../Components/Jogo/Mapa/Mapa.jsx'
-import LateralHistorico from '../../Components/Jogo/LateralHistorico/LateralHistorico.jsx'
+import NavBarJogo from '../../Components/Jogo/NavBarJogo/NavBarJogo.jsx';
+import LateralPersonagem from '../../Components/Jogo/LateralPersonagem/LateralPersonagem.jsx';
+import Mapa from '../../Components/Jogo/Mapa/Mapa.jsx';
+import LateralHistorico from '../../Components/Jogo/LateralHistorico/LateralHistorico.jsx';
 
 export const ContextoRegistros = createContext(null);
+export const ContextoAbasPersonagem = createContext(null);
 
 export default function Jogo() {
    const roleNaSessao = localStorage.getItem("role_sessao_ativa") || "jogador";
@@ -81,16 +82,31 @@ export default function Jogo() {
       }
    ]);
 
-  return (
+   const [abasAbertas, setAbasAbertas] = useState({});
+
+   function definirAbaAberta(id, aberto) {
+      setAbasAbertas(prev => ({ ...prev, [id]: aberto }));
+   }
+
+   return (
       <>
          <NavBarJogo roleAtiva={roleNaSessao}/>
          <ContextoRegistros.Provider value={{ registros, setRegistros }}>
-            <div className={styles.jogo}>
-               <LateralPersonagem />
-               <Mapa />
-               <LateralHistorico roleAtiva={roleNaSessao} />
-            </div>
+            <ContextoAbasPersonagem.Provider value={{ abasAbertas, definirAbaAberta }}>
+               <div className={styles.jogo}>
+                  <LateralPersonagem />
+                  <Mapa />
+                  <LateralHistorico roleAtiva={roleNaSessao} />
+               </div>
+            </ContextoAbasPersonagem.Provider>
          </ContextoRegistros.Provider>
-     </>
+      </>
    );
 }
+
+
+
+
+
+
+

@@ -1,14 +1,22 @@
-import { useState } from 'react';
+import { useState, useContext, useEffect } from 'react';
 import styles from './styles.LateralHistorico.module.css';
 import Historico from '../Historico/Historico.jsx';
 import Anotacao from '../../PainelUser/Anotacao/Anotacao.jsx'; // Ferramenta de Anotações para Mestres
 import Diario from '../../PainelUser/Diário/Diario.jsx';     // Diário do Jogador (Campanhas/Folhas/Edição)
+import { ContextoAbasPersonagem } from '../../../pages/Jogo/Jogo.jsx';
 
 export default function LateralHistorico({ roleAtiva }) {
    const [abaAtiva, setAbaAtiva] = useState("Chat");
    const [tituloAba, setTituloAba] = useState("Início da Sessão");
 
+   // 1. Puxar a função de avisar o contexto global
+   const { definirAbaAberta } = useContext(ContextoAbasPersonagem);
    const anotacoesAberto = abaAtiva === "Anotacoes";
+
+   // 2. Efeito para sincronizar o estado da aba "Anotacoes" com o contexto global
+   useEffect(() => {
+      definirAbaAberta("Anotacoes", anotacoesAberto);
+   }, [anotacoesAberto, definirAbaAberta]);
 
    return (
       <>

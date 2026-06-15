@@ -1,7 +1,7 @@
 .mapaFerramentas {
   position: absolute;
   top: 0.7rem;
-  left: 50%;
+  left: calc(50vw - 40px);
   transform: translateX(-50%);
   display: flex;
   align-items: center;
@@ -16,6 +16,7 @@
   flex-wrap: nowrap !important;
   flex-shrink: 0 !important;
 }
+
 .mapaFerramenta {
   background: transparent;
   border: 1px solid transparent;

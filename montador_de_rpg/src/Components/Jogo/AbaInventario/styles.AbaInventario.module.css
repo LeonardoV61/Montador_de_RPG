@@ -9,7 +9,7 @@
 /* CAIXA DE BUSCA PREMEDITADA */
 .cabecalhoInventario {
   padding: 0.5rem 0.7rem;
-  background: rgba(0, 0, 0, 0.15);
+  background:  rgba(10, 8, 7, 0.4);
 }
 
 .caixaPesquisaGeral {
@@ -44,6 +44,7 @@
 .abaInventario {
   flex: 1;
   padding: 0.5rem 0.6rem;
+  background: rgba(10, 8, 7, 0.4);
   overflow-y: auto;
   scrollbar-width: thin;
   scrollbar-color: var(--fundo3, #5a4522) transparent;
@@ -168,7 +169,7 @@
 .cardDetalhesPopup {
   position: absolute;
   top: 5px;
-  left: 295px; /* Alinhado perfeitamente com a barra lateral de 290px */
+  left: 305px; /* Alinhado perfeitamente com a barra lateral de 290px */
   width: 265px; 
   background: #0d0a08; 
   border: 1px solid var(--dourado2, #b3924e);
