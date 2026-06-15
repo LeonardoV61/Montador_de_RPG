@@ -1,0 +1,168 @@
+.navBar {
+  height: 42px;
+  background: rgba(14, 12, 10, 0.98);
+  border-bottom: 1px solid var(--dourado2);
+  display: flex;
+  align-items: center;
+  justify-content: space-between; /* Distribui as 3 seções (Esquerda, Centro, Direita) */
+  padding: 0 1rem;
+  gap: 1rem;
+  z-index: 100;
+}
+
+.logo {
+  font-family: 'Cinzel', serif;
+  font-size: 0.72rem;
+  font-weight: 700;
+  color: var(--dourado);
+  letter-spacing: 0.15em;
+  display: flex;
+  align-items: center;
+  gap: 0.6rem; /* Espaço ideal entre a imagem e o texto */
+  flex-shrink: 0;
+  width: 200px; /* Largura fixa para equilibrar com o bloco da direita */
+}
+
+/* Controla o tamanho ideal da imagem para a barra de 42px */
+.logoImg {
+  height: 44px;       /* Aumentado de 24px para 34px (quase o limite da barra) */
+  width: auto;        /* Mantém a proporção da imagem */
+  object-fit: contain;
+  display: block;
+}
+
+/* O título agora fica no centro exato da tela */
+.titulo {
+  display: flex;
+  align-items: center;
+  gap: 0.6rem;
+  font-family: 'Cinzel', serif;
+  font-size: 0.65rem;
+  letter-spacing: 0.1em;
+  color: var(--branco);
+  justify-content: center;
+  flex: 1; /* Ocupa o espaço central disponível */
+}
+
+.pontoAtivo {
+  width: 7px;
+  height: 7px;
+  border-radius: 50%;
+  background: #4caf69;
+  box-shadow: 0 0 6px rgba(76, 175, 105, 0.6);
+}
+
+/* NOVO: Container que agrupa a lista de jogadores colada com os botões */
+.grupoDireita {
+  display: flex;
+  align-items: center;
+  gap: 1.5rem; /* Espaçamento entre os avatares dos jogadores e o início dos botões */
+  justify-content: flex-end;
+  flex-shrink: 0;
+  width: 200px; /* Mesma largura da logo para deixar o título perfeitamente centralizado */
+}
+
+.botoes {
+  display: flex;
+  align-items: center;
+  gap: 0.4rem;
+}
+
+.botao {
+  background: transparent;
+  border: 1px solid transparent;
+  color: #a1a1aa;
+  font-size: 0.65rem;
+  padding: 4px 10px;
+  cursor: pointer;
+  font-family: 'Cinzel', serif;
+  transition: all 0.2s ease;
+}
+
+.botao:hover {
+  color: var(--dourado);
+}
+
+.botao.ativo {
+  border-color: var(--dourado2);
+  color: var(--dourado);
+  background: rgba(213, 176, 110, 0.05);
+}
+
+/*
+navBarP
+*/
+
+.jogadores {
+  display: flex;
+  align-items: center;
+  gap: 0.4rem;
+  flex-shrink: 0;
+}
+.jogador {
+  width: 26px;
+  height: 26px;
+  border-radius: 50%;
+  border: 1.5px solid var(--dourado2);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-family: 'Cinzel',serif;
+  font-size: 0.55rem;
+  color: var(--branco);
+  background: var(--fundo2);
+  cursor: pointer;
+  transition: border-color 0.15s;
+  position: relative;
+}
+.jogador.mestre {
+  background: rgba(201,162,39,0.15);
+  border-color: var(--dourado);
+  color: var(--dourado);
+}
+.jogador.standby {
+  background: rgba(0, 0, 0, 0.4); /* Ajuste de acordo com o seu var(--fundo2) */
+  color: rgba(255, 255, 255, 0.3); /* Texto mais apagado */
+  border-color: rgba(var(--douradoRGB), 0.4);
+}
+.jogador.ausente {
+  background: rgba(0, 0, 0, 0.4); /* Ajuste de acordo com o seu var(--fundo2) */
+  color: rgba(255, 255, 255, 0.3); /* Texto mais apagado */
+  border-color: rgba(128, 128, 128, 0.4);
+}
+
+.jogador .online {
+  position: absolute;
+  bottom: -1px;
+  right: -1px;
+  width: 7px;
+  height: 7px;
+  border-radius: 50%;
+  background: #4caf69;
+  border: 1px solid var(--fundo);
+}
+
+.jogador.standby .fk {
+  opacity: 1; 
+  position: absolute;
+  bottom: -1px;
+  right: -1px;
+  width: 7px;
+  height: 7px;
+  border-radius: 50%;
+  background: #af814c;
+  border: 1px solid var(--fundo);
+}
+
+.jogador.ausente .offline {
+  opacity: 1; 
+  position: absolute;
+  bottom: -1px;
+  right: -1px;
+  width: 7px;
+  height: 7px;
+  border-radius: 50%;
+  background: #af4c4c;
+  border: 1px solid var(--fundo);
+}
+

@@ -1,7 +1,7 @@
 import { useState, useEffect } from 'react';
 import { createContext, useContext } from 'react';
 import styles from './styles.Jogo.module.css';
-import NavBarJogo from '../../Components/Jogo/NavBarJogo/NavBarJogo.jsx';
+import NavBarJogo from '../../Components/NavBar/navBarG.jsx';
 import LateralPersonagem from '../../Components/Jogo/LateralPersonagem/LateralPersonagem.jsx';
 import Mapa from '../../Components/Jogo/Mapa/Mapa.jsx';
 import LateralHistorico from '../../Components/Jogo/LateralHistorico/LateralHistorico.jsx';

@@ -168,7 +168,7 @@
 /* MODAL LATERAL - DESIGN ORIGINAL COMPLETAMENTE PRESERVADO */
 .cardDetalhesPopup {
   position: absolute;
-  top: 5px;
+  top: -25px;
   left: 305px; /* Alinhado perfeitamente com a barra lateral de 290px */
   width: 265px; 
   background: #0d0a08; 

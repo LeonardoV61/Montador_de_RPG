@@ -1,7 +1,7 @@
 import { useState, useEffect } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
 import logo from '../../assets/Hydra.png';
-import styles from './styles.NavBar.module.css'
+import styles from './styles.navBar.module.css'
 
 
 export default function NavBar() {
