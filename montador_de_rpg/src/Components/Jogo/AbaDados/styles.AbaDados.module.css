@@ -42,6 +42,14 @@
   border: 1px solid var(--dourado2);
   padding: 0.4rem 0.6rem;
 }
+
+/* FIX: classe rolamentoIcone adicionada — estava referenciada no JSX mas ausente no CSS */
+.rolamentoIcone {
+  font-size: 1.1rem;
+  line-height: 1;
+  flex-shrink: 0;
+}
+
 .rolamentoTipo {
   font-family: 'Cinzel',serif;
   font-size: 0.6rem;

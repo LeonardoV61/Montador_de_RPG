@@ -1,149 +1,155 @@
-import { useState, useEffect, useRef } from 'react';
-import { createContext, useContext } from 'react';
+import { useState, useEffect, useRef, useContext } from 'react';
+import { createContext } from 'react';
+import { Canvas } from '@react-three/fiber';
+import { Physics } from '@react-three/cannon';
 import styles from './styles.Mapa.module.css';
 import MapaFerramentas from '../MapaFerramentas/MapaFerramentas.jsx';
-import AvatarPersonagem from '../AvatarPersonagem/AvatarPersonagem.jsx'
+import AvatarPersonagem from '../AvatarPersonagem/AvatarPersonagem.jsx';
 import MenuContexto from '../MenuContexto/MenuContexto';
-import { ContextoAbasPersonagem } from '../../../pages/Jogo/Jogo.jsx';
+import { ContextoAbasPersonagem, ContextoRegistros, ContextoMesaFisica } from '../../../pages/Jogo/Jogo.jsx';
+import { DadoFisicoPoliedro, MoedaFisica, ChaoMesa } from '../AbaDados/MesaFisica';
+import api from '../../../utils/api';
 
 export const ContextoAvatar = createContext(null);
 
 export default function Mapa() {
-
    const { abasAbertas } = useContext(ContextoAbasPersonagem);
    const dadosAberta = !!abasAbertas?.Dados;
    const anotacoesAberta = !!abasAbertas?.Anotacoes;
 
-   const [contextoAberto, setContextoAberto] = useState(false)
-   const [avatarSelecionado, setAvatarSelecionado] = useState("Aldric")
+   const [contextoAberto, setContextoAberto] = useState(false);
+   const [avatarSelecionado, setAvatarSelecionado] = useState("Aldric");
 
-   const canvasRef =  useRef(null)
-   let canvas, canvasCtx2d
-   useEffect(() => {
-      canvas = canvasRef.current;
-      canvasCtx2d = canvas.getContext('2d');
-   })
+   const canvasRef = useRef(null);
+   const canvasCtx2d = useRef(null);
    
-   const HEX_SIZE = 54; // radius
-   let mapOffsetX = 0, mapOffsetY = 0, mapScale = 1;
-
-
-   // Map interaction
-   let dragging = false, dragStartX, dragStartY;
-
-   function canvasWheel(e) {e => 
-      e.preventDefault();
-      const escala = e.deltaY < 0 ? 1.1 : 0.91;
-      mapScale = Math.min(Math.max(mapScale * escala, 0.35), 3); //possibilidade de substituir por Math.clamp(mapScale * escala, 0.35, 3)
-      drawHexMap();
-   }
-   function canvasClick(e) {
-      if (Math.abs(e.clientX - (dragStartX + mapOffsetX)) < 4 &&
-            Math.abs(e.clientY - (dragStartY + mapOffsetY)) < 4) {
-         /* const mapEl = document.getElementById('map');
-         const rect = mapEl.getBoundingClientRect();
-         const mx = (e.clientX - rect.left - mapEl.clientWidth/2 - mapOffsetX) / mapScale;
-         const my = (e.clientY - rect.top - mapEl.clientHeight/2 - mapOffsetY) / mapScale;
-         const cols=9,rows=9,w=HEX_SIZE*Math.sqrt(3),h=HEX_SIZE*2,totalW=cols*w,totalH=rows*h*0.75;
-         const adjX = mx + totalW/2, adjY = my + totalH/2;
-         const hex = pixelToHex(adjX - w/2, adjY - HEX_SIZE);
-         if (hex) {
-            selectedHex = hex;
-            if (currentTool === 'fog') {
-            const key = `${hex[0]},${hex[1]}`;
-            if (revealed.has(key)) { revealed.delete(key); partialFog.add(key); }
-            else if (partialFog.has(key)) { partialFog.delete(key); }
-            else { revealed.add(key); }
-            }
-            drawHexMap();
-         } */
+   useEffect(() => {
+      if (canvasRef.current) {
+         canvasCtx2d.current = canvasRef.current.getContext('2d');
       }
-   };
-   function canvasMouseDown(e) {
-      if (e.button === 0) {
-         dragging = true;
-         dragStartX = e.clientX - mapOffsetX;
-         dragStartY = e.clientY - mapOffsetY;
-      }
-   };
-   function canvasMouseMove(e) {
-      if (dragging) {
-         mapOffsetX = e.clientX - dragStartX;
-         mapOffsetY = e.clientY - dragStartY;
-         drawHexMap();
-      } else {
-         // hover
-         /* const mapEl = document.getElementById('map');
-         const rect = mapEl.getBoundingClientRect();
-         const mx = (e.clientX - rect.left - mapEl.clientWidth/2 - mapOffsetX) / mapScale;
-         const my = (e.clientY - rect.top - mapEl.clientHeight/2 - mapOffsetY) / mapScale;
-         const w = HEX_SIZE * Math.sqrt(3);
-         const cols=9,rows=9,h=HEX_SIZE*2,totalW=cols*w,totalH=rows*h*0.75;
-         const adjX = mx + totalW/2, adjY = my + totalH/2;
-         const hov = pixelToHex(adjX - w/2, adjY - HEX_SIZE);
-         const changed = JSON.stringify(hov) !== JSON.stringify(hoveredHex);
-         hoveredHex = hov;
-         if (changed) drawHexMap(); */
-      }
-   };
-   function canvasMouseUp(e) { dragging = false; };
+   }, []);
+   
+   const HEX_SIZE = 54;
+   const mapOffsetX = useRef(0);
+   const mapOffsetY = useRef(0);
+   const mapScale = useRef(1);
+   const dragging = useRef(false);
+   const dragStartX = useRef(0);
+   const dragStartY = useRef(0);
+
+   function drawHexMap() { if (!canvasCtx2d.current) return; }
+   function canvasWheel(e) { e.preventDefault(); drawHexMap(); }
+   function canvasClick(e) {}
+   function canvasMouseDown(e) { if (e.button === 0) { dragging.current = true; } }
+   function canvasMouseMove(e) { if (dragging.current) { drawHexMap(); } }
+   function canvasMouseUp() { dragging.current = false; }
+
    const [ctxMenuX, setCtxMenuX] = useState(0);
    const [ctxMenuY, setCtxMenuY] = useState(0);
-   const { abasPersonagemAbertas } = useContext(ContextoAbasPersonagem);
+
    function canvasCtxMenu(e) {
       e.preventDefault();
-      setCtxMenuX(e.clientX>window.innerWidth/2?e.clientX-172:e.clientX)
-      setCtxMenuY(e.clientY>window.innerHeight/2?e.clientY-165:e.clientY)
+      setCtxMenuX(e.clientX > window.innerWidth / 2 ? e.clientX - 172 : e.clientX);
+      setCtxMenuY(e.clientY > window.innerHeight / 2 ? e.clientY - 165 : e.clientY);
       setContextoAberto(true);
    }
-   document.addEventListener('click', () => setContextoAberto(false))
 
-   function zoomMap(f) { mapScale = Math.min(Math.max(mapScale*f, 0.35), 3); drawHexMap(); }
-   function resetMapView() { mapOffsetX=0; mapOffsetY=0; mapScale=1; drawHexMap(); }
-   
-   // Resize observer
-   /* const ro = new ResizeObserver(() => drawHexMap());
-   ro.observe(document.getElementById('map')); */
+   // --- CAPTURA DE RESULTADO DA MESA FÍSICA ---
+   const { registros, setRegistros } = useContext(ContextoRegistros);
+   const { dadosAtivosNaMesa, setDadosAtivosNaMesa, setResultado, setTipoRolamento } = useContext(ContextoMesaFisica);
 
-   // Initial draw
-   /* setTimeout(drawHexMap, 50); */
+   async function handleDadoParou(id, valorReal, lados) {
+      const nomeDado = lados === 2 ? "Moeda" : 'd' + lados;
+      
+      setTipoRolamento(nomeDado);
+      setResultado(valorReal);
+
+      let novoRoll = {
+         id: registros.length + 1,
+         aba: "Roll",
+         icone: lados === 2 ? "🪙" : "🎲",
+         autor: "VOCÊ",
+         tipo: nomeDado,
+         valor: valorReal,
+         dado: nomeDado,
+         valorAtributo: false
+      };
+
+      try {
+         await api.post('/jogadas/rolar', { dado: nomeDado, resultado: valorReal });
+      } catch (err) {
+         console.error("Erro ao salvar jogada:", err);
+      }
+
+      setRegistros(prev => [...prev, novoRoll]);
+
+      // Remove o dado da tela após alguns segundos de contemplação do resultado
+      setTimeout(() => {
+         setDadosAtivosNaMesa(prev => prev.filter(d => d.id !== id));
+      }, 5000);
+   }
 
    return (
-   <>
-   <main className={styles.mapa} id="map" onClick={() => setContextoAberto(false)}>
-      <canvas ref={canvasRef} className={styles.mapaHexagonal} onWheel={(e) => canvasWheel(e)} onClick={(e) => canvasClick(e)}
-      onMouseDown={(e) => canvasMouseDown(e)} onMouseMove={(e) => canvasMouseMove(e)} onMouseUp={(e) => canvasMouseUp(e)}
-      onContextMenu={(e) => canvasCtxMenu(e)} ></canvas>
+      <main className={styles.mapa} id="map" onClick={() => setContextoAberto(false)}>
+         <canvas 
+            ref={canvasRef} 
+            className={styles.mapaHexagonal} 
+            onWheel={canvasWheel} onClick={canvasClick}
+            onMouseDown={canvasMouseDown} onMouseMove={canvasMouseMove} onMouseUp={canvasMouseUp}
+            onContextMenu={canvasCtxMenu} 
+         />
 
-      <MapaFerramentas />
+         {/* CAMADA INVISÍVEL 3D - NÃO BLOQUEIA O FUNDO DO MAPA */}
+         <div style={{
+            position: 'absolute',
+            top: 0, left: 0, width: '100%', height: '100%',
+            zIndex: 25,
+            pointerEvents: dadosAtivosNaMesa.length > 0 ? 'auto' : 'none'
+         }}>
+            {dadosAtivosNaMesa.length > 0 && (
+               <Canvas camera={{ position: [0, 5.5, 5.5], fov: 40 }} shadows gl={{ alpha: true }} onContextMenu={(e) => e.preventDefault()}>
+                  {/* Iluminação de Estúdio Fotográfico para dar Brilho na Resina */}
+                  <ambientLight intensity={0.6} />
+                  <pointLight position={[8, 12, 8]} castShadow intensity={1.5} shadow-mapSize={[2048, 2048]} />
+                  <directionalLight position={[-5, 8, -2]} intensity={0.4} />
+                  
+                  <Physics gravity={[0, -12, 0]}>
+                     <ChaoMesa />
+                     {dadosAtivosNaMesa.map((dado) => (
+                        dado.lados === 2 ? (
+                           <MoedaFisica key={dado.id} position={dado.posicao} onStopped={(val) => handleDadoParou(dado.id, val, dado.lados)} />
+                        ) : (
+                           <DadoFisicoPoliedro key={dado.id} lados={dado.lados} position={dado.posicao} onStopped={(val) => handleDadoParou(dado.id, val, dado.lados)} />
+                        )
+                     ))}
+                  </Physics>
+               </Canvas>
+            )}
+         </div>
 
-      <ContextoAvatar.Provider value={{avatarSelecionado, setAvatarSelecionado}}>
-         <AvatarPersonagem tipo="jogador" nome="Aldric" icone="⚔" porcentagemHP="67"/>
-         <AvatarPersonagem tipo="jogador" nome="Sena" icone="🏹" porcentagemHP="100"/>
-         <AvatarPersonagem tipo="inimigo" nome="Guarda 1" icone="💀" porcentagemHP="30"/>
-         <AvatarPersonagem tipo="inimigo" nome="Guarda 2" icone="💀" porcentagemHP="80"/>
-         <AvatarPersonagem tipo="npc" nome="Ancião" icone="🧙" porcentagemHP="100"/>
-      </ContextoAvatar.Provider>
+         <MapaFerramentas />
 
-      {/* <!-- iniciativa --> */}
-      <div className={`${styles.iniciativa} ${anotacoesAberta ? styles.iniciativaDeslocada : ""}`}>
-         <div className={styles.iniciativaTitulo}>Iniciativa</div>
-         <div className={`${styles.iniciativaPersonagem} ${styles.atual}`}><div className={`${styles.iniciativaPonto} ${styles.jogador}`}></div><span className={styles.iniciativaNome}>Aldric</span><span className={styles.iniciativaNum}>18</span></div>
-         <div className={styles.iniciativaPersonagem}><div className={`${styles.iniciativaPonto} ${styles.inimigo}`}></div><span className={styles.iniciativaNome}>Guarda 1</span><span className={styles.iniciativaNum}>14</span></div>
-         <div className={styles.iniciativaPersonagem}><div className={`${styles.iniciativaPonto} ${styles.jogador}`}></div><span className={styles.iniciativaNome}>Sena</span><span className={styles.iniciativaNum}>11</span></div>
-         <div className={styles.iniciativaPersonagem}><div className={`${styles.iniciativaPonto} ${styles.inimigo}`}></div><span className={styles.iniciativaNome}>Guarda 2</span><span className={styles.iniciativaNum}>7</span></div>
-         <div className={styles.iniciativaPersonagem}><div className={`${styles.iniciativaPonto} ${styles.npc}`}></div><span className={styles.iniciativaNome}>Ancião</span><span className={styles.iniciativaNum}>3</span></div>
-      </div>
+         <ContextoAvatar.Provider value={{avatarSelecionado, setAvatarSelecionado}}>
+            <AvatarPersonagem tipo="jogador" nome="Aldric" icone="⚔" porcentagemHP="67"/>
+            <AvatarPersonagem tipo="jogador" nome="Sena" icone="🏹" porcentagemHP="100"/>
+            <AvatarPersonagem tipo="inimigo" nome="Guarda 1" icone="💀" porcentagemHP="30"/>
+            <AvatarPersonagem tipo="inimigo" nome="Guarda 2" icone="💀" porcentagemHP="80"/>
+            <AvatarPersonagem tipo="npc" nome="Ancião" icone="🧙" porcentagemHP="100"/>
+         </ContextoAvatar.Provider>
 
-      <div className={`${styles.mapaZoom} ${dadosAberta ? styles.mapaZoomDeslocado : ""}`}>
-         <button className={styles.zoomBotao}>+</button>
-         <button className={styles.zoomBotao}>−</button>
-         <button className={styles.zoomBotao}>⌖</button>
-      </div>
-      <div className={styles.nomeCena}>Região de Bastionland · Mapa Hexagonal</div>
-   </main>
-   {contextoAberto && <MenuContexto posicao={{"top": ctxMenuY, "left": ctxMenuX}} setContextoAberto={setContextoAberto}/>}
-   </>
-  )
+         <div className={`${styles.iniciativa} ${anotacoesAberta ? styles.iniciativaDeslocada : ""}`}>
+            <div className={styles.iniciativaTitulo}>Iniciativa</div>
+            <div className={`${styles.iniciativaPersonagem} ${styles.atual}`}><div className={`${styles.iniciativaPonto} ${styles.jogador}`}></div><span className={styles.iniciativaNome}>Aldric</span><span className={styles.iniciativaNum}>18</span></div>
+            <div className={styles.iniciativaPersonagem}><div className={`${styles.iniciativaPonto} ${styles.inimigo}`}></div><span className={styles.iniciativaNome}>Guarda 1</span><span className={styles.iniciativaNum}>14</span></div>
+            <div className={`${styles.iniciativaPersonagem}`}><div className={`${styles.iniciativaPonto} ${styles.jogador}`}></div><span className={styles.iniciativaNome}>Sena</span><span className={styles.iniciativaNum}>11</span></div>
+         </div>
+
+         <div className={`${styles.mapaZoom} ${dadosAberta ? styles.mapaZoomDeslocado : ""}`}>
+            <button className={styles.zoomBotao}>+</button>
+            <button className={styles.zoomBotao}>−</button>
+            <button className={styles.zoomBotao}>⌖</button>
+         </div>
+         <div className={styles.nomeCena}>Região de Bastionland · Mapa Hexagonal</div>
+      </main>
+   );
 }
-   

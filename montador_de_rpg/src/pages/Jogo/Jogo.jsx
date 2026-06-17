@@ -1,5 +1,4 @@
-import { useState, useEffect } from 'react';
-import { createContext, useContext } from 'react';
+import { useState, useEffect, createContext } from 'react';
 import styles from './styles.Jogo.module.css';
 import NavBarJogo from '../../Components/NavBar/navBarG.jsx';
 import LateralPersonagem from '../../Components/Jogo/LateralPersonagem/LateralPersonagem.jsx';
@@ -8,14 +7,16 @@ import LateralHistorico from '../../Components/Jogo/LateralHistorico/LateralHist
 
 export const ContextoRegistros = createContext(null);
 export const ContextoAbasPersonagem = createContext(null);
+export const ContextoMesaFisica = createContext(null);
 
 export default function Jogo() {
    const roleNaSessao = localStorage.getItem("role_sessao_ativa") || "jogador";
+   
    useEffect(() => {
       if(roleNaSessao != null){
          localStorage.removeItem("role_sessao_ativa");
       }
-   });
+   }, [roleNaSessao]);
    
    const [registros, setRegistros] = useState([
       {
@@ -88,25 +89,31 @@ export default function Jogo() {
       setAbasAbertas(prev => ({ ...prev, [id]: aberto }));
    }
 
+   // Estados integrados da Mesa Física 3D
+   const [dadosAtivosNaMesa, setDadosAtivosNaMesa] = useState([]);
+   const [dadosSelecionados, setDadosSelecionados] = useState([]);
+   const [tipoRolamento, setTipoRolamento] = useState("Selecione seus dados");
+   const [resultado, setResultado] = useState(false);
+
    return (
       <>
          <NavBarJogo roleAtiva={roleNaSessao}/>
          <ContextoRegistros.Provider value={{ registros, setRegistros }}>
             <ContextoAbasPersonagem.Provider value={{ abasAbertas, definirAbaAberta }}>
-               <div className={styles.jogo}>
-                  <LateralPersonagem />
-                  <Mapa />
-                  <LateralHistorico roleAtiva={roleNaSessao} />
-               </div>
+               <ContextoMesaFisica.Provider value={{
+                  dadosAtivosNaMesa, setDadosAtivosNaMesa,
+                  dadosSelecionados, setDadosSelecionados,
+                  tipoRolamento, setTipoRolamento,
+                  resultado, setResultado
+               }}>
+                  <div className={styles.jogo}>
+                     <LateralPersonagem />
+                     <Mapa />
+                     <LateralHistorico roleAtiva={roleNaSessao} />
+                  </div>
+               </ContextoMesaFisica.Provider>
             </ContextoAbasPersonagem.Provider>
          </ContextoRegistros.Provider>
       </>
    );
 }
-
-
-
-
-
-
-
