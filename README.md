@@ -105,3 +105,27 @@ montador_de_rpg/
 ├── package.json
 ├── vite.config.js
 └── README.md
+```
+
+---
+
+## Instalação e Execução
+
+Este projeto é dividido em duas partes: Cliente (Front-end) e Servidor (Back-end/API).
+
+### Pré-requisitos
+* [Node.js](https://nodejs.org/) (v22+)
+
+## Rodando o front-End
+
+```bash
+# Clone o repositório
+git clone https://github.com/seu-usuario/Montador_de_RPG.git
+cd barbalao
+
+# Instale as dependências
+npm install
+
+# Execute o servidor de desenvolvimento
+npm run dev
+```
