@@ -3,12 +3,11 @@
    ========================================================================== */
 .containerPainel {
     display: flex;
-    gap: 3rem;
+    gap: 2.5rem;
     width: 100%;
-    max-width: 100%; /* Impede o painel de criar barras de rolagem na tela inteira */
-    color: #f0f0f0;
+    color: #f2ebd9;
     font-family: 'Crimson Pro', Georgia, serif;
-    padding-bottom: 5rem;
+    padding: 1.5rem;
     box-sizing: border-box;
 }
 
@@ -16,75 +15,248 @@
    VIEWPORT DO MAPA (A JANELA DO QUADRO)
    ========================================================================== */
 .areaMapa {
-    width: 38vw;             
-    height: 72vh;             
-    background-color: #0b0a09;
-    padding: 2rem;
-    border-radius: 12px;
-    box-shadow: inset 0 0 20px rgba(0,0,0,0.8);
-    
-    overflow: hidden;         /* Esconde os transbordamentos para o clique e arraste funcionar */
-    position: relative;       /* Base para o posicionamento absoluto do grid */
+    width: 42vw;               
+    height: 68vh;              
+    background-color: #15120e; 
+    border: 4px double #4a3e2b;
+    border-radius: 8px;
+    box-shadow: 0 10px 30px rgba(0,0,0,0.6);
+    overflow: hidden;         
+    position: relative;       
     cursor: grab;
-    user-select: none;        /* Evita seleção de textos fantasmas ao arrastar */
-    box-sizing: border-box;
+    user-select: none;        
 }
 
-/* Estado de clique pressionado no mapa */
 .areaMapa.dragging {
     cursor: grabbing;
 }
 
 /* O container interno real onde os hexágonos são montados */
 .mapaGrid {
-    position: absolute;       /* Alterado de relative para absolute para o scroll manual fluir melhor */
+    position: absolute;       
     top: 0;
     left: 0;
+    padding: 40px;
 }
 
 /* ==========================================================================
-   ESTILIZAÇÃO DOS HEXÁGONOS
+   ESTILIZAÇÃO DOS HEXÁGONOS & CAMADAS (ORDEM 1 A 5)
    ========================================================================== */
 .hexagono {
     position: absolute;
     box-sizing: border-box;
-    clip-path: polygon(50% 0%, 100% 25%, 100% 75%, 50% 100%, 0% 75%, 0% 25%);
-    transition: transform 0.2s ease, filter 0.2s ease;
-    cursor: pointer;
+    transition: transform 0.1s ease;
 }
 
 .hexagono:hover {
-    transform: scale(1.08);
-    filter: brightness(1.2);
-    z-index: 50;
+    transform: scale(1.06);
+    z-index: 50; 
 }
 
 .conteudoHex {
     width: 100%;
     height: 100%;
+    position: relative;
+    /* CLIP-PATH: Flat-Topped */
+    clip-path: polygon(25% 0%, 75% 0%, 100% 50%, 75% 100%, 25% 100%, 0% 50%);
+    background-color: #fff3cc; 
+}
+
+/* CAMADA 1: Imagem Base ocupando todo o espaço (Terreno OU Holding) */
+.camadaBase {
+    position: absolute;
+    top: -4px;
+    left: -3px;
+    width: 110%;
+    height: 110%;
+    object-fit: contain;
+    z-index: 1;
+}
+
+/* CAMADA 2: Blank Mark (Fundo protetor do Modificador) */
+.camadaBlankMark {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    object-fit: fill;
+    z-index: 2;
+}
+
+/* CAMADA 3: Modificadores (Landmarks) com Filtro Vermelho do Livro */
+.camadaLandmark {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    object-fit: fill;
+    z-index: 3;
+    filter: invert(18%) sepia(85%) saturate(5432%) hue-rotate(354deg) brightness(91%) contrast(118%);
+}
+
+/* CAMADA 4: Barreiras Limítrofes (Atualizado para o contêiner do SVG sem clip-path) */
+.camadaBarreira {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    pointer-events: none;
+    z-index: 4;
+}
+
+/* CAMADA 5: Bolhinha do Mito Ajustada com Inversão de Cores */
+.bolhinhaMito {
+    position: absolute;
+    top: 1px;
+    left: 21px;
+    width: 20px;
+    height: 20px;
+    background-color: #fff3cc; 
+    color: #e62222;            
+    border: 2px solid #e62222; 
+    border-radius: 50%;
     display: flex;
-    flex-direction: column;
     justify-content: center;
     align-items: center;
-    font-size: 0.7rem;
-    position: relative;
+    font-size: 0.81rem;
+    font-weight: 900;
+    font-family: 'Cinzel', Georgia, serif;
+    box-shadow: 1px 1px 3px rgba(0,0,0,0.4);
+    z-index: 5;
 }
 
+/* Coordenada técnica discreta */
 .coordenada {
-    opacity: 0.5;
-    font-size: 0.6rem;
+    position: absolute;
+    bottom: 4px;
+    left: 50%;
+    transform: translateX(-50%);
+    font-size: 0.55rem;
+    color: #4a3e2b;
+    font-weight: bold;
+    opacity: 0.35;
+    z-index: 10;
 }
 
-.landmark {
+/* ==========================================================================
+   PAINEL LATERAL DE CONFIGURAÇÃO & MITOS
+   ========================================================================== */
+.painelConfig {
+    flex: 1;
+    background: #1c1712;
+    border-left: 2px solid #4a3e2b;
+    border-radius: 6px;
+    padding: 1.5rem;
+    display: flex;
+    flex-direction: column;
+    max-height: 68vh;                 
+}
+
+.tituloSecao {
+    font-size: 1.5rem;
+    letter-spacing: 2px;
+    border-bottom: 1px solid #4a3e2b;
+    padding-bottom: 0.5rem;
+    margin-top: 0;
+    color: #d4af37;
+}
+
+.containerListaMitos {
+    flex: 1;
+    overflow-y: auto;
+    margin-bottom: 1.5rem;
+}
+
+.linhaMitoEditavel {
+    display: flex;
+    align-items: center;
+    gap: 0.75rem;
+    margin-bottom: 0.75rem;
+    background: #26201a;
+    padding: 0.5rem;
+    border-radius: 4px;
+}
+
+.numeroMito {
+    color: #e62222;
+    font-weight: bold;
+}
+
+.inputNomeMito {
+    flex: 1;
+    background: #110e0a;
+    border: 1px solid #4a3e2b;
+    color: #f2ebd9;
+    padding: 0.35rem;
+    border-radius: 3px;
+}
+
+.coordenadaAlvo {
+    font-size: 0.85rem;
+    color: #8c7e6b;
+    background: #110e0a;
+    padding: 0.2rem 0.5rem;
+    border-radius: 3px;
+    border: 1px dashed #4a3e2b;
+}
+
+.headerConfig {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-top: 1rem;
+    border-top: 1px solid #4a3e2b;
+    padding-top: 1rem;
+}
+
+.subTitulo {
     font-size: 1.1rem;
-    margin-bottom: -2px;
+    margin: 0;
+    color: #d4af37;
+    letter-spacing: 1px;
 }
 
-/* Paleta de Cores Estilo Pergaminho */
-.planicie  { background-color: #e6dfc3; border: 1px solid #2d2a24; color: #1a1814; }
-.floresta  { background-color: #c9c09c; color: #1a1814; }
-.pantano   { background-color: #b0ab8d; color: #1a1814; }
-.montanha  { background-color: #9c9370; color: #f0f0f0; }
-.pico      { background-color: #7a7252; color: #f0f0f0; }
-.agua      { background-color: #8fa4ad; color: #1a1814; }
-.padrao    { background-color: #2d2a24; }
+.linkRegerar {
+    background: #ba1a1a;
+    border: 1px solid #4a3e2b;
+    color: #f2ebd9;
+    padding: 0.4rem 0.8rem;
+    font-size: 0.85rem;
+    cursor: pointer;
+    border-radius: 4px;
+    font-family: 'Crimson Pro', Georgia, serif;
+    font-weight: bold;
+    transition: background 0.2s;
+}
+
+.linkRegerar:hover {
+    background: #e62222;
+}
+
+.formConfig {
+    margin-top: 0.75rem;
+}
+
+.tabelaConfig {
+    width: 100%;
+    border-collapse: collapse;
+}
+
+.tabelaConfig td {
+    padding: 0.4rem 0;
+    font-size: 0.95rem;
+    color: #bfae96;
+}
+
+.tabelaConfig input {
+    width: 50px;
+    background: #110e0a;
+    border: 1px solid #4a3e2b;
+    color: #f2ebd9;
+    padding: 0.2rem;
+    text-align: center;
+    border-radius: 3px;
+}

@@ -1,9 +1,12 @@
 .dados {
-  padding: 0.7rem 0.9rem 4rem;
-  background: rgba(10, 8, 7, 0.4);
+  padding: 0.7rem 0.9rem;
+  background: rgba(10, 8, 7, 0.85);
+  border: 1px solid rgba(201, 162, 39, 0.2);
   display: flex;
   flex-direction: column;
   gap: 0.5rem;
+  border-radius: 6px;
+  box-shadow: 0 4px 20px rgba(0,0,0,0.5);
 }
 
 .dadosLista {
@@ -13,23 +16,25 @@
 
 .dadoBotao {
   flex: 1;
-  background: var(--fundo2);
-  border: 1px solid var(--fundo3);
-  color: var(--branco);
-  font-family: 'Cinzel',serif;
-  font-size: 0.62rem;
+  background: #1c1714;
+  border: 1px solid #3d332d;
+  color: #fff;
+  font-family: 'Cinzel', serif;
+  font-size: 0.65rem;
   letter-spacing: 0.1em;
-  padding: 0.45rem 0;
+  padding: 0.5rem 0.8rem;
   cursor: pointer;
-  transition: all 0.15s;
+  transition: all 0.15s ease-in-out;
   text-align: center;
   text-transform: uppercase;
 }
+
 .dadoBotao:hover {
-  border-color: var(--dourado);
-  color: var(--dourado);
-  background: rgba(201,162,39,0.1);
+  border-color: #c9a227;
+  color: #c9a227;
+  background: rgba(201, 162, 39, 0.1);
 }
+
 .dadoBotao:active {
   transform: scale(0.96);
 }
@@ -37,42 +42,26 @@
 .dadoResultado {
   display: flex;
   align-items: center;
-  gap: 0.5rem;
-  background: rgba(201,162,39,0.06);
-  border: 1px solid var(--dourado2);
-  padding: 0.4rem 0.6rem;
+  gap: 0.6rem;
+  background: rgba(201, 162, 39, 0.1);
+  border: 1px solid #c9a227;
+  padding: 0.5rem;
+  margin-top: 0.4rem;
+  border-radius: 4px;
 }
 
-/* FIX: classe rolamentoIcone adicionada — estava referenciada no JSX mas ausente no CSS */
 .rolamentoIcone {
-  font-size: 1.1rem;
-  line-height: 1;
-  flex-shrink: 0;
+  font-size: 1.4rem;
 }
 
 .rolamentoTipo {
-  font-family: 'Cinzel',serif;
-  font-size: 0.6rem;
-  letter-spacing: 0.12em;
-  color: var(--dourado2);
+  font-size: 0.65rem;
+  color: #a89485;
   text-transform: uppercase;
 }
-.rolamentoValor {
-  font-family: 'Cinzel',serif;
-  font-size: 1.3rem;
-  font-weight: 700;
-  color: var(--dourado);
-  transition: all 0.2s;
-  animation: rolando 0.2s;
-}
 
-@keyframes rolando {
-  0% {
-    transform: scale(1.3);
-    color: var(--dourado2);
-  }
-  100% {
-    transform: scale(1);
-    color: var(--dourado);
-  }
+.rolamentoValor {
+  font-size: 1.2rem;
+  font-weight: bold;
+  color: #fff;
 }
