@@ -1,25 +1,18 @@
-# 🗡️ Montador de RPG - Plataforma Web Imersiva
+# Montador de RPG - Plataforma Web Imersiva
 
 > Plataforma web visual e interativa que permite a criação e gerenciamento de campanhas de RPG de mesa, unindo a gestão de sessões a um ambiente 3D imersivo para jogadores e Mestres de Jogo.
 
-<p align="center">
-  https://reactjs.org/
-    https://img.shields.io/badge/React-20232A?style=for-the-badge&logo=react&logoColor=61DAFB
-  </a>
-  https://vitejs.dev/
-    https://img.shields.io/badge/Vite-B73BFE?style=for-the-badge&logo=vite&logoColor=FFD62E
-  </a>
-  https://threejs.org/
-    https://img.shields.io/badge/Three.js-000000?style=for-the-badge&logo=threedotjs&logoColor=white
-  </a>
-  https://nodejs.org/
-    https://img.shields.io/badge/Node.js-339933?style=for-the-badge&logo=nodedotjs&logoColor=white
-  </a>
-</p>
+
+
+[![React](https://img.shields.io/badge/React-20232A?style=for-the-badge&logo=react&logoColor=61DAFB)](https://reactjs.org/) 
+[![Vite](https://img.shields.io/badge/Vite-B73BFE?style=for-the-badge&logo=vite&logoColor=FFD62E)](https://vitejs.dev/) 
+[![Three.js](https://img.shields.io/badge/Three.js-000000?style=for-the-badge&logo=threedotjs&logoColor=white)](https://threejs.org/) 
+[![Node.js](https://img.shields.io/badge/Node.js-339933?style=for-the-badge&logo=nodedotjs&logoColor=white)](https://nodejs.org/) 
+
 
 ---
 
-## 📖 Sobre o Projeto
+## Sobre o Projeto
 
 O *Montador de RPG* surgiu para resolver um problema clássico na comunidade de RPG de mesa virtual: a **fragmentação de ferramentas**.
 
@@ -30,7 +23,7 @@ Hoje, jogadores e mestres frequentemente utilizam várias abas e aplicativos par
 - Renderizar mapas  
 - Organizar regras  
 
-### 💡 A solução
+### A solução
 
 - ✅ Centralização total das informações  
 - ✅ Painel administrativo para Mestres  
@@ -39,23 +32,23 @@ Hoje, jogadores e mestres frequentemente utilizam várias abas e aplicativos par
 
 ---
 
-## ✨ Funcionalidades
+## Funcionalidades
 
-### 🎮 Para o Jogador
+### Para o Jogador
 
-- 🧊 **Experiência 3D:** mapas e cenários renderizados no navegador  
-- 🧭 **HUD imersivo:** interface limpa e não intrusiva  
-- 📝 **Gestão de ficha:** formulários inteligentes com validação  
+- **Experiência 3D:** mapas e cenários renderizados no navegador  
+- **HUD imersivo:** interface limpa e não intrusiva  
+- **Gestão de ficha:** formulários inteligentes com validação  
 
-### 👑 Para o Mestre / Admin
+### Para o Mestre / Admin
 
-- 🔐 **Controle de acesso por nível**
-- 🛠 **Criação de campanhas e mundos**
-- 🔄 **Login seguro com OAuth2**
+- **Controle de acesso por nível**
+- **Criação de campanhas e mundos**
+- **Login seguro com OAuth2**
 
 ---
 
-## 🛠️ Tecnologias Utilizadas
+## Tecnologias Utilizadas
 
 ### Front-end
 - React  
@@ -79,7 +72,7 @@ Hoje, jogadores e mestres frequentemente utilizam várias abas e aplicativos par
 
 ---
 
-## 🖼️ Screenshots
+## Screenshots
 
 | Tela Inicial | HUD do Jogador | Visualização 3D |
 |-------------|----------------|-----------------|
@@ -93,7 +86,7 @@ Hoje, jogadores e mestres frequentemente utilizam várias abas e aplicativos par
 
 ---
 
-## 🏗️ Estrutura do Projeto
+## Estrutura do Projeto
 
 ```plaintext
 montador_de_rpg/
