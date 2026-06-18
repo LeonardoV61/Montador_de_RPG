@@ -25,10 +25,10 @@ Hoje, jogadores e mestres frequentemente utilizam várias abas e aplicativos par
 
 ### A solução
 
-- ✅ Centralização total das informações  
-- ✅ Painel administrativo para Mestres  
-- ✅ Interface imersiva para Jogadores  
-- ✅ Integração com renderização 3D em tempo real  
+- Centralização total das informações  
+- Painel administrativo para Mestres  
+- Interface imersiva para Jogadores  
+- Integração com renderização 3D em tempo real  
 
 ---
 
@@ -48,27 +48,34 @@ Hoje, jogadores e mestres frequentemente utilizam várias abas e aplicativos par
 
 ---
 
-## Tecnologias Utilizadas
-
-### Front-end
-- React  
-- Vite  
-- React Router  
-
-### 3D e Física
-- Three.js  
-- React Three Fiber  
-- Cannon  
-
-### Validação e Forms
-- React Hook Form  
-- Zod  
-
-### Comunicação
-- Axios  
-
-### Back-end (integração)
-- Node.js  
+<table>
+  <tr>
+    <td align="center" width="25%"><strong>Front-end</strong></td>
+    <td align="center" width="25%"><strong>3D & Física</strong></td>
+    <td align="center" width="25%"><strong>Validação & Forms</strong></td>
+    <td align="center" width="25%"><strong>Back-end & Outros</strong></td>
+  </tr>
+  <tr>
+    <td valign="top" align="center"><br>
+      <img src="https://img.shields.io/badge/React-20232A?style=for-the-badge&logo=react&logoColor=61DAFB" alt="React" /><br><br>
+      <img src="https://img.shields.io/badge/Vite-646CFF?style=for-the-badge&logo=vite&logoColor=white" alt="Vite" /><br><br>
+      <img src="https://img.shields.io/badge/React_Router-CA4245?style=for-the-badge&logo=react-router&logoColor=white" alt="React Router" />
+    </td>
+    <td valign="top" align="center"><br>
+      <img src="https://img.shields.io/badge/Three.js-000000?style=for-the-badge&logo=three.js&logoColor=white" alt="Three.js" /><br><br>
+      <img src="https://img.shields.io/badge/R3F-20232A?style=for-the-badge&logo=react&logoColor=61DAFB" alt="React Three Fiber" /><br><br>
+      <img src="https://img.shields.io/badge/Cannon.js-E1573D?style=for-the-badge&logo=box&logoColor=white" alt="Cannon.js" />
+    </td>
+    <td valign="top" align="center"><br>
+      <img src="https://img.shields.io/badge/React_Hook_Form-EC5990?style=for-the-badge&logo=reacthookform&logoColor=white" alt="React Hook Form" /><br><br>
+      <img src="https://img.shields.io/badge/Zod-3E67B1?style=for-the-badge&logo=zod&logoColor=white" alt="Zod" />
+    </td>
+    <td valign="top" align="center"><br>
+      <img src="https://img.shields.io/badge/Node.js-339933?style=for-the-badge&logo=nodedotjs&logoColor=white" alt="Node.js" /><br><br>
+      <img src="https://img.shields.io/badge/Axios-5A29E4?style=for-the-badge&logo=axios&logoColor=white" alt="Axios" />
+    </td>
+  </tr>
+</table>
 
 ---
 
