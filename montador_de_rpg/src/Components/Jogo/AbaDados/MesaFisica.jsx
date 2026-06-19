@@ -3,8 +3,14 @@ import { useFrame, useThree } from '@react-three/fiber';
 import { useBox, useCylinder, useConvexPolyhedron } from '@react-three/cannon';
 import * as THREE from 'three';
 
+// Importações dos Módulos Extraídos
+import { buildD10Geometry } from './physics/geometry/d10.js';
+import { extrairDadosPolyhedron } from './physics/collider/polyhedron.js';
+import { determinarFaceSuperior } from './physics/orientation/getTopFace.js';
+import { gerarArrayMateriaisDados } from './physics/materials/diceMaterials.js';
+
 // ─────────────────────────────────────────────────────────────────
-// HELPERS & UV GENERATION
+// HELPERS, UV GENERATION & LOCAL GEOMETRIES
 // ─────────────────────────────────────────────────────────────────
 
 function applyTriangleUVs(geo) {
@@ -20,106 +26,91 @@ function applyTriangleUVs(geo) {
    return geo;
 }
 
+// ✨ NOVA FUNÇÃO: Mapeamento Inteligente e Perfeito para d4 baseado em Topologia
+function applyD4UVs(geo) {
+   const pos = geo.attributes.position;
+   const uvs = new Float32Array(pos.count * 2);
+
+   const uniqueCorners = [];
+   const PREC = 4;
+   for (let i = 0; i < pos.count; i++) {
+      const x = Number(pos.getX(i).toFixed(PREC));
+      const y = Number(pos.getY(i).toFixed(PREC));
+      const z = Number(pos.getZ(i).toFixed(PREC));
+      
+      if (!uniqueCorners.some(c => c.x === x && c.y === y && c.z === z)) {
+         uniqueCorners.push({ x, y, z, id: uniqueCorners.length, faces: [] });
+      }
+   }
+
+   for (let f = 0; f < 4; f++) {
+      for (let v = 0; v < 3; v++) {
+         const idx = f * 3 + v;
+         const x = Number(pos.getX(idx).toFixed(PREC));
+         const y = Number(pos.getY(idx).toFixed(PREC));
+         const z = Number(pos.getZ(idx).toFixed(PREC));
+         const corner = uniqueCorners.find(c => c.x === x && c.y === y && c.z === z);
+         if (corner && !corner.faces.includes(f)) {
+            corner.faces.push(f);
+         }
+      }
+   }
+
+   const cornerToNumber = {};
+   uniqueCorners.forEach(c => {
+      const f = c.faces;
+      if (f.includes(0) && f.includes(1) && f.includes(2)) cornerToNumber[c.id] = "1";
+      else if (f.includes(0) && f.includes(1) && f.includes(3)) cornerToNumber[c.id] = "2";
+      else if (f.includes(0) && f.includes(2) && f.includes(3)) cornerToNumber[c.id] = "3";
+      else if (f.includes(1) && f.includes(2) && f.includes(3)) cornerToNumber[c.id] = "4";
+   });
+
+   const arrTriades = [["1","2","3"], ["1","4","2"], ["1","3","4"], ["2","4","3"]];
+
+   for (let f = 0; f < 4; f++) {
+      const [nTopo, nEsq, nDir] = arrTriades[f];
+      
+      for (let v = 0; v < 3; v++) {
+         const idx = f * 3 + v;
+         const x = Number(pos.getX(idx).toFixed(PREC));
+         const y = Number(pos.getY(idx).toFixed(PREC));
+         const z = Number(pos.getZ(idx).toFixed(PREC));
+         const corner = uniqueCorners.find(c => c.x === x && c.y === y && c.z === z);
+         const numDoCanto = cornerToNumber[corner.id];
+
+         const uIdx = idx * 2;
+         if (numDoCanto === nTopo) {
+            uvs[uIdx] = 0.50; uvs[uIdx + 1] = 0.95; // Topo central do triângulo
+         } else if (numDoCanto === nEsq) {
+            uvs[uIdx] = 0.05; uvs[uIdx + 1] = 0.05; // Base Esquerda do triângulo
+         } else if (numDoCanto === nDir) {
+            uvs[uIdx] = 0.95; uvs[uIdx + 1] = 0.05; // Base Direita do triângulo
+         }
+      }
+   }
+
+   geo.setAttribute('uv', new THREE.BufferAttribute(uvs, 2));
+   return geo;
+}
+
 function applyPentagonUVs(geo) {
    const pos = geo.attributes.position;
    const uvs = new Float32Array((pos.count / 3) * 6);
    
    for (let i = 0; i < pos.count; i += 9) {
       const idx = (i / 3) * 6;
-      // Triangle 1
       uvs[idx]     = 0.5;  uvs[idx + 1] = 0.5;
       uvs[idx + 2] = 0.1;  uvs[idx + 3] = 0.2;
       uvs[idx + 4] = 0.9;  uvs[idx + 5] = 0.2;
-      // Triangle 2
       uvs[idx + 6] = 0.5;  uvs[idx + 7] = 0.5;
       uvs[idx + 8] = 0.9;  uvs[idx + 9] = 0.2;
       uvs[idx + 10]= 0.7;  uvs[idx + 11]= 0.9;
-      // Triangle 3
       uvs[idx + 12]= 0.5;  uvs[idx + 13]= 0.5;
       uvs[idx + 14]= 0.7;  uvs[idx + 15]= 0.9;
       uvs[idx + 16]= 0.3;  uvs[idx + 17]= 0.9;
    }
    geo.setAttribute('uv', new THREE.BufferAttribute(uvs, 2));
    return geo;
-}
-
-// ─────────────────────────────────────────────────────────────────
-// POLYHEDRON GEOMETRY BUILDERS
-// ─────────────────────────────────────────────────────────────────
-
-function buildD10Geometry() {
-  const geometry = new THREE.BufferGeometry();
-
-  const r = 1;
-  const h = 0.3;
-  const hTop = 1;
-
-  const vertices = [];
-
-  // topo e base
-  vertices.push([0, hTop, 0]);   // 0
-  vertices.push([0, -hTop, 0]);  // 1
-
-  // anel superior (5)
-  for (let i = 0; i < 5; i++) {
-    const angle = (i * 2 * Math.PI) / 5;
-    vertices.push([Math.cos(angle) * r, h, Math.sin(angle) * r]);
-  }
-
-  // anel inferior (offset)
-  for (let i = 0; i < 5; i++) {
-    const angle = ((i + 0.5) * 2 * Math.PI) / 5;
-    vertices.push([Math.cos(angle) * r, -h, Math.sin(angle) * r]);
-  }
-
-  const faces = [];
-
-  for (let i = 0; i < 5; i++) {
-    const a = 2 + i;
-    const b = 2 + ((i + 1) % 5);
-    const c = 7 + i;
-    const d = 7 + ((i + 1) % 5);
-
-    // cada face real = 2 triângulos CORRETOS
-    faces.push([a, c, b]);
-    faces.push([b, c, d]);
-
-    faces.push([0, a, b]); // topo
-    faces.push([1, d, c]); // base (invertido)
-  }
-
-  const positions = [];
-  faces.flat().forEach(i => {
-    positions.push(...vertices[i]);
-  });
-
-  geometry.setAttribute(
-    'position',
-    new THREE.Float32BufferAttribute(positions, 3)
-  );
-
-  geometry.computeVertexNormals();
-
-  const geo = geometry.toNonIndexed();
-  geo.clearGroups();
-
-  const faceCount = geo.attributes.position.count / 3;
-
-  // ✅ UV MELHORADO (ainda simples, mas correto por face)
-  const uvs = [];
-
-  for (let i = 0; i < faceCount; i++) {
-    uvs.push(
-      0.1, 0.1,
-      0.9, 0.1,
-      0.5, 0.9
-    );
-    geo.addGroup(i * 3, 3, i % 10);
-  }
-
-  geo.setAttribute('uv', new THREE.Float32BufferAttribute(uvs, 2));
-
-  return geo;
 }
 
 function buildD12Geometry() {
@@ -148,7 +139,7 @@ function buildD12Geometry() {
 const SOLIDS_GEOMETRY = {
    4: () => {
       const geo = new THREE.TetrahedronGeometry(0.85).toNonIndexed();
-      applyTriangleUVs(geo);
+      applyD4UVs(geo); // 🌟 Trocado aqui para usar a função corrigida do d4
       geo.clearGroups();
       for (let i = 0; i < 4; i++) geo.addGroup(i * 3, 3, i);
       return geo;
@@ -173,205 +164,7 @@ const SOLIDS_GEOMETRY = {
 };
 
 // ─────────────────────────────────────────────────────────────────
-// CANNON POLYHEDRON PARSER
-// ─────────────────────────────────────────────────────────────────
-
-function extrairDadosPolyhedron(geometry) {
-   const geo = geometry.index ? geometry.toNonIndexed() : geometry.clone();
-   const posAttr = geo.attributes.position;
-
-   const PREC = 4;
-   const snap = (v) => Number(v.toFixed(PREC));
-
-   const vertices = [];
-   const faces = [];
-   const vertexMap = {};
-   let vCounter = 0;
-
-   const centroid = new THREE.Vector3();
-   for (let i = 0; i < posAttr.count; i++) {
-      centroid.x += posAttr.getX(i);
-      centroid.y += posAttr.getY(i);
-      centroid.z += posAttr.getZ(i);
-   }
-   centroid.divideScalar(posAttr.count);
-
-   const _vA = new THREE.Vector3();
-   const _vB = new THREE.Vector3();
-   const _vC = new THREE.Vector3();
-   const _edge1 = new THREE.Vector3();
-   const _edge2 = new THREE.Vector3();
-   const _normal = new THREE.Vector3();
-   const _toFace = new THREE.Vector3();
-
-   for (let i = 0; i < posAttr.count; i += 3) {
-      _vA.fromBufferAttribute(posAttr, i);
-      _vB.fromBufferAttribute(posAttr, i + 1);
-      _vC.fromBufferAttribute(posAttr, i + 2);
-
-      const getOrAdd = (v) => {
-         const key = `${snap(v.x)}_${snap(v.y)}_${snap(v.z)}`;
-         if (vertexMap[key] === undefined) {
-            vertexMap[key] = vCounter;
-            vertices.push([snap(v.x), snap(v.y), snap(v.z)]);
-            vCounter++;
-         }
-         return vertexMap[key];
-      };
-
-      const ia = getOrAdd(_vA);
-      const ib = getOrAdd(_vB);
-      const ic = getOrAdd(_vC);
-
-      if (ia === ib || ib === ic || ia === ic) continue;
-
-      _edge1.subVectors(_vB, _vA);
-      _edge2.subVectors(_vC, _vA);
-      _normal.crossVectors(_edge1, _edge2);
-      _toFace.addVectors(_vA, _vB).add(_vC).divideScalar(3).sub(centroid);
-
-      if (_normal.dot(_toFace) >= 0) {
-         faces.push([ia, ib, ic]);
-      } else {
-         faces.push([ia, ic, ib]);
-      }
-   }
-
-   return { vertices, faces };
-}
-
-// ─────────────────────────────────────────────────────────────────
-// TEXTURES
-// ─────────────────────────────────────────────────────────────────
-
-const gerarArrayMateriaisDados = (lados) => {
-   const materiais = [];
-   for (let i = 1; i <= lados; i++) {
-      const canvas = document.createElement('canvas');
-      canvas.width = 512; canvas.height = 512;
-      const ctx = canvas.getContext('2d');
-
-      ctx.fillStyle = '#1a1310';
-      ctx.fillRect(0, 0, 512, 512);
-
-      const grad = ctx.createRadialGradient(256, 256, 50, 256, 256, 300);
-      grad.addColorStop(0, '#241a15');
-      grad.addColorStop(1, '#0b0807');
-      ctx.fillStyle = grad;
-      ctx.fillRect(0, 0, 512, 512);
-
-      ctx.strokeStyle = 'rgba(201, 162, 39, 0.8)';
-      ctx.lineWidth = 14;
-
-      if (lados === 4) {
-         ctx.fillStyle = '#ffeed0';
-         ctx.font = 'bold 50px "Times New Roman", serif';
-         ctx.textAlign = 'center';
-         const arrTriades = [["1","2","3"],["1","4","2"],["1","3","4"],["2","4","3"]];
-         const [nTopo, nEsq, nDir] = arrTriades[(i - 1) % 4];
-         ctx.fillText(nTopo, 256, 85);
-         ctx.save(); ctx.translate(110,400); ctx.rotate(Math.PI/3); ctx.fillText(nEsq, 0, 0); ctx.restore();
-         ctx.save(); ctx.translate(402,400); ctx.rotate(-Math.PI/3); ctx.fillText(nDir, 0, 0); ctx.restore();
-         ctx.beginPath(); ctx.moveTo(256,20); ctx.lineTo(492,440); ctx.lineTo(20,440); ctx.closePath(); ctx.stroke();
-      } else if (lados === 6) {
-         ctx.beginPath(); ctx.rect(30,30,452,452); ctx.stroke();
-         ctx.fillStyle = '#ffeed0';
-         ctx.font = 'bold 190px "Times New Roman", Georgia, serif';
-         ctx.textAlign = 'center'; ctx.textBaseline = 'middle';
-         ctx.fillText(i.toString(), 256, 265);
-         if (i === 6) { ctx.fillStyle='#c9a227'; ctx.fillRect(176,390,160,16); }
-      } else {
-         ctx.beginPath(); ctx.moveTo(256,40); ctx.lineTo(470,420); ctx.lineTo(42,420); ctx.closePath(); ctx.stroke();
-         ctx.fillStyle = '#ffeed0';
-         ctx.font = 'bold 140px "Times New Roman", Georgia, serif';
-         ctx.textAlign = 'center'; ctx.textBaseline = 'middle';
-         ctx.fillText(i.toString(), 256, 275);
-         if (i === 6 || i === 9) { ctx.fillStyle='#c9a227'; ctx.fillRect(186,370,140,12); }
-      }
-
-      const tex = new THREE.CanvasTexture(canvas);
-      tex.wrapS = THREE.ClampToEdgeWrapping;
-      tex.wrapT = THREE.ClampToEdgeWrapping;
-      tex.anisotropy = 4;
-
-      materiais.push(new THREE.MeshStandardMaterial({
-         map: tex, roughness: 0.15, metalness: 0.08, envMapIntensity: 1.2
-      }));
-   }
-   return materiais;
-};
-
-// ─────────────────────────────────────────────────────────────────
-// ORIENTATION LOGIC
-// ─────────────────────────────────────────────────────────────────
-
-function determinarFaceSuperior(mesh, lados) {
-   if (!mesh) return 1;
-   mesh.updateMatrixWorld(true);
-
-   const worldUp = new THREE.Vector3(0, 1, 0);
-   const q = new THREE.Quaternion().setFromRotationMatrix(mesh.matrixWorld);
-
-   if (lados === 6) {
-      const faceMap = [
-         { local: new THREE.Vector3( 1, 0, 0), value: 2 },
-         { local: new THREE.Vector3(-1, 0, 0), value: 5 },
-         { local: new THREE.Vector3( 0, 1, 0), value: 3 },
-         { local: new THREE.Vector3( 0,-1, 0), value: 4 },
-         { local: new THREE.Vector3( 0, 0, 1), value: 1 },
-         { local: new THREE.Vector3( 0, 0,-1), value: 6 },
-      ];
-      let maxDot = -Infinity;
-      let best = 1;
-      const worldNormal = new THREE.Vector3();
-      faceMap.forEach(({ local, value }) => {
-         worldNormal.copy(local).applyQuaternion(q);
-         const dot = worldNormal.dot(worldUp);
-         if (dot > maxDot) { maxDot = dot; best = value; }
-      });
-      return best;
-   }
-
-   const posAttr = mesh.geometry.attributes.position;
-   if (!posAttr) return 1;
-
-   const vA = new THREE.Vector3();
-   const vB = new THREE.Vector3();
-   const vC = new THREE.Vector3();
-   const e1 = new THREE.Vector3();
-   const e2 = new THREE.Vector3();
-   const localNormal = new THREE.Vector3();
-   const worldNormal = new THREE.Vector3();
-
-   let maxDot = -Infinity;
-   let faceVencedora = 1;
-
-   for (let i = 0; i < posAttr.count; i += 3) {
-      vA.fromBufferAttribute(posAttr, i);
-      vB.fromBufferAttribute(posAttr, i + 1);
-      vC.fromBufferAttribute(posAttr, i + 2);
-
-      e1.subVectors(vB, vA);
-      e2.subVectors(vC, vA);
-      localNormal.crossVectors(e1, e2).normalize();
-      worldNormal.copy(localNormal).applyQuaternion(q);
-
-      const dot = worldNormal.dot(worldUp);
-      if (dot > maxDot) {
-         maxDot = dot;
-         const group = mesh.geometry.groups.find(
-            g => g.start <= i && (g.start + g.count) > i
-         );
-         if (group !== undefined) {
-            faceVencedora = group.materialIndex + 1;
-         }
-      }
-   }
-   return faceVencedora;
-}
-
-// ─────────────────────────────────────────────────────────────────
-// COMPONENTS
+// COMPONENTS (MesaFisica, DadoFisicoPoliedro, MoedaFisica seguem abaixo sem alterações internas)
 // ─────────────────────────────────────────────────────────────────
 
 export function ChaoMesa() {
@@ -476,8 +269,9 @@ export function DadoFisicoPoliedro({ id, lados = 6, position = [0, 3, 0], onStop
          api.velocity.set(0, 0, 0);
       } else {
          const t = state.clock.getElapsedTime();
-         api.position.set(position[0], position[1] + Math.sin(t * 2) * 0.05, position[2]);
-         api.rotation.set(0, t * 0.4, 0);
+         api.velocity.set(0, 0, 0); // Adicione isso para neutralizar a gravidade temporária
+         api.angularVelocity.set(0, 0, 0); // Adicione isso
+         api.position.set(position[0], position[1] + Math.cos(t * 1.5) * 0.05, position[2]);
       }
    });
 
