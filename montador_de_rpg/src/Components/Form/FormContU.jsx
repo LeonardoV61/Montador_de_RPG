@@ -118,7 +118,7 @@ export default function ContainerU(){
                     <button 
                         type="button" 
                         onClick={() => handleOAuth2Login("google")} 
-                        className={`${style.socialBtn} ${style.googleBtn}`}
+                        className={style.socialBtn}
                     >
                         <img src={googleIcon} alt="Google" className={style.socialIcon} />
                         Google
@@ -126,7 +126,7 @@ export default function ContainerU(){
                     <button 
                         type="button" 
                         onClick={() => handleOAuth2Login("discord")} 
-                        className={`${style.socialBtn} ${style.discordBtn}`}
+                        className={style.socialBtn}
                     >
                         <img src={discordIcon} alt="Discord" className={style.socialIcon} />
                         Discord

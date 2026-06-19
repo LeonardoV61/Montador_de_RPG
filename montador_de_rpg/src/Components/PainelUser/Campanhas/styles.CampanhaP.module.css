@@ -1,79 +1,18 @@
-.panel {
-  background: linear-gradient(145deg, #14110d, #0a0908);
-  border: 1px solid rgba(255, 255, 255, .05);
-  padding: 22px;
-}
-
-.large {
-  min-height: 320px;
-}
-
-.panelHeader {
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-  margin-bottom: 20px;
-}
-
-.panelHeader h3 {
-  font-family: 'Cinzel', serif;
-  color: #d5b06e;
-  margin: 0;
-}
-
-.panelHeader span {
-  color: #7f6d50;
-  font-size: 12px;
-}
-
-.panelHeader button {
-  background: #221b12;
-  border: 1px solid #624a22;
-  color: #d6b26e;
-  padding: 8px 14px;
-  cursor: pointer;
-  transition: .3s ease;
-}
-
-.panelHeader button:hover {
-  background: #2f2416;
-  border-color: #d5b06e;
-  box-shadow: 0 0 10px rgba(213, 176, 110, 0.15);
-}
-
-.list {
-  list-style: none;
-}
-
-.list li {
-  padding: 14px 0;
-  border-bottom: 1px solid rgba(255, 255, 255, .05);
-  color: #c6ae86;
-}
-
-.done {
-  text-decoration: line-through;
-  opacity: .5;
-}
-
-/* --- Atualização dos cards de Campanha como Botões --- */
 .campaign {
   /* Resets para transformar o botão em um container limpo */
   background: transparent;
   border: none;
-  border-bottom: 1px solid rgba(255, 255, 255, .05);
+  /* border-bottom: 1px solid rgba(255, 255, 255, .05); */
   font-family: inherit;
   text-align: left;
-  width: 100%;
   cursor: pointer;
   
-  /* Layout interno */
   display: flex;
   justify-content: space-between;
   align-items: center;
-  padding: 18px 12px; /* Adicionado um leve padding interno nas laterais */
-  margin-left: -12px;  /* Puxa para alinhar perfeitamente com o header */
-  width: calc(100% + 24px); /* Garante que o hover preencha até a borda */
+  padding: 18px 16px 18px 12px; /* Adicionado um leve padding interno nas laterais */
+  width: calc(100% - 0px); /* Garante que o hover preencha até a borda */
+  /* border-radius: 12px; */
   
   transition: all .3s ease;
 }
@@ -82,7 +21,6 @@
 .campaign:hover,
 .campaign:focus-visible {
   background: rgba(213, 176, 110, 0.03); /* Um brilho dourado bem sutil de fundo */
-  border-bottom-color: rgba(213, 176, 110, 0.2);
   outline: none;
 }
 
@@ -93,18 +31,16 @@
 
 .campaign h4 {
   font-family: 'Cinzel', serif;
-  color: #f0d3a0;
+  color: var(--branco);
   margin: 0 0 6px 0;
   transition: color .3s ease;
 }
-
-/* O título brilha um pouco mais no hover */
 .campaign:hover h4 {
-  color: #fff4d4;
+  color: #fff;
 }
 
 .campaign p {
-  color: #7b6a4d;
+  color: var(--cinza);
   font-size: 13px;
   margin: 0;
 }
@@ -116,26 +52,20 @@
   font-size: 11px;
   letter-spacing: 1px; /* Um espaçamento para dar um tom mais clássico */
   transition: all .3s ease;
+  background: transparent;
 }
 
-.activeStatus {
-  color: #7fd089;
-  border-color: #2d6c38;
-  background: rgba(45, 108, 56, 0.05);
+.ativa {
+  color: var(--verde);
+  border-color: var(--verde);
 }
 
-.campaign:hover .activeStatus {
-  background: rgba(127, 208, 137, 0.15);
-  box-shadow: 0 0 8px rgba(127, 208, 137, 0.1);
+.pausada {
+  color: var(--dourado2);
+  border-color: var(--dourado2);
 }
 
-.paused {
-  color: #b7a17b;
-  border-color: #5a4f3a;
-  background: rgba(90, 79, 58, 0.05);
-}
-
-.campaign:hover .paused {
-  background: rgba(183, 161, 123, 0.15);
-  box-shadow: 0 0 8px rgba(183, 161, 123, 0.1);
+.finalizada {
+  color: var(--vermelho);
+  border-color: var(--vermelho);
 }

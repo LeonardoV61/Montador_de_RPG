@@ -3,6 +3,7 @@ import styles from "../Components/PainelUser/Css/styles.UserMenu.module.css"
 import NavBarU from "../Components/NavBar/navBarU.jsx";
 import Recepcao from "../Components/PainelUser/Recepcao/Recepcao.jsx";
 import IndicadorC from "../Components/PainelUser/Indicadores/IndicadorC.jsx";
+import PanelDashboard from "../Components/PainelUser/PanelDashboard/PanelDashboard.jsx";
 import CampanhasP from "../Components/PainelUser/Campanhas/CampanhaP.jsx";
 import AmigoP from "../Components/PainelUser/Amigos/AmigoP.jsx";
 import TarefaP from "../Components/PainelUser/Tarefas/TarefaP.jsx";
@@ -32,6 +33,96 @@ import HeronPadrao from "../assets/perfil/Heron.png";
 export default function UserMenu() {
   const [roleAtiva, setRoleAtiva] = useState("mestre");
   const [menuAtivo, setMenuAtivo] = useState("dashboard");
+
+  const [campanhas, setCampanhas] = useState([
+    {
+      "id": 1,
+      "titulo": "O REINO ARRUINADO",
+      "detalhes": "Mythic Bastionland • 4 jogadores",
+      "status": "ATIVA"
+    },
+    {
+      "id": 2,
+      "titulo": "CINZAS DA VELHA CIDADE",
+      "detalhes": "Rune 2e • 3 jogadores",
+      "status": "PAUSADA"
+    },
+    {
+      "id": 3,
+      "titulo": "O TEMPLO SUBMERSO",
+      "detalhes": "OSE • 2 jogadores",
+      "status": "FINALIZADA"
+    }
+  ]);
+
+  const [amigos, setAmigos] = useState([
+    {
+      "id": 1,
+      "nome": "Erik Guilherme",
+      "online": true
+    },
+    {
+      "id": 2,
+      "nome": "Leonardo ProPlayer",
+      "online": true
+    },
+    {
+      "id": 3,
+      "nome": "Lucas Carril",
+      "online": false
+    },
+    {
+      "id": 4,
+      "nome": "Oséias Augusto",
+      "online": false
+    },
+    {
+      "id": 5,
+      "nome": "Vinícius Lemos",
+      "online": true
+    }
+  ].sort((a, b) => a.nome.localeCompare(b)));
+
+  const [atividades, setAtividades] = useState([
+    {
+      "id": 1,
+      "descricao": "Oséias atualizou a ficha",
+      "momento": "15:25:54"
+    },
+    {
+      "id": 2,
+      "descricao": "Erik Guilherme criou personagem",
+      "momento": "13:10:35"
+    },
+    {
+      "id": 3,
+      "descricao": "Sessão VII finalizada",
+      "momento": "11:14:24"
+    }
+  ]);
+
+  const [tarefas, setTarefas] = useState([
+    {
+      "id": 1,
+      "descricao": "Escrever resumo da sessão anterior",
+      "feito": true
+    },
+    {
+      "id": 2,
+      "descricao": "Preparar mapa do templo",
+      "feito": true
+    },
+    {
+      "id": 3,
+      "descricao": "Definir estatísticas dos guardas",
+      "feito": false
+    },
+    {
+      "id": 4,
+      "descricao": "Criar cena de introdução",
+      "feito": false
+    }
+  ]);
 
   const [nome, setNome] = useState("HERON");
   const [imagem, setImagem] = useState(HeronPadrao);
@@ -65,10 +156,18 @@ export default function UserMenu() {
               <Recepcao nome={nome}/>
               <IndicadorC />
               <section className={styles.grid}>
-                <CampanhasP roleAtiva={roleAtiva}/>
-                <AmigoP />
-                <TarefaP />
-                <AtividadeP />
+                <PanelDashboard titulo={"MINHAS CAMPANHAS"} canto={"btn"}>
+                  {campanhas.map(campanha => <CampanhasP key={campanha.id} campanha={campanha} roleAtiva={roleAtiva}/>)}
+                </PanelDashboard>
+                <PanelDashboard titulo={"JOGADORES ONLINE"} canto={amigos.filter(amigo => amigo.online).length}>
+                  {amigos.map(amigo => <AmigoP key={amigo.id} amigo={amigo}/>)}
+                </PanelDashboard>
+                <PanelDashboard titulo={"PREPARAÇÃO PARA PRÓXIMA SESSÃO"}>
+                  {tarefas.map(tarefa => <TarefaP key={tarefa.id} tarefa={tarefa}/>)}
+                </PanelDashboard>
+                <PanelDashboard titulo={"ATIVIDADE RECENTE"}>
+                  {atividades.map(atividade => <AtividadeP key={atividade.id} atividade={atividade}/>)}
+                </PanelDashboard>
               </section>
             </>
           )
@@ -123,15 +222,24 @@ export default function UserMenu() {
 
         ) : (
           menuAtivo === "dashboard" && (
-              <>
-                <Recepcao nome={nome}/>
-                <IndicadorC />
-                <section className={styles.grid}>
-                  <AtividadeP />
-                  <AmigoP />
-                  <CampanhasP />
-                </section>
-              </>
+            <>
+              <Recepcao nome={nome}/>
+              <IndicadorC />
+              <section className={styles.grid}>
+                <PanelDashboard titulo={"MINHAS CAMPANHAS"} canto={"btn"}>
+                  {campanhas.map(campanha => <CampanhasP key={campanha.id} campanha={campanha} roleAtiva={roleAtiva}/>)}
+                </PanelDashboard>
+                <PanelDashboard titulo={"JOGADORES ONLINE"} canto={amigos.filter(amigo => amigo.online).length}>
+                  {amigos.map(amigo => <AmigoP key={amigo.id} amigo={amigo}/>)}
+                </PanelDashboard>
+                <PanelDashboard titulo={"PREPARAÇÃO PARA PRÓXIMA SESSÃO"}>
+                  {tarefas.map(tarefa => <TarefaP key={tarefa.id} tarefa={tarefa}/>)}
+                </PanelDashboard>
+                <PanelDashboard titulo={"ATIVIDADE RECENTE"}>
+                  {atividades.map(atividade => <AtividadeP key={atividade.id} atividade={atividade}/>)}
+                </PanelDashboard>
+              </section>
+            </>
           ) 
           ||
           menuAtivo === "personagens" && (

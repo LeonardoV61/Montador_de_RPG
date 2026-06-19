@@ -2,7 +2,7 @@
     display: flex;
     min-height: 100vh;
     width: 100vw;
-    margin-top: 8rem;
+    margin-top: 13vh;
     overflow-y: auto; 
 }
 
@@ -18,16 +18,8 @@
 
 .grid {
     display: grid;
-    grid-template-columns: repeat(3, 1fr); 
+    grid-template-columns: 2fr 1fr; 
     gap: 2rem;
     width: 100%;
     grid-auto-rows: minmax(auto, 35vh);
-}
-
-.grid > :nth-child(2n+1) {
-    grid-column: span 2;
-}
-
-.grid > :nth-child(2n) {
-    grid-column: span 1;
 }

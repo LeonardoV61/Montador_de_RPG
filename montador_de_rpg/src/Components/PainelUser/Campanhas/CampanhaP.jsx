@@ -2,7 +2,7 @@ import { useNavigate } from "react-router-dom";
 import styles from "./styles.CampanhaP.module.css";
 
 // 1. Adicione a prop roleAtiva aqui
-export default function CampanhaP({ roleAtiva }) { 
+export default function CampanhaP({ campanha, roleAtiva }) { 
   const navigate = useNavigate();
 
   // 2. Crie uma função para gerenciar o clique e a persistência
@@ -12,36 +12,12 @@ export default function CampanhaP({ roleAtiva }) {
   };
 
   return (
-    <div className={`${styles.panel} ${styles.large}`}>
-      <div className={styles.panelHeader}>
-        <h3>MINHAS CAMPANHAS</h3>
-        <button>+ Nova Campanha</button>
+    <li className={styles.campaign} onClick={handleEntrarNoJogo}>
+      <div>
+        <h4>{campanha.titulo}</h4>
+        <p>{campanha.detalhes}</p>
       </div>
-
-      {/* Substitua os cliques antigos por essa nova função em todas as campanhas */}
-      <button className={styles.campaign} onClick={handleEntrarNoJogo}>
-        <div>
-          <h4>O REINO ARRUINADO</h4>
-          <p>Mythic Bastionland • 4 jogadores</p>
-        </div>
-        <span className={`${styles.status} ${styles.activeStatus}`}>ATIVA</span>
-      </button>
-
-      <button className={styles.campaign} onClick={handleEntrarNoJogo}>
-        <div>
-          <h4>CINZAS DA VELHA CIDADE</h4>
-          <p>Rune 2e • 3 jogadores</p>
-        </div>
-        <span className={`${styles.status} ${styles.activeStatus}`}>ATIVA</span>
-      </button>
-
-      <button className={styles.campaign} onClick={handleEntrarNoJogo}>
-        <div>
-          <h4>O TEMPLO SUBMERSO</h4>
-          <p>OSE • 2 jogadores</p>
-        </div>
-        <span className={`${styles.status} ${styles.paused}`}>PAUSADA</span>
-      </button>
-    </div>
+      <span className={`${styles.status} ${campanha.status == "ATIVA" ? styles.ativa : campanha.status == "PAUSADA" ? styles.pausada : styles.finalizada }`}>{campanha.status}</span>
+    </li>
   );
 }

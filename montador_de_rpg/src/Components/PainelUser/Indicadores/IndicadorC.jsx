@@ -1,4 +1,5 @@
 import styles from "./styles.indicadorC.module.css"
+
 export default function indicadorC(){
     return(
         <>

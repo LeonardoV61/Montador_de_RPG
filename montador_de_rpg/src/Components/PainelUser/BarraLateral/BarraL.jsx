@@ -12,7 +12,7 @@ export default function BarraL({ roleAtiva, setRoleAtiva, menuAtivo, setMenuAtiv
     return(
         <>
           <aside className={styles.sidebar}>
-            <div className={styles.bottomUser}>
+            <div className={styles.usuario}>
                 <div className={`${styles.avatar} ${styles.small}`} style={{ overflow: "hidden", position: "relative" }}>
                     <img
                         src={imagem}

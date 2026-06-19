@@ -5,6 +5,8 @@
 }
 
 :root {
+    --preto: #14120f;
+    --preto2: #050505;
     --fundo: #1a1814;
     --fundo2: #2d2a24;
     --fundo3: #3d3930;
@@ -14,6 +16,7 @@
     --dourado2: #e8bf4a;
     --cinza: #b2b2b2;
     --vermelho: #d90000;
+    --verde: #32cd32;
 }
 
 body {

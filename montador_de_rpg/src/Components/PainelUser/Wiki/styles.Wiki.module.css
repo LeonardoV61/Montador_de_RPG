@@ -3,18 +3,18 @@
   grid-template-columns: 300px 1fr;
   gap: 0; 
   width: 100%;
-  height: calc(100vh - 120px); /* Ajuste os 120px de acordo com a altura do seu header/nav principal */
-  background: rgba(15, 15, 15, 0.75);
-  border: 1px solid rgba(179, 146, 78, 0.15);
+  height: calc(100vh - 120px);
+  background: var(--fundo2);
+  border: 1px solid var(--dourado);
   border-radius: 8px;
-  overflow: hidden; /* Impede o container de criar barra de rolagem na tela principal */
+  overflow: hidden;
   backdrop-filter: blur(8px);
 }
 
 /* --- BARRA LATERAL DA WIKI --- */
 .sidebarWiki {
-  background: rgba(8, 8, 8, 0.5);
-  border-right: 1px solid rgba(179, 146, 78, 0.1);
+  background: var(--fundo);
+  /* border-right: 1px solid rgba(179, 146, 78, 0.1); */
   display: flex;
   flex-direction: column;
   height: 100%; /* Fixa a altura na mesma do container */
@@ -26,7 +26,7 @@
   grid-template-columns: repeat(2, 1fr);
   gap: 4px;
   padding: 1rem;
-  background: #090909;
+  background: var(--preto2);
 }
 
 .btnCategoria {
@@ -34,9 +34,9 @@
   align-items: center;
   justify-content: center;
   gap: 6px;
-  background: #121212;
-  border: 1px solid #222;
-  color: #888;
+  background: var(--fundo2);
+  border: 1px solid var(--cinza);
+  color: var(--cinza);
   padding: 0.5rem;
   font-size: 0.8rem;
   font-weight: 600;
@@ -46,9 +46,9 @@
 }
 
 .btnCategoria:hover, .catAtiva {
-  border-color: #b3924e;
-  color: #b3924e;
-  background: rgba(179, 146, 78, 0.05);
+  border-color: var(--dourado);
+  color: var(--dourado);
+  background: var(--preto);
 }
 
 .listaArtigos {
@@ -57,10 +57,9 @@
   flex-direction: column;
   gap: 0.5rem;
   flex: 1;
-  overflow-y: auto; /* Apenas a lista de artigos rola se houver muitos itens */
-  /* Scrollbar customizada estilo Grimório */
+  overflow-y: auto;
   scrollbar-width: thin;
-  scrollbar-color: rgba(179, 146, 78, 0.3) transparent;
+  scrollbar-color: var(--fundo) transparent;
 }
 
 .headerLista {
@@ -68,8 +67,8 @@
   justify-content: space-between;
   align-items: center;
   font-size: 0.8rem;
-  color: #666;
-  font-weight: bold;
+  color: var(--branco);
+  /* font-weight: bold; */
   margin-bottom: 0.5rem;
 }
 
@@ -78,8 +77,8 @@
   align-items: center;
   gap: 4px;
   background: transparent;
-  border: 1px solid #b3924e;
-  color: #b3924e;
+  border: 1px solid var(--dourado);
+  color: var(--dourado);
   padding: 0.2rem 0.5rem;
   font-size: 0.75rem;
   border-radius: 4px;
@@ -87,17 +86,17 @@
 }
 
 .btnCriar:hover {
-  background: #b3924e;
-  color: #000;
+  background: var(--dourado);
+  color: var(--preto2);
 }
 
 .itemArtigo {
   display: flex;
   align-items: center;
   gap: 10px;
-  background: #0d0d0d;
-  border: 1px solid #1a1a1a;
-  color: #ccc;
+  background: var(--preto2);
+  border: 1px solid var(--preto2);
+  color: var(--cinza);
   padding: 0.75rem 1rem;
   border-radius: 4px;
   text-align: left;
@@ -106,9 +105,9 @@
 }
 
 .itemArtigo:hover, .artigoSelecionado {
-  background: #161412;
-  border-color: rgba(179, 146, 78, 0.4);
-  color: #fff;
+  background: var(--preto);
+  border-color: var(--fundo2);
+  color: var(--branco);
 }
 
 .truncarTexto {
@@ -139,14 +138,14 @@
   display: flex;
   justify-content: space-between;
   align-items: center;
-  border-bottom: 1px solid rgba(179, 146, 78, 0.15);
+  border-bottom: 1px solid var(--fundo3);
   padding-bottom: 1rem;
 }
 
 .tagCategoria {
-  background: rgba(179, 146, 78, 0.1);
-  border: 1px solid rgba(179, 146, 78, 0.3);
-  color: #b3924e;
+  /* background: rgba(179, 146, 78, 0.1); */
+  border: 1px solid var(--dourado);
+  color: var(--dourado);
   padding: 0.3rem 0.8rem;
   font-size: 0.75rem;
   border-radius: 20px;
@@ -167,31 +166,31 @@
 }
 
 .btnEditar {
-  background: #141414;
-  border: 1px solid #333;
-  color: #aaa;
+  background: var(--preto);
+  border: 1px solid var(--cinza);
+  color: var(--branco);
 }
 
 .btnEditar:hover {
-  border-color: #b3924e;
-  color: #b3924e;
+  border-color: var(--dourado);
+  color: var(--dourado);
 }
 
 .btnSalvar {
-  background: #b3924e;
+  background: var(--dourado);
   border: none;
-  color: #000;
+  color: var(--preto2);
 }
 
 .tituloArtigo {
   font-family: 'Cinzel', serif, sans-serif;
-  color: #b3924e;
+  color: var(--dourado);
   font-size: 2rem;
   margin-bottom: 1rem;
 }
 
 .textoArtigo {
-  color: #b3b3b3;
+  color: var(--branco);
   line-height: 1.7;
   font-size: 1.05rem;
   white-space: pre-wrap; /* Mantém as quebras de linha */
@@ -204,7 +203,7 @@
   
   /* Scrollbar customizada */
   scrollbar-width: thin;
-  scrollbar-color: rgba(179, 146, 78, 0.3) transparent;
+  scrollbar-color: var(--fundo) transparent;
 }
 
 /* --- CAMPOS DE EDIÇÃO --- */
@@ -216,9 +215,9 @@
 }
 
 .inputTitulo {
-  background: #0a0a0a;
-  border: 1px solid #222;
-  color: #fff;
+  background: var(--preto2);
+  border: 1px solid var(--preto);
+  color: var(--branco);
   padding: 0.75rem;
   font-size: 1.5rem;
   font-family: 'Cinzel', serif;
@@ -227,13 +226,13 @@
 
 .inputTitulo:focus, .textareaConteudo:focus {
   outline: none;
-  border-color: #b3924e;
+  border-color: var(--dourado);
 }
 
 .textareaConteudo {
-  background: #0a0a0a;
-  border: 1px solid #222;
-  color: #ccc;
+  background: var(--preto2);
+  border: 1px solid var(--preto);
+  color: var(--branco);
   padding: 1rem;
   font-size: 1rem;
   line-height: 1.6;
@@ -248,7 +247,7 @@
   align-items: center;
   justify-content: center;
   gap: 1rem;
-  color: #444;
+  color: var(--fundo);
   height: 100%;
   text-align: center;
 }
@@ -270,6 +269,6 @@
   
   .sidebarWiki {
     border-right: none;
-    border-bottom: 1px solid rgba(179, 146, 78, 0.15);
+    border-bottom: 1px solid var(--fundo);
   }
 }

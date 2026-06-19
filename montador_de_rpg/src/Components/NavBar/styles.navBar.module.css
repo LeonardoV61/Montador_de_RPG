@@ -7,7 +7,7 @@
     justify-content: space-between;
     align-items: center;
     padding: .4em 2rem;
-    background: rgba(20, 18, 15, 0.92);
+    background: var(--preto);
     border-bottom: 1px solid var(--dourado2);
     backdrop-filter: blur(6px);
     transition: padding 0.2s ease, background 0.2s ease;
