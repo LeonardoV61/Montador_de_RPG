@@ -1,6 +1,14 @@
+import { useMemo } from 'react';
 import * as THREE from 'three';
 
-export function extrairDadosPolyhedron(geometry) {
+/**
+ * Utilitário puro de extração geométrica.
+ * Isola o algoritmo matemático fora do ciclo do componente/hook para evitar recriações em memória.
+ */
+function extrairDadosPolyhedron(geometry) {
+   if (!geometry) return { vertices: [], faces: [] };
+
+   // Clona ou converte para não-indexado de forma limpa
    const geo = geometry.index ? geometry.toNonIndexed() : geometry.clone();
    const posAttr = geo.attributes.position;
 
@@ -12,6 +20,7 @@ export function extrairDadosPolyhedron(geometry) {
    const vertexMap = {};
    let vCounter = 0;
 
+   // Calcula o centroide da malha tridimensional
    const centroid = new THREE.Vector3();
    for (let i = 0; i < posAttr.count; i++) {
       centroid.x += posAttr.getX(i);
@@ -20,6 +29,7 @@ export function extrairDadosPolyhedron(geometry) {
    }
    centroid.divideScalar(posAttr.count);
 
+   // Instanciação de vetores auxiliares reutilizáveis dentro do loop (otimização de GC)
    const _vA = new THREE.Vector3();
    const _vB = new THREE.Vector3();
    const _vC = new THREE.Vector3();
@@ -28,6 +38,7 @@ export function extrairDadosPolyhedron(geometry) {
    const _normal = new THREE.Vector3();
    const _toFace = new THREE.Vector3();
 
+   // Processamento das faces triangulares
    for (let i = 0; i < posAttr.count; i += 3) {
       _vA.fromBufferAttribute(posAttr, i);
       _vB.fromBufferAttribute(posAttr, i + 1);
@@ -47,6 +58,7 @@ export function extrairDadosPolyhedron(geometry) {
       const ib = getOrAdd(_vB);
       const ic = getOrAdd(_vC);
 
+      // Descarta triângulos degenerados (sem área útil)
       if (ia === ib || ib === ic || ia === ic) continue;
 
       _edge1.subVectors(_vB, _vA);
@@ -54,6 +66,7 @@ export function extrairDadosPolyhedron(geometry) {
       _normal.crossVectors(_edge1, _edge2);
       _toFace.addVectors(_vA, _vB).add(_vC).divideScalar(3).sub(centroid);
 
+      // Garante que o enrolamento dos vértices (Winding Order) aponte corretamente para fora do sólido convexo
       if (_normal.dot(_toFace) >= 0) {
          faces.push([ia, ib, ic]);
       } else {
@@ -61,5 +74,21 @@ export function extrairDadosPolyhedron(geometry) {
       }
    }
 
+   // Libera buffers clonados da memória do Three.js de forma explícita
+   geo.dispose();
+
    return { vertices, faces };
 }
+
+/**
+ * Custom Hook React (usePolyhedronData)
+ * Ideal para reter dados pesados de colisores complexos no @react-three/cannon.
+ * * @param {THREE.BufferGeometry} geometry - Instância da geometria do dado
+ * @returns {Object} { vertices, faces } formatados para o colisor físico do Cannon
+ */
+export function usePolyhedronData(geometry) {
+   return useMemo(() => extrairDadosPolyhedron(geometry), [geometry]);
+}
+
+// Export default focado na integração idiomática com componentes modernos
+export default usePolyhedronData;
