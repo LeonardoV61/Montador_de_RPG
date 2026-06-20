@@ -17,15 +17,17 @@ export function applyD4UVs(geo) {
    const pos = geo.attributes.position;
    const uvs = new Float32Array(pos.count * 2);
 
-   const uniqueCorners = [];
+   const cornerMap = new Map();
    const PREC = 4;
    for (let i = 0; i < pos.count; i++) {
       const x = Number(pos.getX(i).toFixed(PREC));
       const y = Number(pos.getY(i).toFixed(PREC));
       const z = Number(pos.getZ(i).toFixed(PREC));
       
-      if (!uniqueCorners.some(c => c.x === x && c.y === y && c.z === z)) {
-         uniqueCorners.push({ x, y, z, id: uniqueCorners.length, faces: [] });
+      if (!cornerMap.has(key)) {    
+         const corner = { x, y, z, id: uniqueCorners.length, faces: [] };
+         uniqueCorners.push(corner);
+         cornerMap.set(key, corner);; cornerMap.set(key, corner); 
       }
    }
 
@@ -35,7 +37,7 @@ export function applyD4UVs(geo) {
          const x = Number(pos.getX(idx).toFixed(PREC));
          const y = Number(pos.getY(idx).toFixed(PREC));
          const z = Number(pos.getZ(idx).toFixed(PREC));
-         const corner = uniqueCorners.find(c => c.x === x && c.y === y && c.z === z);
+         const corner = cornerMap.get(`${x}_${y}_${z}`);
          if (corner && !corner.faces.includes(f)) {
             corner.faces.push(f);
          }
