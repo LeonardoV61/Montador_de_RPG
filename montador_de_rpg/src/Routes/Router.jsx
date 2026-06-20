@@ -7,6 +7,7 @@ import Jogo from "../pages/Jogo/Jogo.jsx"
 import ErrorPage from "../pages/ErrorPage.jsx";
 import OAuth2Redirect from "../pages/OAuth2Redirect.jsx";
 import { ProtectedRoute } from "./ProtecaoManeira.jsx";
+import TesteResolucao from "../pages/TesteResolucao.jsx";
 /* import MasterPanel from "../pages/MasterPanel.jsx";
 import LoginAdm from "../pages/LoginAdm.jsx";
 import AdmMenu from "../pages/AdmMenu.jsx";
