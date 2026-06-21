@@ -1,13 +1,19 @@
-import api from '../utils/api';
+import api from '../utils/api.js';
 
 export const personagemService = {
-  criar: (dto) => api.post('/api/personagens', dto),
-  criarCompleto: (dto) => api.post('/api/personagens/completo', dto),
-  buscarPorId: (id) => api.get(`/api/personagens/${id}`),
-  listarPorCampanha: (campanhaId) => api.get(`/api/personagens/campanha/${campanhaId}`),
-  listarPorUsuario: (usuarioId) => api.get(`/api/personagens/usuario/${usuarioId}`),
-  buscarAtivoDoJogador: (campanhaId) => api.get(`/api/personagens/campanha/${campanhaId}/ativo`),
-  atualizar: (id, dto) => api.patch(`/api/personagens/${id}`, dto),
-  deletar: (id) => api.delete(`/api/personagens/${id}`),
-  meuPersonagem: (campanhaId) => api.get(`/api/personagens/meu-personagem?campanhaId=${campanhaId}`),
+  // Entidades de um sistema (ex: Knight, Squire...)
+  listarEntidadesPorSistema: (sistemaId) =>
+    api.get(`/api/entidades-sistema/sistema/${sistemaId}`),
+
+  // Procedimentos de criação do sistema
+  listarProcedimentosPorSistema: (sistemaId) =>
+    api.get(`/api/procedimentos/sistema/${sistemaId}`),
+
+  // Cria instância + personagem de uma vez
+  criarCompleto: (dto) =>
+    api.post('/api/personagens/completo', dto),
+
+  // Busca personagens do usuário
+  listarPorUsuario: (usuarioId) =>
+    api.get(`/api/personagens/usuario/${usuarioId}`),
 };

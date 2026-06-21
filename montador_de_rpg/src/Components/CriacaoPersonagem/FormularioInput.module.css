@@ -1,0 +1,167 @@
+.container {
+  display: flex;
+  flex-direction: column;
+  gap: 1.25rem;
+  animation: surgir 0.25s ease;
+}
+
+@keyframes surgir {
+  from { opacity: 0; transform: translateY(8px); }
+  to   { opacity: 1; transform: translateY(0); }
+}
+
+.pergunta {
+  font-size: 1.25rem;
+  color: var(--branco);
+  font-family: 'Crimson Pro', Georgia, serif;
+  line-height: 1.45;
+  font-style: italic;
+}
+
+/* ── Opções de seleção ── */
+.opcoes {
+  display: flex;
+  flex-direction: column;
+  gap: 0.6rem;
+}
+
+.opcaoBotao {
+  background: var(--fundo2);
+  border: 1px solid var(--fundo3);
+  border-radius: 3px;
+  padding: 0.85rem 1.1rem;
+  cursor: pointer;
+  text-align: left;
+  display: flex;
+  flex-direction: column;
+  gap: 0.2rem;
+  transition: border-color 0.15s, background 0.15s;
+  color: var(--branco);
+  font-family: inherit;
+}
+
+.opcaoBotao:hover:not(:disabled) {
+  border-color: rgba(var(--douradoRGB), 0.5);
+  background: var(--fundo3);
+}
+
+.opcaoAtiva {
+  border-color: var(--dourado) !important;
+  background: var(--fundo3) !important;
+  box-shadow: inset 0 0 20px rgba(var(--douradoRGB), 0.05);
+}
+
+.opcaoLabel {
+  font-size: 1rem;
+  font-weight: 600;
+}
+
+.opcaoDesc {
+  font-size: 0.8rem;
+  color: var(--cinza);
+  line-height: 1.4;
+}
+
+/* ── Input texto/número ── */
+.inputWrapper {
+  display: flex;
+}
+
+.input {
+  background: var(--fundo2);
+  border: none;
+  border-bottom: 2px solid var(--fundo3);
+  color: var(--branco);
+  font-family: 'Crimson Pro', Georgia, serif;
+  font-size: 1.4rem;
+  padding: 0.6rem 0.25rem;
+  width: 100%;
+  transition: border-color 0.2s;
+}
+
+.input[type="number"] {
+  max-width: 140px;
+}
+
+.input:focus {
+  border-bottom-color: var(--dourado);
+}
+
+.input::placeholder {
+  color: var(--fundo3);
+  font-style: italic;
+}
+
+.input:disabled {
+  opacity: 0.5;
+}
+
+/* ── Ações ── */
+.acoes {
+  display: flex;
+  gap: 0.75rem;
+  align-items: center;
+  justify-content: flex-end;
+}
+
+.botaoConfirmar {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  min-width: 110px;
+  height: 40px;
+  background: transparent;
+  border: 1px solid var(--dourado);
+  color: var(--dourado);
+  font-family: 'Crimson Pro', Georgia, serif;
+  font-size: 0.95rem;
+  letter-spacing: 0.05em;
+  cursor: pointer;
+  border-radius: 3px;
+  transition: background 0.15s, color 0.15s;
+}
+
+.botaoConfirmar:hover:not(:disabled) {
+  background: var(--dourado);
+  color: var(--preto);
+}
+
+.botaoConfirmar:disabled {
+  opacity: 0.3;
+  cursor: not-allowed;
+}
+
+.botaoPular {
+  background: transparent;
+  border: none;
+  color: var(--cinza);
+  font-family: inherit;
+  font-size: 0.85rem;
+  cursor: pointer;
+  text-decoration: underline;
+  text-underline-offset: 3px;
+  padding: 0.25rem;
+  transition: color 0.15s;
+}
+
+.botaoPular:hover:not(:disabled) {
+  color: var(--branco);
+}
+
+.erro {
+  color: var(--vermelho);
+  font-size: 0.85rem;
+}
+
+.spinner {
+  width: 16px;
+  height: 16px;
+  border: 2px solid rgba(var(--douradoRGB), 0.3);
+  border-top-color: var(--dourado);
+  border-radius: 50%;
+  animation: girar 0.6s linear infinite;
+}
+
+@keyframes girar {
+  to { transform: rotate(360deg); }
+}

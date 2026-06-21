@@ -482,6 +482,198 @@
   color: #000;
 }
 
+
+/* ==========================================================================
+   ESTILOS DO CONTEÚDO DO LIVRO (para RenderizadorConteudo)
+   ========================================================================== */
+
+/* Container geral da página (substitui o inline do Compendio) */
+.paginaLivro {
+  max-width: 900px;
+  margin: 0 auto;
+  background: #fff;
+  border-radius: 8px;
+  box-shadow: 0 4px 20px rgba(0,0,0,0.1);
+  overflow: hidden;
+  color: #222;
+  font-family: 'Georgia', 'Times New Roman', serif;
+}
+
+/* Fundo externo (já no containerGeral, mas reforçamos aqui) */
+.fundoLeitura {
+  background: #f5f5f5;
+  min-height: 100vh;
+  padding: 20px;
+}
+
+/* Barra de navegação superior */
+.navTopo {
+  max-width: 1000px;
+  margin: 0 auto 20px;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+/* Área principal do livro */
+.areaLivro {
+  max-width: 900px;
+  margin: 0 auto;
+  background: white;
+  border-radius: 8px;
+  box-shadow: 0 4px 20px rgba(0,0,0,0.1);
+  overflow: hidden;
+}
+
+/* Navegação de páginas */
+.navPaginas {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 10px 20px;
+  background: #fafafa;
+  border-bottom: 1px solid #eee;
+}
+
+/* Botões de navegação */
+.btnNav {
+  background: none;
+  border: none;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  gap: 5px;
+  color: #555;
+  font-size: 0.9rem;
+}
+.btnNav:disabled {
+  opacity: 0.4;
+  cursor: default;
+}
+
+/* Texto da página atual */
+.textoPaginaAtual {
+  font-weight: 500;
+  color: #333;
+}
+
+/* Conteúdo interno da página */
+.conteudoPagina {
+  padding: 40px 50px;
+  min-height: 500px;
+}
+
+/* Título da página */
+.tituloPagina {
+  text-align: center;
+  margin-bottom: 30px;
+  font-size: 2rem;
+  border-bottom: 2px solid #333;
+  padding-bottom: 10px;
+  color: #111;
+}
+
+/* Capa especial */
+.capaContainer {
+  position: relative;
+  text-align: center;
+}
+.capaImagem {
+  width: 100%;
+  max-height: 500px;
+  object-fit: cover;
+}
+.capaTexto {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  color: white;
+  text-shadow: 2px 2px 4px rgba(0,0,0,0.8);
+  font-style: italic;
+  font-size: 1.1rem;
+  line-height: 1.6;
+  width: 80%;
+}
+
+/* ==========================================================================
+   ESTILOS DO RENDERIZADOR DE CONTEÚDO
+   ========================================================================== */
+
+/* Bloco de texto */
+.blocoTexto {
+  text-align: justify;
+  margin-bottom: 1.2rem;
+  font-size: 1rem;
+  line-height: 1.7;
+  color: #222;
+}
+
+/* Bloco de imagem */
+.blocoImagem {
+  text-align: center;
+  margin: 20px 0;
+}
+.blocoImagem img {
+  max-width: 100%;
+  border-radius: 4px;
+}
+.blocoImagem .legenda {
+  font-style: italic;
+  margin-top: 8px;
+  color: #555;
+  font-size: 0.9rem;
+}
+
+/* Bloco de tabela */
+.blocoTabela {
+  margin: 20px 0;
+}
+.blocoTabela h3 {
+  text-align: center;
+  color: #333;
+}
+.blocoTabela table {
+  width: 100%;
+  border-collapse: collapse;
+  font-size: 0.95rem;
+}
+.blocoTabela th {
+  border: 1px solid #ccc;
+  padding: 8px;
+  background: #f5f5f5;
+  font-weight: bold;
+  text-align: left;
+}
+.blocoTabela td {
+  border: 1px solid #ccc;
+  padding: 8px;
+  vertical-align: top;
+}
+
+/* Bloco de colunas */
+.blocoColunas {
+  display: flex;
+  gap: 20px;
+  margin: 20px 0;
+}
+.coluna {
+  flex: 1;
+}
+
+/* Bloco de citação */
+.blocoCitacao {
+  text-align: center;
+  font-style: italic;
+  margin: 30px 0;
+  padding: 20px;
+  border-left: 4px solid #b3924e;
+  background: #f9f9f9;
+  color: #444;
+  font-size: 1.05rem;
+  line-height: 1.6;
+}
+
 /* ==========================================================================
    ANIMATIONS & RESPONSIVENESS
    ========================================================================== */

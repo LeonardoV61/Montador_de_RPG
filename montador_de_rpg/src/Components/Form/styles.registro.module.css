@@ -1,0 +1,30 @@
+.formCont {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    padding: 40px 60px;
+    width: auto;
+    min-height: 50vh;
+    text-align: center;
+    margin: 9.1vh auto 0 auto;
+}
+
+.loginLink {
+    margin-top: 20px;
+    color: var(--cinza);
+    font-family: 'Cinzel', serif;
+    font-size: 0.8rem;
+    letter-spacing: 0.1em;
+}
+
+.loginLink span {
+    color: var(--dourado);
+    cursor: pointer;
+    font-weight: 600;
+    transition: color 0.2s;
+}
+
+.loginLink span:hover {
+    color: var(--dourado2);
+}

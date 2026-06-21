@@ -7,4 +7,5 @@ export const usuarioService = {
   atualizar: (id, dto) => api.patch(`/api/usuarios/${id}`, dto),
   deletar: (id) => api.delete(`/api/usuarios/${id}`),
   perfil: () => api.get('/api/usuarios/me'),
+  
 };

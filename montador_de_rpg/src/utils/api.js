@@ -18,7 +18,7 @@
 
 // export default api;
 
-const API_BASE_URL = import.meta.env.VITE_API_BASE_URL || 'https://obscure-journey-4j6w795rgx74f7w74-8080.app.github.dev';
+const API_BASE_URL = import.meta.env.VITE_API_BASE_URL || 'http://localhost:8080';
 
 function getAuthHeaders() {
   const token = localStorage.getItem('token');

@@ -24,9 +24,9 @@ export default function Form({ children, ...props }){
                 
                 <input onChange={props.onInputChange} 
                         className={styles.inputs} 
-                        placeholder='Nome' 
-                        name='nome' 
-                        type="text"/>
+                        placeholder='Email' 
+                        name='email'
+                        type="email" />
 
                 <div className={styles.passwordCont} >
                     <input onChange={props.onInputChange} 

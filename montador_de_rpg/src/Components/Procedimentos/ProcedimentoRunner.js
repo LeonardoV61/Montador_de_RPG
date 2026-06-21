@@ -3,7 +3,7 @@ import { procedimentoService } from '../services/procedimentoService';
 
 function ProcedimentoRunner({ idProcedimento, idSessao, idInstancia }) {
   const [contexto, setContexto] = useState(null);
-  const [erro, setErro] = useState(null);
+  const [setErro] = useState(null);
 
   // Iniciar procedimento
   const iniciar = async () => {
