@@ -6,16 +6,6 @@ import { sessaoService } from '../../services/sessaoService.js';
 import FormularioInput from './FormularioInput.jsx';
 import styles from './ExecucaoProcedimento.module.css';
 
-/**
- * Props:
- *  - sistema: { id, nome }
- *  - entidade: { id, nome, atributos, tipo }
- *  - nomePersonagem: string
- *  - usuarioId: number
- *  - campanhaAtivaId?: number | null
- *  - onConcluido: fn(personagem)
- *  - onErro: fn(mensagem)
- */
 export default function ExecucaoProcedimento({
   sistema,
   entidade,
@@ -46,11 +36,11 @@ export default function ExecucaoProcedimento({
   async function limparTemporarios({ campanha, sessao }) {
     if (sessao) {
       try { await sessaoService.encerrar(sessao); }
-      catch (e) { console.error(e); }
+      catch (e) { console.error('Erro ao encerrar sessão:', e); }
     }
     if (campanha) {
       try { await campanhaService.deletar(campanha); }
-      catch (e) { console.error(e); }
+      catch (e) { console.error('Erro ao deletar campanha:', e); }
     }
   }
 
@@ -65,7 +55,8 @@ export default function ExecucaoProcedimento({
     try {
       setFase('iniciando');
 
-      // 1. Obter ou criar campanha
+      // ── 1. Campanha ──────────────────────────────────────
+      console.log('▶ 1. Criando campanha...');
       let idCampanha = campanhaAtivaId;
       if (!idCampanha) {
         const novaCamp = await campanhaService.criar({
@@ -73,19 +64,27 @@ export default function ExecucaoProcedimento({
           sistemaId: sistema.id,
           criadorId: usuarioId,
         });
-        idCampanha = novaCamp.data.id;
+        console.log('✅ Resposta campanha bruta:', JSON.stringify(novaCamp, null, 2));
+        idCampanha = novaCamp?.data?.id ?? novaCamp?.id;
+        if (!idCampanha) throw new Error('Campanha criada mas ID não encontrado na resposta.');
         temporarios.campanha = idCampanha;
+        console.log('✅ Campanha id:', idCampanha);
       }
 
-      // 2. Iniciar sessão temporária
+      // ── 2. Sessão ─────────────────────────────────────────
+      console.log('▶ 2. Iniciando sessão...');
       const sessaoResp = await sessaoService.iniciar(idCampanha);
-      const idSessao = sessaoResp.data.id;
+      console.log('✅ Resposta sessão bruta:', JSON.stringify(sessaoResp, null, 2));
+      const idSessao = sessaoResp?.data?.id ?? sessaoResp?.id;
+      if (!idSessao) throw new Error('Sessão criada mas ID não encontrado na resposta.');
       temporarios.sessao = idSessao;
       idSessaoRef.current = idSessao;
+      console.log('✅ Sessão id:', idSessao);
 
-      // 3. Criar personagem
+      // ── 3. Personagem ─────────────────────────────────────
+      console.log('▶ 3. Criando personagem...');
       const atributosIniciais = entidade.atributos || {};
-      const personagem = await personagemService.criarCompleto({
+      const personagemResp = await personagemService.criarCompleto({
         usuarioId,
         campanhaId: idCampanha,
         entidadeSistemaId: entidade.id,
@@ -93,42 +92,54 @@ export default function ExecucaoProcedimento({
         nome: nomePersonagem,
         atributosAtuais: atributosIniciais,
       });
+      console.log('✅ Resposta personagem bruta:', JSON.stringify(personagemResp, null, 2));
+      // extrai o objeto de personagem independente de envelope .data
+      const personagem = personagemResp?.data ?? personagemResp;
+      const instanciaId = personagem?.instanciaId ?? personagem?.id;
+      if (!instanciaId) throw new Error('Personagem criado mas instanciaId não encontrado na resposta.');
       setPersonagemCriado(personagem);
+      console.log('✅ Personagem instanciaId:', instanciaId);
 
-      // 4. Buscar procedimento de criação
-      const procedimentos = await procedimentoService.listar(sistema.id);
-      const procCriacao = procedimentos.find(
-        (p) => p.tipo === 'CRIACAO_PERSONAGEM'
-      );
+      // ── 4. Procedimento de criação ────────────────────────
+      console.log('▶ 4. Buscando procedimentos...');
+      const procedimentosResp = await procedimentoService.listar(sistema.id);
+      console.log('✅ Resposta procedimentos bruta:', JSON.stringify(procedimentosResp, null, 2));
+      const procedimentos = Array.isArray(procedimentosResp)
+        ? procedimentosResp
+        : procedimentosResp?.data ?? [];
+      const procCriacao = procedimentos.find((p) => p.tipo === 'CRIACAO_PERSONAGEM');
+      console.log('✅ Proc de criação encontrado:', procCriacao);
+      if (!procCriacao) throw new Error('Nenhum procedimento de criação encontrado para este sistema.');
 
-      if (!procCriacao) {
-        throw new Error('Nenhum procedimento de criação encontrado para este sistema.');
-      }
-
-      // 5. Iniciar procedimento — NÃO limpa no finally, sessão ainda é necessária
-      const ctx = await procedimentoService.iniciarComInstancia(
+      // ── 5. Iniciar procedimento ───────────────────────────
+      console.log('▶ 5. Iniciando procedimento...');
+      const resp = await procedimentoService.iniciarComInstancia(
         procCriacao.id,
         idSessao,
-        personagem.instanciaId
+        instanciaId,
       );
-
+      console.log('✅ Resposta procedimento bruta:', JSON.stringify(resp, null, 2));
+      const ctx = resp?.data ?? resp;
       processarContexto(ctx);
 
     } catch (e) {
-      // Só limpa se falhou na inicialização
+      console.error('❌ ERRO EM iniciar():', e);
+      console.error('❌ Mensagem:', e.message);
       await limparTemporarios(temporarios);
       tempIdsRef.current = { campanha: null, sessao: null };
-
       if (mountedRef.current) {
         setFase('erro');
         onErro?.(e.message || 'Erro ao iniciar a criação.');
       }
     }
-    // ✅ Sem finally de limpeza — sessão precisa continuar viva durante o procedimento
   }
 
   const processarContexto = useCallback((ctx) => {
     if (!mountedRef.current) return;
+
+    console.log('=== CTX RECEBIDO ===', JSON.stringify(ctx, null, 2));
+    console.log('status:', ctx?.status, '| estadoAtual:', ctx?.estadoAtual);
+
     setContexto(ctx);
 
     const status = ctx?.status || ctx?.estadoAtual;
@@ -157,6 +168,8 @@ export default function ExecucaoProcedimento({
       return;
     }
 
+    // fallback — status desconhecido, loga para investigar
+    console.warn('⚠️ Status desconhecido no contexto:', status, '— ctx completo:', ctx);
     setFase('rodando');
   }, [onErro]);
 
@@ -170,9 +183,7 @@ export default function ExecucaoProcedimento({
     }
 
     try {
-      // ⚠️ Endpoint /responder ainda não existe no back-end
       throw new Error('Funcionalidade de resposta ainda não implementada no servidor.');
-
       // const ctx = await procedimentoService.responder(idSessaoRef.current, resposta);
       // processarContexto(ctx);
     } catch (e) {
@@ -223,10 +234,7 @@ export default function ExecucaoProcedimento({
         <span className={styles.iconeConcluido}>✦</span>
         <h2 className={styles.tituloConcluido}>{nomePersonagem}</h2>
         <p className={styles.textoFase}>está pronto para cavalgar</p>
-        <button
-          className={styles.botaoConcluir}
-          onClick={handleConcluirPersonagem}
-        >
+        <button className={styles.botaoConcluir} onClick={handleConcluirPersonagem}>
           Ver Personagem →
         </button>
       </div>
@@ -244,10 +252,7 @@ export default function ExecucaoProcedimento({
         {totalEtapas > 0 && (
           <div className={styles.progressoWrapper}>
             <div className={styles.progressoBarra}>
-              <div
-                className={styles.progressoFill}
-                style={{ width: `${progresso}%` }}
-              />
+              <div className={styles.progressoFill} style={{ width: `${progresso}%` }} />
             </div>
             <span className={styles.progressoTexto}>{progresso}%</span>
           </div>

@@ -16,16 +16,29 @@ export default function CriacaoPersonagem() {
   const [personagemFinal, setPersonagemFinal] = useState(null);
   const [erroGlobal, setErroGlobal] = useState(null);
 
+
+  console.log('FASE:', fase, '| usuarioId:', usuarioId, '| selecao:', selecao);
+
   useEffect(() => {
     (async () => {
       try {
         const res = await usuarioService.perfil();
-        // A resposta pode variar: res.data direto ou res.data.data
-        const perfil = res.data?.data || res.data;
-        setUsuarioId(perfil?.id ?? null);
-        // Futuramente: buscar campanha ativa, ex:
-        // const campAtiva = await campanhaService.buscarAtiva(perfil.id);
-        // setCampanhaAtivaId(campAtiva?.id ?? null);
+        
+        // 👇 Loga a resposta bruta para ver a estrutura real
+        console.log('RESPOSTA PERFIL BRUTA:', JSON.stringify(res, null, 2));
+        
+        // Tenta todas as variações possíveis da estrutura
+        const perfil = res?.data?.data || res?.data || res;
+        const id = perfil?.id ?? perfil?.usuarioId ?? null;
+        
+        console.log('PERFIL EXTRAÍDO:', perfil);
+        console.log('ID EXTRAÍDO:', id);
+        
+        setUsuarioId(id);
+
+        if (!id) {
+          setErroGlobal('Não foi possível identificar o usuário. Faça login novamente.');
+        }
       } catch {
         setErroGlobal('Sessão inválida. Faça login novamente.');
       } finally {
@@ -35,6 +48,10 @@ export default function CriacaoPersonagem() {
   }, []);
 
   function handleSelecaoConfirmada(dados) {
+    if (!usuarioId) {
+      setErroGlobal('Usuário não identificado. Recarregue a página.');
+      return;
+    }
     setSelecao(dados);
     setFase('procedimento');
     setErroGlobal(null);
