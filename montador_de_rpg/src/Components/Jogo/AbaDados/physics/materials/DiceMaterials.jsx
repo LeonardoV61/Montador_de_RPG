@@ -1,4 +1,4 @@
-import { useMemo } from 'react';
+import { useMemo, useEffect } from 'react';
 import * as THREE from 'three';
 
 /**
@@ -7,7 +7,7 @@ import * as THREE from 'three';
  * * @param {number} lados - Quantidade de lados do dado (ex: 4, 6, 8, 10, 12, 20)
  * @returns {THREE.MeshStandardMaterial[]} Array de materiais com texturas embutidas
  */
-export function criarMateriaisDados(lados) {
+function criarMateriaisDados(lados) {
    const materiais = [];
    
    for (let i = 1; i <= lados; i++) {
@@ -136,16 +136,13 @@ export function useDiceMaterials(lados) {
    const materiaisDados = useMemo(() => criarMateriaisDados(lados), [lados]);
 
    // Otimização de Limpeza de Memória (Garbage Collection do WebGL)
-   useMemo(() => {
+   useEffect(() => {
       return () => {
          materiaisDados.forEach((material) => {
-            if (material.map) material.map.dispose();
+         if (material.map) material.map.dispose();
             material.dispose();
          });
       };
    }, [materiaisDados]);
-
-   return materiaisDados;
 }
 
-export default useDiceMaterials;

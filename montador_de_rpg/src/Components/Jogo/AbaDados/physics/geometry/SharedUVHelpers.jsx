@@ -18,16 +18,18 @@ export function applyD4UVs(geo) {
    const uvs = new Float32Array(pos.count * 2);
 
    const cornerMap = new Map();
+   const uniqueCorners = [];
    const PREC = 4;
    for (let i = 0; i < pos.count; i++) {
       const x = Number(pos.getX(i).toFixed(PREC));
       const y = Number(pos.getY(i).toFixed(PREC));
       const z = Number(pos.getZ(i).toFixed(PREC));
+      const key = `${x}_${y}_${z}`;
       
       if (!cornerMap.has(key)) {    
          const corner = { x, y, z, id: uniqueCorners.length, faces: [] };
          uniqueCorners.push(corner);
-         cornerMap.set(key, corner);; cornerMap.set(key, corner); 
+         cornerMap.set(key, corner);
       }
    }
 

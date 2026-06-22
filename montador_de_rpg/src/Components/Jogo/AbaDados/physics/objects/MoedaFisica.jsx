@@ -4,7 +4,7 @@ import * as THREE from 'three';
 
 import { buildCoinGeometry } from '../geometry/CoinGeometry.jsx';
 import { useCoinMaterials } from '../materials/CoinMaterials.jsx';
-import { useObjetoFisicoArrastavel } from '../shared/useObjetoFisicoArrastavel.jsx';
+import { useObjetoFisicoArrastavel } from '../shared/useObjetoFisicoArrastavel.js';
 
 function calcularResultadoMoeda(mesh) {
    mesh.updateMatrixWorld(true);

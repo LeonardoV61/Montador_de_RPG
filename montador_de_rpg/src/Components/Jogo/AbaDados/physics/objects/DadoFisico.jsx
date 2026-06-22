@@ -6,7 +6,7 @@ import { SOLIDS_GEOMETRY } from '../geometry/SolidsGeometry.jsx';
 import { usePolyhedronData } from '../collider/Polyhedron.jsx';
 import { determinarFaceSuperior } from '../orientation/GetTopFace.jsx';
 import { useDiceMaterials } from '../materials/DiceMaterials.jsx';
-import { useObjetoFisicoArrastavel } from '../shared/useObjetoFisicoArrastavel.jsx';
+import { useObjetoFisicoArrastavel } from '../shared/useObjetoFisicoArrastavel.js';
 
 function gerarImpulsoDado() {
    return [Math.random() * 6 - 3, -5, Math.random() * 6 - 3];
@@ -57,13 +57,20 @@ export function DadoFisico({ id, lados = 6, position = [0, 3, 0], onStopped }) {
 
    return (
       <mesh
-         ref={ref} castShadow receiveShadow
-         material={arrayMateriais} geometry={geometriaBase}
+         ref={ref}
          onPointerDown={(e) => {
-            e.stopPropagation();
-            if (!stateFlags.current.lancado) stateFlags.current.segurando = true;
+         e.stopPropagation();
+         if (!stateFlags.current.lancado) stateFlags.current.segurando = true;
          }}
-      />
+      >
+       {/* O objeto visual precisa estar isolado aqui dentro para herdar a matriz física sem conflitos */}
+      <mesh 
+         castShadow 
+         receiveShadow 
+         geometry={geometriaBase} 
+         material={arrayMateriais} 
+       />
+      </mesh>
    );
 }
 

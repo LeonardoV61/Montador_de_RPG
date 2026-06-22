@@ -1,6 +1,10 @@
 .mapa {
-  width: stretch;
-  position: relative;
+  position: fixed; /* Ou 'absolute' se o pai já ocupar 100% da tela */
+  top: 0;
+  left: 0;
+  width: 100vw;
+  height: 100vh;
+  z-index: 0; /* Fica por trás de toda a interface de texto, avatares e chat */
   overflow: hidden;
   background: #0c0b09;
   cursor: grab;
@@ -19,7 +23,7 @@
 .mapaZoom {
   position: absolute;
   bottom: 1rem;
-  left: 1rem;
+  left: 3rem;
   display: flex;
   flex-direction: column;
   gap: 2px;
@@ -28,7 +32,7 @@
 }
 
 .mapaZoomDeslocado {
-  left: calc(260px + 1rem);
+  left: calc(260px + 3rem);
 }
 
 .zoomBotao {

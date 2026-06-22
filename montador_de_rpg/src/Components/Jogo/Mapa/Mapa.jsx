@@ -6,9 +6,10 @@ import styles from './styles.Mapa.module.css';
 import MapaFerramentas from '../MapaFerramentas/MapaFerramentas.jsx';
 import AvatarPersonagem from '../AvatarPersonagem/AvatarPersonagem.jsx';
 import MenuContexto from '../MenuContexto/MenuContexto';
-import { ContextoAbasPersonagem, ContextoRegistros, ContextoMesaFisica } from '../../../pages/Jogo/Jogo.jsx';
-import { DadoFisicoPoliedro, MoedaFisica, ChaoMesa } from '../AbaDados/MesaFisica';
-import api from '../../../utils/api';
+import { ContextoAbasPersonagem, ContextoMesaFisica } from '../../../pages/Jogo/Jogo.jsx';
+import { ChaoMesa, ParedesMesa } from '../AbaDados/MesaFisica.jsx';
+import { DadoFisico } from '../AbaDados/physics/objects/DadoFisico.jsx';
+import { MoedaFisica } from '../AbaDados/physics/objects/MoedaFisica.jsx';
 
 export const ContextoAvatar = createContext(null);
 
@@ -55,42 +56,13 @@ export default function Mapa() {
    }
 
    // --- CAPTURA DE RESULTADO DA MESA FÍSICA ---
-   const { registros, setRegistros } = useContext(ContextoRegistros);
-   const { dadosAtivosNaMesa, setDadosAtivosNaMesa, setResultado, setTipoRolamento } = useContext(ContextoMesaFisica);
-
-   async function handleDadoParou(id, valorReal, lados) {
-      const nomeDado = lados === 2 ? "Moeda" : 'd' + lados;
-      
-      setTipoRolamento(nomeDado);
-      setResultado(valorReal);
-
-      let novoRoll = {
-         id: registros.length + 1,
-         aba: "Roll",
-         icone: lados === 2 ? "🪙" : "🎲",
-         autor: "VOCÊ",
-         tipo: nomeDado,
-         valor: valorReal,
-         dado: nomeDado,
-         valorAtributo: false
-      };
-
-      try {
-         await api.post('/jogadas/rolar', { dado: nomeDado, resultado: valorReal });
-      } catch (err) {
-         console.error("Erro ao salvar jogada:", err);
-      }
-
-      setRegistros(prev => [...prev, novoRoll]);
-
-      // Remove o dado da tela após alguns segundos de contemplação do resultado
-      setTimeout(() => {
-         setDadosAtivosNaMesa(prev => prev.filter(d => d.id !== id));
-      }, 5000);
-   }
+   // O processamento do resultado (agregação, registro no histórico,
+   // persistência via API e remoção do dado após contemplação) é
+   // responsabilidade de Jogo.jsx, exposta aqui via onDadoParou.
+   const { dadosAtivosNaMesa, possuiDadosInterativos, onDadoParou } = useContext(ContextoMesaFisica);
 
    return (
-      <main className={styles.mapa} id="map" onClick={() => setContextoAberto(false)}>
+       <main className={styles.mapa} id="map" onClick={() => setContextoAberto(false)} style={{ position: 'fixed', top: 'var(--navbar-height, 42px)', left: 0, width: '100vw', height: 'calc(100vh - var(--navbar-height, 42px))', overflow: 'hidden', zIndex: 1 }}>
          <canvas 
             ref={canvasRef} 
             className={styles.mapaHexagonal} 
@@ -100,34 +72,49 @@ export default function Mapa() {
          />
 
          {/* CAMADA INVISÍVEL 3D - NÃO BLOQUEIA O FUNDO DO MAPA */}
-         <div style={{
-            position: 'absolute',
-            top: 0, left: 0, width: '100%', height: '100%',
-            zIndex: 25,
-            pointerEvents: dadosAtivosNaMesa.length > 0 ? 'auto' : 'none'
-         }}>
-            {dadosAtivosNaMesa.length > 0 && (
-               <Canvas camera={{ position: [0, 5.5, 5.5], fov: 40 }} shadows gl={{ alpha: true }} onContextMenu={(e) => e.preventDefault()}>
-                  {/* Iluminação de Estúdio Fotográfico para dar Brilho na Resina */}
+    
+         {/* O CANVAS DO MAPA 2D PRECISA COLAR NAS BORDAS E FICAR NO FUNDO DE TUDO (zIndex: 1) */}
+         <canvas 
+            ref={canvasRef} 
+            className={styles.mapaHexagonal} 
+           style={{ position: 'absolute', top: 0, left: 0, width: '100%', height: '100%', zIndex: 1 }}
+            onWheel={canvasWheel} onClick={canvasClick}
+            onMouseDown={canvasMouseDown} onMouseMove={canvasMouseMove} onMouseUp={canvasMouseUp}
+            onContextMenu={canvasCtxMenu} 
+         />
+         {/* CAMADA INVISÍVEL 3D PARA OS DADOS (zIndex: 2 - FICA LOGO ACIMA DO MAPA 2D) */}
+         {dadosAtivosNaMesa.length > 0 && (
+            <div style={{ 
+               position: 'absolute', 
+               top: 0, 
+               left: 0, 
+               width: '100vw', 
+               height: '100vh', 
+               zIndex: 2, 
+               pointerEvents: possuiDadosInterativos ? 'auto' : 'none' 
+            }}>
+               <Canvas camera={{ position: [0, 5.5, 5.5], fov: 40 }} shadows gl={{ alpha: true }} resize={{ scroll: true, debounce: { scroll: 50, resize: 0 } }} onContextMenu={(e) => e.preventDefault()}>
                   <ambientLight intensity={0.6} />
                   <pointLight position={[8, 12, 8]} castShadow intensity={1.5} shadow-mapSize={[2048, 2048]} />
                   <directionalLight position={[-5, 8, -2]} intensity={0.4} />
                   
-                  <Physics gravity={[0, -12, 0]}>
-                     <ChaoMesa />
+                  <Physics gravity={[0, -9.81, 0]} tolerance={0.002}>
+                    <ChaoMesa />
+                     <ParedesMesa />
                      {dadosAtivosNaMesa.map((dado) => (
                         dado.lados === 2 ? (
-                           <MoedaFisica key={dado.id} position={dado.posicao} onStopped={(val) => handleDadoParou(dado.id, val, dado.lados)} />
+                           <MoedaFisica key={dado.id} id={dado.id} position={dado.posicao} onStopped={onDadoParou} />
                         ) : (
-                           <DadoFisicoPoliedro key={dado.id} lados={dado.lados} position={dado.posicao} onStopped={(val) => handleDadoParou(dado.id, val, dado.lados)} />
-                        )
+                           <DadoFisico key={dado.id} id={dado.id} lados={dado.lados} position={dado.posicao} onStopped={onDadoParou} />
+                       )
                      ))}
                   </Physics>
                </Canvas>
-            )}
-         </div>
+            </div>
+         )}
 
          <MapaFerramentas />
+
 
          <ContextoAvatar.Provider value={{avatarSelecionado, setAvatarSelecionado}}>
             <AvatarPersonagem tipo="jogador" nome="Aldric" icone="⚔" porcentagemHP="67"/>
