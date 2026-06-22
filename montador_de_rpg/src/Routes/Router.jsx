@@ -9,7 +9,8 @@ import OAuth2Redirect from "../pages/OAuth2Redirect.jsx";
 import { ProtectedRoute } from "./ProtecaoManeira.jsx";
 import TesteResolucao from "../pages/TesteResolucao.jsx";
 import Registro from "../pages/Registro.jsx";
-import CriacaoPersonagem from "../pages/CriacaoPersonagem/CriacaoPersonagem.jsx";
+import CriacaoPersonagem from "../pages/Personagens/CriacaoPersonagem.jsx";
+import FichaPersonagem from "../pages/Personagens/FichaPersonagem.jsx";
 
 const Router = () =>
   createBrowserRouter([
@@ -52,6 +53,15 @@ const Router = () =>
       element: (
         <ProtectedRoute>
           <CriacaoPersonagem />
+        </ProtectedRoute>
+      ),
+      errorElement: <ErrorPage />,
+    },
+    {
+      path: "/personagens/:id",
+      element: (
+        <ProtectedRoute>
+          <FichaPersonagem />
         </ProtectedRoute>
       ),
       errorElement: <ErrorPage />,

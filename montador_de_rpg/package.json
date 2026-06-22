@@ -21,6 +21,7 @@
     "react-markdown": "^10.1.0",
     "react-responsive-carousel": "^3.2.23",
     "react-router-dom": "^7.14.2",
+    "remark-breaks": "^4.0.0",
     "three": "^0.184.0",
     "zod": "^4.4.2"
   },

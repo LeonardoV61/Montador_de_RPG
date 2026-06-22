@@ -1,41 +1,102 @@
 import { useState } from 'react';
 import styles from './FormularioInput.module.css';
 
-/**
- * Renderiza dinamicamente o campo de input baseado nos parâmetros da etapa.
- *
- * Props:
- *  - etapa: objeto com { tipoEtapa, parametrosEtapa, nome }
- *  - contexto: o ProcedimentoContexto retornado pelo backend
- *  - onResponder: fn(valor) — chama o backend com a resposta
- *  - carregando: boolean
- */
+// ─── helper para extrair faces de "d12", "d6" etc. ───
+function parseDado(str) {
+  const match = str.match(/^d(\d+)$/);
+  return match ? parseInt(match[1], 10) : 0;
+}
+
+// ─── componente interno de rolagem ───
+function RolagemDados({ config, onConfirmar }) {
+  const [resultados, setResultados] = useState(null);
+  const [rolou, setRolou] = useState(false);
+
+  const dados = config?.dados || [];
+  const modificador = config?.modificador || 0;
+
+  function rolar() {
+    const novos = dados.map(d => {
+      const faces = parseDado(d);
+      if (faces <= 0) return { dado: d, valor: 0 };
+      return { dado: d, valor: Math.floor(Math.random() * faces) + 1 };
+    });
+    setResultados(novos);
+    setRolou(true);
+  }
+
+  const total = (resultados || []).reduce((s, r) => s + r.valor, 0) + modificador;
+
+  return (
+    <div className={styles.rolagemContainer}>
+      <div className={styles.rolagemDados}>
+        {dados.map((d, i) => (
+          <div key={i} className={styles.dadoVisual}>
+            <span className={styles.dadoTipo}>{d}</span>
+            <span className={styles.dadoValor}>
+              {resultados ? resultados[i].valor : '?'}
+            </span>
+          </div>
+        ))}
+        {modificador !== 0 && (
+          <div className={styles.dadoVisual}>
+            <span className={styles.dadoTipo}>+{modificador}</span>
+            <span className={styles.dadoValor}>{modificador}</span>
+          </div>
+        )}
+      </div>
+
+      <div className={styles.totalDisplay}>
+        Total: <strong>{resultados ? total : '?'}</strong>
+      </div>
+
+      <div className={styles.acoes}>
+        <button
+          className={styles.botaoRolar}
+          onClick={rolar}
+          disabled={false}
+        >
+          {rolou ? 'Rolar novamente' : 'Rolar dados'}
+        </button>
+        <button
+          className={styles.botaoConfirmar}
+          onClick={() => onConfirmar(total)}
+          disabled={!resultados}
+        >
+          Confirmar
+        </button>
+      </div>
+    </div>
+  );
+}
+
+// ─── componente principal ───
 export default function FormularioInput({ etapa, onResponder, carregando }) {
   const params = etapa?.parametrosEtapa || {};
   const [valor, setValor] = useState('');
   const [erro, setErro] = useState('');
 
-  // Opções estáticas definidas na etapa
   const opcoesEstatico = params.opcoes_estatico || null;
-
-  // Título exibido ao usuário
-  const titulo = params.campo_pedido || etapa?.nome || 'Responda';
-
-  // Pode pular etapa?
+  const titulo = params.campoPedido || etapa?.nome || 'Responda';
   const podePular = params.pode_passar === true;
+  const rolagemConfig = params.rolagem;          // ← injetado pelo SOLICITAR_ROLAGEM
+
+  const campoLower = (titulo || '').toLowerCase();
+  const isNumero = ['vig', 'cla', 'spi', 'gd', 'guard', 'vigor', 'clarity', 'spirit', 'número', 'numero', 'valor']
+    .some(k => campoLower.includes(k));
 
   function validar(v) {
     if (!v || String(v).trim() === '') return 'Por favor, preencha este campo.';
+    if (isNumero && isNaN(Number(v))) return 'Digite um número válido.';
     return '';
   }
 
   function handleSubmit() {
-    if (!opcoesEstatico) {
-      const erroVal = validar(valor);
-      if (erroVal) { setErro(erroVal); return; }
-    }
+    const erroVal = validar(valor);
+    if (erroVal) { setErro(erroVal); return; }
     setErro('');
-    onResponder(valor || null);
+    const resposta = isNumero ? Number(valor) : valor;
+    onResponder(resposta);
     setValor('');
   }
 
@@ -49,8 +110,10 @@ export default function FormularioInput({ etapa, onResponder, carregando }) {
     setValor('');
   }
 
-  // ── Render de opções estáticas (seleção) ──
-  if (opcoesEstatico && Array.isArray(opcoesEstatico)) {
+  // ── renderização ─────────────────────────────────────────────────
+
+  // 1. Opções estáticas (seleção)
+  if (opcoesEstatico && Array.isArray(opcoesEstatico) && opcoesEstatico.length > 0) {
     return (
       <div className={styles.container}>
         <p className={styles.pergunta}>{titulo}</p>
@@ -82,11 +145,28 @@ export default function FormularioInput({ etapa, onResponder, carregando }) {
     );
   }
 
-  // ── Detecção de tipo pelo campo_pedido ou nome ──
-  const campoLower = (titulo || '').toLowerCase();
-  const isNumero = ['vig', 'cla', 'spi', 'gd', 'guard', 'vigor', 'clarity', 'spirit', 'número', 'numero', 'valor']
-    .some(k => campoLower.includes(k));
+  // 2. Rolagem de dados (novo!)
+  if (rolagemConfig) {
+    return (
+      <div className={styles.container}>
+        <p className={styles.pergunta}>{titulo}</p>
+        <RolagemDados
+          config={rolagemConfig}
+          onConfirmar={(total) => {
+            onResponder(total);
+            setValor('');
+          }}
+        />
+        {podePular && (
+          <button className={styles.botaoPular} onClick={handlePular} disabled={carregando}>
+            Pular esta etapa
+          </button>
+        )}
+      </div>
+    );
+  }
 
+  // 3. Input numérico ou textual (fallback)
   return (
     <div className={styles.container}>
       <p className={styles.pergunta}>{titulo}</p>

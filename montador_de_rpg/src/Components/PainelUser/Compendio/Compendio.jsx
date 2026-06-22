@@ -108,26 +108,31 @@ export default function Compendio() {
           </div>
 
           {/* Conteúdo da página */}
-          <div className={styles.conteudoPagina}>
-            {pagina ? (
-              isCapa ? (
-                <div className={styles.capaContainer}>
-                  <img src={livroAberto.bannerUrl || MytB} alt={livroAberto.titulo} className={styles.capaImagem} />
-                  {pagina.conteudo[1] && (
-                    <div className={styles.capaTexto}>
-                      <ReactMarkdown>{pagina.conteudo[1].texto}</ReactMarkdown>
-                    </div>
-                  )}
-                </div>
+          <div className={styles.pagina}>
+            <div className={styles.conteudoPagina}>
+              {pagina ? (
+                isCapa ? (
+                  <div className={styles.capaContainer}>
+                    <img src={livroAberto.bannerUrl || MytB} alt={livroAberto.titulo} className={styles.capaImagem} />
+                    {/* {pagina.conteudo[1] && (
+                      <div className={styles.capaTexto}>
+                        <ReactMarkdown>{pagina.conteudo[1].texto}</ReactMarkdown>
+                      </div>
+                    )} */}
+                  </div>
+                ) : (
+                  <article className={styles.article}>
+                    <header className={styles.cabecalhoLivro}>
+                      <span className={styles.tituloRunning}>{livroAberto.titulo}</span>
+                    </header>
+                    <h1 className={styles.tituloPagina}>{pagina.titulo}</h1>
+                    <RenderizadorConteudo blocos={pagina.conteudo} />
+                  </article>
+                )
               ) : (
-                <div>
-                  <h1 className={styles.tituloPagina}>{pagina.titulo}</h1>
-                  <RenderizadorConteudo blocos={pagina.conteudo} />
-                </div>
-              )
-            ) : (
-              <p style={{ textAlign: 'center', padding: 40 }}>Este livro não possui páginas configuradas.</p>
-            )}
+                <p style={{ textAlign: 'center', padding: 40 }}>Este livro não possui páginas configuradas.</p>
+              )}
+            </div>
           </div>
         </div>
       </div>

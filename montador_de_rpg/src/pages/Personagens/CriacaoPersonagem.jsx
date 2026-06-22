@@ -64,7 +64,6 @@ export default function CriacaoPersonagem() {
 
   function handleErro(msg) {
     setErroGlobal(msg);
-    setFase('selecao');
   }
 
   function voltarParaSelecao() {

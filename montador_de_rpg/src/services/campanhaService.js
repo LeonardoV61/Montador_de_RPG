@@ -7,4 +7,6 @@ export const campanhaService = {
   deletar: (id) => api.delete(`/api/campanhas/${id}`),
   adicionarJogador: (campanhaId, dto) =>
     api.post(`/api/campanhas/${campanhaId}/jogadores`, dto),
+  criarTemporariaComSessao: (sistemaId) =>
+    api.post('/api/campanhas/temporaria-com-sessao', { sistemaId }),
 };

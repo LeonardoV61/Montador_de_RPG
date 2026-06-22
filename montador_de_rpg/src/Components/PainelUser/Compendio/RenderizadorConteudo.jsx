@@ -1,4 +1,5 @@
 import ReactMarkdown from 'react-markdown';
+import remarkBreaks from 'remark-breaks'
 import styles from './styles.Compendio.module.css'; 
 
 export default function RenderizadorConteudo({ blocos }) {
@@ -9,7 +10,7 @@ export default function RenderizadorConteudo({ blocos }) {
       case 'texto':
         return (
           <div key={i} className={styles.blocoTexto}>
-            <ReactMarkdown>{bloco.texto}</ReactMarkdown>
+            <ReactMarkdown remarkPlugins={[remarkBreaks]}>{bloco.texto}</ReactMarkdown>
           </div>
         );
 
@@ -51,11 +52,15 @@ export default function RenderizadorConteudo({ blocos }) {
       case 'colunas':
         return (
           <div key={i} className={styles.blocoColunas}>
-            {bloco.colunas.map((col, j) => (
-              <div key={j} className={styles.coluna}>
-                <RenderizadorConteudo blocos={col} />
-              </div>
-            ))}
+            {bloco.colunas.map((col, j) => {
+              // Garante que "col" seja sempre um array
+              const colArray = Array.isArray(col) ? col : [col];
+              return (
+                <div key={j} className={styles.coluna}>
+                  <RenderizadorConteudo blocos={colArray} />
+                </div>
+              );
+            })}
           </div>
         );
 

@@ -15,6 +15,8 @@ export const procedimentoService = {
   
   deletar: (id) => api.delete(`/api/procedimentos/${id}`),
 
+  responder: (id, idSessao, valor) => api.post(`/api/procedimentos/${id}/responder?idSessao=${idSessao}`, { valor }),
+
   // ---------- Etapas ----------
   adicionarEtapa: (procedimentoId, dto) =>
     api.post(`/api/procedimentos/${procedimentoId}/etapas`, dto),
@@ -27,14 +29,10 @@ export const procedimentoService = {
 
   // ---------- Iniciar procedimentos ----------
   iniciarComInstancia: (id, idSessao, idInstancia) =>
-    api.post(`/api/procedimentos/${id}/iniciar-com-instancia`, null, {
-      params: { idSessao, idInstancia },
-    }),
+  api.post(`/api/procedimentos/${id}/iniciar-com-instancia?idSessao=${idSessao}&idInstancia=${idInstancia}`),
     
   iniciarSemInstancia: (id, idSessao) =>
-    api.post(`/api/procedimentos/${id}/iniciar-sem-instancia`, null, {
-      params: { idSessao },
-    }),
+    api.post(`/api/procedimentos/${id}/iniciar-sem-instancia?idSessao=${idSessao}`),
     
   iniciarComMultiplas: (id, idSessao, ids) =>
     api.post(`/api/procedimentos/${id}/iniciar-com-multiplas`, ids, {

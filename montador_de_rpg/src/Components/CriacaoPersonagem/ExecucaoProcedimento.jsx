@@ -1,4 +1,4 @@
-import { useState, useEffect, useCallback, useRef } from 'react';
+import { useState, useEffect, useRef } from 'react';
 import { procedimentoService } from '../../services/procedimentoService.js';
 import { personagemService } from '../../services/personagemService.js';
 import { campanhaService } from '../../services/campanhaService.js';
@@ -7,13 +7,8 @@ import FormularioInput from './FormularioInput.jsx';
 import styles from './ExecucaoProcedimento.module.css';
 
 export default function ExecucaoProcedimento({
-  sistema,
-  entidade,
-  nomePersonagem,
-  usuarioId,
-  campanhaAtivaId = null,
-  onConcluido,
-  onErro,
+  sistema, entidade, nomePersonagem, usuarioId,
+  campanhaAtivaId = null, onConcluido, onErro,
 }) {
   const [fase, setFase] = useState('iniciando');
   const [contexto, setContexto] = useState(null);
@@ -24,181 +19,176 @@ export default function ExecucaoProcedimento({
 
   const tempIdsRef = useRef({ campanha: null, sessao: null });
   const idSessaoRef = useRef(null);
+  const procedimentoIdRef = useRef(null);
   const mountedRef = useRef(true);
+  const jaIniciouRef = useRef(false);
+  const respondendoRef = useRef(false);
+  const faseRef = useRef(fase);
+
+  useEffect(() => {
+    faseRef.current = fase;
+  }, [fase]);
 
   useEffect(() => {
     return () => {
       mountedRef.current = false;
-      limparTemporarios(tempIdsRef.current);
+      if (faseRef.current === 'concluido' || faseRef.current === 'erro') {
+        if (tempIdsRef.current.campanha) {
+          campanhaService.deletar(tempIdsRef.current.campanha).catch(console.error);
+        }
+      }
     };
   }, []);
 
-  async function limparTemporarios({ campanha, sessao }) {
-    if (sessao) {
-      try { await sessaoService.encerrar(sessao); }
-      catch (e) { console.error('Erro ao encerrar sessão:', e); }
-    }
-    if (campanha) {
-      try { await campanhaService.deletar(campanha); }
-      catch (e) { console.error('Erro ao deletar campanha:', e); }
-    }
-  }
-
   useEffect(() => {
+    if (jaIniciouRef.current) return;
+    jaIniciouRef.current = true;
     iniciar();
   }, []);
 
   async function iniciar() {
-    const temporarios = { campanha: null, sessao: null };
-    tempIdsRef.current = temporarios;
+    const temp = { campanha: null, sessao: null };
+    tempIdsRef.current = temp;
 
     try {
       setFase('iniciando');
 
-      // ── 1. Campanha ──────────────────────────────────────
-      console.log('▶ 1. Criando campanha...');
-      let idCampanha = campanhaAtivaId;
-      if (!idCampanha) {
-        const novaCamp = await campanhaService.criar({
-          nome: `Temp-Char-${Date.now()}`,
-          sistemaId: sistema.id,
-          criadorId: usuarioId,
-        });
-        console.log('✅ Resposta campanha bruta:', JSON.stringify(novaCamp, null, 2));
-        idCampanha = novaCamp?.data?.id ?? novaCamp?.id;
-        if (!idCampanha) throw new Error('Campanha criada mas ID não encontrado na resposta.');
-        temporarios.campanha = idCampanha;
-        console.log('✅ Campanha id:', idCampanha);
+      let idCampanha, idSessao;
+      if (campanhaAtivaId) {
+        idCampanha = campanhaAtivaId;
+        const r = await sessaoService.iniciar(idCampanha);
+        idSessao = r?.data?.idSessao ?? r?.data?.id ?? r?.id;
+        temp.sessao = idSessao;
+      } else {
+        const r = await campanhaService.criarTemporariaComSessao(sistema.id);
+        idCampanha = r?.data?.campanhaId ?? r?.campanhaId;
+        idSessao = r?.data?.sessaoId ?? r?.sessaoId;
+        if (!idCampanha || !idSessao) throw new Error('IDs não retornados');
+        temp.campanha = idCampanha;
+        temp.sessao = idSessao;
       }
-
-      // ── 2. Sessão ─────────────────────────────────────────
-      console.log('▶ 2. Iniciando sessão...');
-      const sessaoResp = await sessaoService.iniciar(idCampanha);
-      console.log('✅ Resposta sessão bruta:', JSON.stringify(sessaoResp, null, 2));
-      const idSessao = sessaoResp?.data?.id ?? sessaoResp?.id;
-      if (!idSessao) throw new Error('Sessão criada mas ID não encontrado na resposta.');
-      temporarios.sessao = idSessao;
       idSessaoRef.current = idSessao;
-      console.log('✅ Sessão id:', idSessao);
 
-      // ── 3. Personagem ─────────────────────────────────────
-      console.log('▶ 3. Criando personagem...');
-      const atributosIniciais = entidade.atributos || {};
-      const personagemResp = await personagemService.criarCompleto({
-        usuarioId,
-        campanhaId: idCampanha,
+      const pResp = await personagemService.criarCompleto({
+        usuarioId, campanhaId: idCampanha,
         entidadeSistemaId: entidade.id,
         tipo: entidade.tipo || entidade.nome,
         nome: nomePersonagem,
-        atributosAtuais: atributosIniciais,
+        atributosAtuais: entidade.atributos || {},
       });
-      console.log('✅ Resposta personagem bruta:', JSON.stringify(personagemResp, null, 2));
-      // extrai o objeto de personagem independente de envelope .data
-      const personagem = personagemResp?.data ?? personagemResp;
+      const personagem = pResp?.data ?? pResp;
       const instanciaId = personagem?.instanciaId ?? personagem?.id;
-      if (!instanciaId) throw new Error('Personagem criado mas instanciaId não encontrado na resposta.');
+      if (!instanciaId) throw new Error('Instância não encontrada');
       setPersonagemCriado(personagem);
-      console.log('✅ Personagem instanciaId:', instanciaId);
 
-      // ── 4. Procedimento de criação ────────────────────────
-      console.log('▶ 4. Buscando procedimentos...');
-      const procedimentosResp = await procedimentoService.listar(sistema.id);
-      console.log('✅ Resposta procedimentos bruta:', JSON.stringify(procedimentosResp, null, 2));
-      const procedimentos = Array.isArray(procedimentosResp)
-        ? procedimentosResp
-        : procedimentosResp?.data ?? [];
-      const procCriacao = procedimentos.find((p) => p.tipo === 'CRIACAO_PERSONAGEM');
-      console.log('✅ Proc de criação encontrado:', procCriacao);
-      if (!procCriacao) throw new Error('Nenhum procedimento de criação encontrado para este sistema.');
+      const procs = await procedimentoService.listar(sistema.id);
+      const procCriacao = procs.find(p => p.tipo === 'CRIACAO_PERSONAGEM');
+      if (!procCriacao) throw new Error('Procedimento não encontrado');
+      procedimentoIdRef.current = procCriacao.id;
 
-      // ── 5. Iniciar procedimento ───────────────────────────
-      console.log('▶ 5. Iniciando procedimento...');
-      const resp = await procedimentoService.iniciarComInstancia(
-        procCriacao.id,
-        idSessao,
-        instanciaId,
-      );
-      console.log('✅ Resposta procedimento bruta:', JSON.stringify(resp, null, 2));
+      const resp = await procedimentoService.iniciarComInstancia(procCriacao.id, idSessao, instanciaId);
       const ctx = resp?.data ?? resp;
-      processarContexto(ctx);
 
+      if (!mountedRef.current) return;
+      processarNovoContexto(ctx);
     } catch (e) {
-      console.error('❌ ERRO EM iniciar():', e);
-      console.error('❌ Mensagem:', e.message);
-      await limparTemporarios(temporarios);
-      tempIdsRef.current = { campanha: null, sessao: null };
+      console.error('Erro na criação:', e);
+      await limparTemporarios(temp);
       if (mountedRef.current) {
         setFase('erro');
-        onErro?.(e.message || 'Erro ao iniciar a criação.');
+        onErro?.(e.message || 'Erro inesperado');
       }
     }
   }
 
-  const processarContexto = useCallback((ctx) => {
-    if (!mountedRef.current) return;
-
-    console.log('=== CTX RECEBIDO ===', JSON.stringify(ctx, null, 2));
-    console.log('status:', ctx?.status, '| estadoAtual:', ctx?.estadoAtual);
-
-    setContexto(ctx);
-
-    const status = ctx?.status || ctx?.estadoAtual;
-
-    if (status === 'CONCLUIDO' || status === 'FINALIZADO') {
-      limparTemporarios(tempIdsRef.current).then(() => {
-        tempIdsRef.current = { campanha: null, sessao: null };
-      });
-      setFase('concluido');
-      return;
+  async function limparTemporarios({ campanha }) {
+    tempIdsRef.current = { campanha: null, sessao: null };
+    if (campanha) {
+      try { await campanhaService.deletar(campanha); } catch (e) {  console.error('Erro:', e);}
     }
-
-    if (status === 'ERRO') {
-      limparTemporarios(tempIdsRef.current).then(() => {
-        tempIdsRef.current = { campanha: null, sessao: null };
-      });
-      setFase('erro');
-      onErro?.(ctx?.mensagemErro || 'Erro no procedimento.');
-      return;
-    }
-
-    if (status === 'AGUARDANDO_INPUT') {
-      const etapa = ctx?.etapaAtual || ctx?.etapa;
-      setEtapaAtual(etapa);
-      setFase('aguardando');
-      return;
-    }
-
-    // fallback — status desconhecido, loga para investigar
-    console.warn('⚠️ Status desconhecido no contexto:', status, '— ctx completo:', ctx);
-    setFase('rodando');
-  }, [onErro]);
+  }
 
   async function handleResponder(resposta) {
-    if (carregando) return;
+    if (carregando || respondendoRef.current) return;
+    respondendoRef.current = true;
     setCarregando(true);
 
     if (etapaAtual) {
-      const label = etapaAtual.parametrosEtapa?.campo_pedido || etapaAtual.nome || 'Etapa';
-      setHistorico((h) => [...h, { label, resposta: resposta ?? '—' }]);
+      setHistorico(h => [...h, {
+        label: etapaAtual.parametrosEtapa?.campo_pedido || etapaAtual.nome,
+        resposta: resposta ?? '—'
+      }]);
     }
 
     try {
-      throw new Error('Funcionalidade de resposta ainda não implementada no servidor.');
-      // const ctx = await procedimentoService.responder(idSessaoRef.current, resposta);
-      // processarContexto(ctx);
+      const resp = await procedimentoService.responder(
+        procedimentoIdRef.current,
+        idSessaoRef.current,
+        resposta
+      );
+      const novoCtx = resp?.data ?? resp;
+      if (!mountedRef.current) return;
+      processarNovoContexto(novoCtx);
     } catch (e) {
-      await limparTemporarios(tempIdsRef.current);
-      tempIdsRef.current = { campanha: null, sessao: null };
-      setFase('erro');
-      onErro?.(e.message || 'Erro ao enviar resposta.');
+      limparTemporarios(tempIdsRef.current);
+      console.error('Erro ao enviar resposta:', e);
+      // setFase('erro');
     } finally {
+      respondendoRef.current = false;
       setCarregando(false);
     }
   }
 
+  function processarNovoContexto(ctx) {
+    console.log('=== processarNovoContexto ===', JSON.stringify(ctx, null, 2));
+    setContexto(ctx);
+    
+    const status = (ctx?.status || '').toUpperCase().trim();
+    console.log('status detectado:', status);
+    console.log('inputSolicitado:', ctx?.inputSolicitado);
+    console.log('erro:', ctx?.erro);
+
+    if (['CONCLUIDO', 'FINALIZADO', 'CONCLUIDA'].includes(status)) {
+      limparTemporarios(tempIdsRef.current).then(() => {
+        tempIdsRef.current = { campanha: null, sessao: null };
+        setFase('concluido');
+      });
+      return;
+    }
+
+    if (status === 'ERRO') {
+      limparTemporarios(tempIdsRef.current);
+      console.log('Indo para ERRO. mensagem:', ctx?.erro);
+      setFase('erro');
+      return;
+    }
+
+    // EM_ANDAMENTO ou AGUARDANDO_INPUT
+    const solicitacao = ctx?.inputSolicitado;
+    console.log('solicitacao encontrada:', solicitacao);
+
+    if (solicitacao) {
+      setEtapaAtual({
+        nome: solicitacao.campoPedido,
+        tipoEtapa: 'SOLICITAR_INPUT',
+        parametrosEtapa: {
+          campo_pedido: solicitacao.campoPedido,
+          salvar_em:    solicitacao.salvar_em,
+          pode_passar:  solicitacao.pode_passar ?? false,
+          opcoes_estatico: solicitacao.opcoes || [],
+          rolagem:         solicitacao.rolagem || null,
+        },
+      });
+      setFase('aguardando');
+      return;
+    }
+
+    console.log('Nenhuma solicitação — indo para rodando');
+    setFase('rodando');
+  }
+
   async function handleConcluirPersonagem() {
     await limparTemporarios(tempIdsRef.current);
-    tempIdsRef.current = { campanha: null, sessao: null };
     onConcluido?.(personagemCriado);
   }
 
@@ -220,8 +210,8 @@ export default function ExecucaoProcedimento({
     return (
       <div className={styles.centrado}>
         <span className={styles.iconeErro}>✕</span>
-        <p className={styles.textoFase}>Algo deu errado</p>
-        <button className={styles.botaoTentar} onClick={iniciar}>
+        <p className={styles.textoFase}>{contexto?.mensagemErro || 'Algo deu errado'}</p>
+        <button className={styles.botaoTentar} onClick={() => setFase('aguardando')}>
           Tentar novamente
         </button>
       </div>
