@@ -55,41 +55,29 @@ export default function Mapa() {
       setContextoAberto(true);
    }
 
-   // --- CAPTURA DE RESULTADO DA MESA FÍSICA ---
-   // O processamento do resultado (agregação, registro no histórico,
-   // persistência via API e remoção do dado após contemplação) é
-   // responsabilidade de Jogo.jsx, exposta aqui via onDadoParou.
    const { dadosAtivosNaMesa, possuiDadosInterativos, onDadoParou } = useContext(ContextoMesaFisica);
 
    return (
        <main className={styles.mapa} id="map" onClick={() => setContextoAberto(false)} style={{ position: 'fixed', top: 'var(--navbar-height, 42px)', left: 0, width: '100vw', height: 'calc(100vh - var(--navbar-height, 42px))', overflow: 'hidden', zIndex: 1 }}>
+         
+         {/* FIX: Removida a primeira cópia duplicada do canvas e unificada as propriedades essenciais */}
          <canvas 
             ref={canvasRef} 
             className={styles.mapaHexagonal} 
+            style={{ position: 'absolute', top: 0, left: 0, width: '100%', height: '100%', zIndex: 1 }}
             onWheel={canvasWheel} onClick={canvasClick}
             onMouseDown={canvasMouseDown} onMouseMove={canvasMouseMove} onMouseUp={canvasMouseUp}
             onContextMenu={canvasCtxMenu} 
          />
 
-         {/* CAMADA INVISÍVEL 3D - NÃO BLOQUEIA O FUNDO DO MAPA */}
-    
-         {/* O CANVAS DO MAPA 2D PRECISA COLAR NAS BORDAS E FICAR NO FUNDO DE TUDO (zIndex: 1) */}
-         <canvas 
-            ref={canvasRef} 
-            className={styles.mapaHexagonal} 
-           style={{ position: 'absolute', top: 0, left: 0, width: '100%', height: '100%', zIndex: 1 }}
-            onWheel={canvasWheel} onClick={canvasClick}
-            onMouseDown={canvasMouseDown} onMouseMove={canvasMouseMove} onMouseUp={canvasMouseUp}
-            onContextMenu={canvasCtxMenu} 
-         />
-         {/* CAMADA INVISÍVEL 3D PARA OS DADOS (zIndex: 2 - FICA LOGO ACIMA DO MAPA 2D) */}
+         {/* CAMADA INVISÍVEL 3D PARA OS DADOS (zIndex: 2 - Ajustado tamanho e pointer-events) */}
          {dadosAtivosNaMesa.length > 0 && (
             <div style={{ 
                position: 'absolute', 
                top: 0, 
                left: 0, 
-               width: '100vw', 
-               height: '100vh', 
+               width: '100%', 
+               height: '100%', 
                zIndex: 2, 
                pointerEvents: possuiDadosInterativos ? 'auto' : 'none' 
             }}>
@@ -115,7 +103,6 @@ export default function Mapa() {
 
          <MapaFerramentas />
 
-
          <ContextoAvatar.Provider value={{avatarSelecionado, setAvatarSelecionado}}>
             <AvatarPersonagem tipo="jogador" nome="Aldric" icone="⚔" porcentagemHP="67"/>
             <AvatarPersonagem tipo="jogador" nome="Sena" icone="🏹" porcentagemHP="100"/>
@@ -137,6 +124,7 @@ export default function Mapa() {
             <button className={styles.zoomBotao}>⌖</button>
          </div>
          <div className={styles.nomeCena}>Região de Bastionland · Mapa Hexagonal</div>
+         {contextoAberto && <MenuContexto x={ctxMenuX} y={ctxMenuY} />}
       </main>
    );
 }

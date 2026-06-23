@@ -6,5 +6,11 @@ export function buildD20Geometry() {
       applyTriangleUVs(geo);
       geo.clearGroups();
       for (let i = 0; i < 20; i++) geo.addGroup(i * 3, 3, i);
+      
+      // SEGURANÇA FÍSICA: Guarda a malha primitiva indexada para o Cannon
+      geo.userData = {
+         geometriaFisicaLimpa: new THREE.IcosahedronGeometry(0.8)
+      };
+
       return geo;
 }

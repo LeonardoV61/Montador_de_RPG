@@ -41,8 +41,8 @@ function ParedeInvisivel({ args, position }) {
       type: 'Static',
       args,
       position,
-      restitution: 0.3,
-      friction: 0.4,
+      restitution: 0.4, // AJUSTE FINO: Aumentado levemente para um quique mais dinâmico e natural do dado
+      friction: 0.2,    // AJUSTE FINO: Reduzido o atrito da parede para o dado deslizar ao raspar nela
    }));
 
    return <mesh ref={ref} visible={false} />;
@@ -58,25 +58,27 @@ export function ParedesMesa() {
 
    return (
       <>
+         {/* FIX GEOMÉTRICO: Compensação de metade da espessura da parede (ESPESSURA_PAREDE / 2) 
+             para que o colisor fique exatamente no limite externo do viewport projetado */}
          {/* Parede Norte */}
          <ParedeInvisivel
             args={[w, ALTURA_PAREDE, ESPESSURA_PAREDE]}
-            position={[0, ALTURA_PAREDE / 2, -d / 2]}
+            position={[0, ALTURA_PAREDE / 2, -(d / 2 + ESPESSURA_PAREDE / 2)]}
          />
          {/* Parede Sul */}
          <ParedeInvisivel
             args={[w, ALTURA_PAREDE, ESPESSURA_PAREDE]}
-            position={[0, ALTURA_PAREDE / 2, d / 2]}
+            position={[0, ALTURA_PAREDE / 2, (d / 2 + ESPESSURA_PAREDE / 2)]}
          />
          {/* Parede Leste */}
          <ParedeInvisivel
             args={[ESPESSURA_PAREDE, ALTURA_PAREDE, d]}
-            position={[w / 2, ALTURA_PAREDE / 2, 0]}
+            position={[(w / 2 + ESPESSURA_PAREDE / 2), ALTURA_PAREDE / 2, 0]}
          />
          {/* Parede Oeste */}
          <ParedeInvisivel
             args={[ESPESSURA_PAREDE, ALTURA_PAREDE, d]}
-            position={[-w / 2, ALTURA_PAREDE / 2, 0]}
+            position={[-(w / 2 + ESPESSURA_PAREDE / 2), ALTURA_PAREDE / 2, 0]}
          />
       </>
    );

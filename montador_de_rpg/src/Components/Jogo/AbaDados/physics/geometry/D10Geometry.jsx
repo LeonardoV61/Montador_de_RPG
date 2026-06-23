@@ -87,5 +87,32 @@ export function buildD10Geometry() {
   geometry.setAttribute('normal', new THREE.Float32BufferAttribute(normals, 3));
   geometry.setAttribute('uv', new THREE.Float32BufferAttribute(uvs, 2));
 
+  // SEGURANÇA FÍSICA: Criamos uma malha indexada limpa contendo apenas os 12 vértices reais 
+  // do Blender e os mapeamos para os índices das faces. O Cannon usará isso para criar o colisor perfeito.
+  const geoFisicaLimpa = new THREE.BufferGeometry();
+  
+  // Converte a lista de Vector3 em um array plano de floats [x,y,z, x,y,z...]
+  const arrayVerticesPuros = [];
+  baseVertices.forEach(v => arrayVerticesPuros.push(v.x, v.y, v.z));
+  
+  // Mapeia os triângulos baseado nos índices exatos dos vértices originais
+  const indicesTriangulosFisicos = [];
+  facesDef.forEach(face => {
+    const [i0, i1, i2, i3] = face;
+    // Triângulo 1
+    indicesTriangulosFisicos.push(i0, i1, i2);
+    // Triângulo 2
+    indicesTriangulosFisicos.push(i2, i3, i0);
+  });
+
+  geoFisicaLimpa.setAttribute('position', new THREE.Float32BufferAttribute(arrayVerticesPuros, 3));
+  geoFisicaLimpa.setIndex(indicesTriangulosFisicos);
+
+  // Guarda na carcaça do dado para o colisor ler
+  geometry.userData = {
+     geometriaFisicaLimpa: geoFisicaLimpa
+  };
+
   return geometry;
 }
+

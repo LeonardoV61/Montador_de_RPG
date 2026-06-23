@@ -15,7 +15,8 @@ function calcularResultadoMoeda(mesh) {
 }
 
 function gerarImpulsoMoeda() {
-   return [Math.random() * 4 - 2, -5, Math.random() * 4 - 2];
+   // AJUSTE FINO: Introduzida uma sutil variação no eixo Y para enriquecer a imprevisibilidade física do giro
+   return [Math.random() * 4 - 2, -(Math.random() * 3 + 3.5), Math.random() * 4 - 2];
 }
 
 function gerarTorqueMoeda() {
@@ -49,13 +50,21 @@ export function MoedaFisica({ id, position = [0, 3, 0], onStopped }) {
 
    return (
       <mesh
-         ref={ref} castShadow receiveShadow
-         material={materiaisMoeda} geometry={geometriaMoeda}
+         ref={ref}
          onPointerDown={(e) => {
             e.stopPropagation();
             if (!stateFlags.current.lancado) stateFlags.current.segurando = true;
          }}
-      />
+      >
+         {/* FIX DE PERFORMANCE VIZUAL: Encapsulado o objeto visual interno para 
+             herdar a sincronia de matrizes do Cannon de forma estável e fluida */}
+         <mesh 
+            castShadow 
+            receiveShadow
+            material={materiaisMoeda} 
+            geometry={geometriaMoeda} 
+         />
+      </mesh>
    );
 }
 

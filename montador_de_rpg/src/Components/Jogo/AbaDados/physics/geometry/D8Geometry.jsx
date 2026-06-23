@@ -6,5 +6,11 @@ export function buildD8Geometry() {
     applyTriangleUVs(geo);
     geo.clearGroups();
     for (let i = 0; i < 8; i++) geo.addGroup(i * 3, 3, i);
+    
+    // SEGURANÇA FÍSICA: Guarda a malha primitiva indexada para o Cannon
+    geo.userData = {
+       geometriaFisicaLimpa: new THREE.OctahedronGeometry(0.8)
+    };
+
     return geo;
 }

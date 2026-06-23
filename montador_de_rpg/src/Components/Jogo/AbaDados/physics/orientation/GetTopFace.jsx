@@ -25,41 +25,41 @@ const D6_FACE_MAP = [
 /**
  * Função utilitária pura para determinar a face superior de uma malha 3D.
  * Mantida separada para permitir chamadas imperativas fora de escopos reativos do React.
- * * @param {THREE.Mesh} mesh - Instância tridimensional do dado
- * @param {number} lados - Quantidade de lados do poliedro (ex: 6, 10, 20)
- * @returns {number} O número da face que está voltada para cima
  */
 export function determinarFaceSuperior(mesh, lados) {
-   if (!mesh || !mesh.geometry) return 1;
-   
-   // Sincroniza as matrizes de transformações globais do objeto no frame atual
-   mesh.updateMatrixWorld(true);
-   _quaternion.setFromRotationMatrix(mesh.matrixWorld);
+   if (!mesh) return 1;
 
-   // Caso otimizado específico para Cubos (D6)
+   // FIX DE CONCURRÊNCIA VETORIAL: Garante que as transformações físicas do Cannon 
+   // estejam completamente computadas no espaço do Three.js antes de ler o quatérnio
+   mesh.updateMatrixWorld(true);
+   mesh.getWorldQuaternion(_quaternion);
+
+   // O d6 não precisa varrer triângulos, usa o mapa de vetores diretos por performance
    if (lados === 6) {
       let maxDot = -Infinity;
-      let bestFace = 1;
-
-      D6_FACE_MAP.forEach(({ local, value }) => {
-         _worldNormal.copy(local).applyQuaternion(_quaternion);
+      let faceVencedora = 1;
+      
+      for (const f of D6_FACE_MAP) {
+         _worldNormal.copy(f.local).applyQuaternion(_quaternion);
          const dot = _worldNormal.dot(_worldUp);
          if (dot > maxDot) {
             maxDot = dot;
-            bestFace = value;
+            faceVencedora = f.value;
          }
-      });
-      return bestFace;
+      }
+      return faceVencedora;
    }
 
-   // Caso genérico e matemático para demais Poliedros Convexos (D4, D8, D10, D12, D20)
-   const posAttr = mesh.geometry.attributes.position;
+   const geo = mesh.geometry;
+   if (!geo) return 1;
+
+   const posAttr = geo.attributes.position;
    if (!posAttr) return 1;
 
    let maxDot = -Infinity;
    let faceVencedora = 1;
 
-   // Percorre os triângulos da geometria indexada/não-indexada
+   // Percorre os triângulos da geometria indexada/não-indexada visual
    for (let i = 0; i < posAttr.count; i += 3) {
       _vA.fromBufferAttribute(posAttr, i);
       _vB.fromBufferAttribute(posAttr, i + 1);
@@ -75,12 +75,13 @@ export function determinarFaceSuperior(mesh, lados) {
          maxDot = dot;
          
          // Encontra a qual grupo de material o triângulo processado pertence
-         const groups = mesh.geometry.groups || [];
+         const groups = geo.groups || [];
          const group = groups.find(
             g => g.start <= i && (g.start + g.count) > i
          );
          
          if (group !== undefined) {
+            // Usa o mapeamento exato do índice de material atribuído na criação da geometria
             faceVencedora = group.materialIndex + 1;
          }
       }
@@ -92,15 +93,9 @@ export function determinarFaceSuperior(mesh, lados) {
 /**
  * Custom Hook React: useTopFaceDeterminer
  * Abstrai a lógica tridimensional e expõe uma função memoizada estável
- * ideal para ser consumida em loops de física como useFrame ou callbacks de parada.
- * * @returns {Function} Função wrapper para detecção de face estável
  */
 export function useTopFaceDeterminer() {
-   const obterFaceVencedora = useCallback((mesh, lados) => {
-      return determinarFaceSuperior(mesh, lados);
-   }, []);
-
-   return obterFaceVencedora;
+   return useCallback((mesh, lados) => determinarFaceSuperior(mesh, lados), []);
 }
 
 export default useTopFaceDeterminer;

@@ -32,17 +32,14 @@ export default function Jogo() {
       setAbasAbertas(prev => ({ ...prev, [id]: aberto }));
    }, []);
 
-   // Structural Fix: Keep track of state transitions per die
    const [dadosAtivosNaMesa, setDadosAtivosNaMesa] = useState([]);
    const [resultadosMesa, setResultadosMesa] = useState({}); 
    const [tipoRolamento, setTipoRolamento] = useState("Selecione seus dados");
 
-   // Check if any dice are currently awaiting placement/throwing
    const possuiDadosInterativos = useMemo(() => {
       return dadosAtivosNaMesa.some(dado => !dado.lancado);
    }, [dadosAtivosNaMesa]);
 
-   // Structural Fix: Aggregate results instead of overwriting them
    const handleResultadoFisico = useCallback(async (id, valor, faces) => {
       const label = faces === 2 ? "Moeda" : `d${faces}`;
       
@@ -75,7 +72,6 @@ export default function Jogo() {
          console.error("Erro ao salvar jogada:", err);
       }
 
-      // Remove o dado da tela após alguns segundos de contemplação do resultado
       setTimeout(() => {
          setDadosAtivosNaMesa(prev => prev.filter(d => d.id !== id));
       }, 5000);
@@ -106,7 +102,8 @@ export default function Jogo() {
                   <div className={styles.jogo}>
                      <LateralPersonagem />
                      
-                     <div style={{ flex: 1, position: 'relative', height: '100%' }}>
+                     {/* FIX: Ajustado overflow e posicionamento para não quebrar o layout da Navbar */}
+                     <div style={{ flex: 1, position: 'relative', height: '100%', overflow: 'hidden' }}>
                         <Mapa />
                      </div>
 
