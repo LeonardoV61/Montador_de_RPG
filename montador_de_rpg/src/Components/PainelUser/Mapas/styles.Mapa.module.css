@@ -53,6 +53,11 @@
     z-index: 50; 
 }
 
+.hexagono.comBarreiras:hover .conteudoHex {
+    background-color: #e3f0ff;
+    box-shadow: inset 0 0 0 4px rgba(0, 102, 255, 0.45);
+}
+
 .conteudoHex {
     width: 100%;
     height: 100%;

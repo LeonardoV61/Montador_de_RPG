@@ -247,7 +247,8 @@ export default function GeradorMapa() {
               if (neighborTile && neighborTile.terreno !== 6) {
                 if (Math.random() < 0.08) {
                   tile.barriers[v.indoPara] = true;
-                  neighborTile.barriers[v.vindoDe] = true;
+                  // Apenas o hexágono atual assume a responsabilidade de desenhar esta barreira
+                  // para evitar duplicação do mesmo segmento no hexágono vizinho.
                 }
               }
             }
@@ -339,6 +340,7 @@ export default function GeradorMapa() {
               const posY = rIndex * vEspaco + deslocamentoTopo;
 
               const temMitoAqui = listaMitos.find(m => m.r === rIndex && m.c === cIndex);
+              const temAlgumaBarreira = Object.values(tile.barriers || {}).some(Boolean);
               
               let srcChaoBase = "";
               let srcHoldingStr = null;
@@ -361,7 +363,7 @@ export default function GeradorMapa() {
               return (
                 <div
                   key={`${rIndex}-${cIndex}`}
-                  className={styles.hexagono}
+                  className={`${styles.hexagono} ${temAlgumaBarreira ? styles.comBarreiras : ""}`}
                   style={{
                     left: `${posX}px`,
                     top: `${posY}px`,
@@ -385,11 +387,11 @@ export default function GeradorMapa() {
                     )}
 
                     {srcLandmark && srcBlankMark && (
-                      <img src={srcBlankMark} className={styles.camadaBase} alt="" />
+                      <img src={srcBlankMark} className={styles.camadaBlankMark} alt="" />
                     )}
 
                     {srcLandmark && (
-                      <img src={srcLandmark} className={styles.camadaBase} alt="" />
+                      <img src={srcLandmark} className={styles.camadaLandmark} alt="" />
                     )}
 
                     {temMitoAqui && (

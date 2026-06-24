@@ -1,25 +1,141 @@
+/* ==========================================================================
+   CONTAINER PRINCIPAL DO MAPA (OCUPA A TELA INTEIRA)
+   ========================================================================== */
 .mapa {
-  position: fixed; /* Ou 'absolute' se o pai já ocupar 100% da tela */
+  position: fixed;
   top: 0;
   left: 0;
   width: 100vw;
   height: 100vh;
-  z-index: 0; /* Fica por trás de toda a interface de texto, avatares e chat */
+  z-index: 0; 
   overflow: hidden;
   background: #0c0b09;
   cursor: grab;
+  user-select: none;
 }
-.mapa:active {
+
+.mapa.dragging {
   cursor: grabbing;
 }
-.mapaHexagonal {
+
+.mapaGrid {
+  position: absolute;
+  top: 0;
+  left: 0;
+  padding: 40px;
+  will-change: transform;
+}
+
+/* ==========================================================================
+   ESTILIZAÇÃO DOS HEXÁGONOS & CAMADAS VISUAIS
+   ========================================================================== */
+.hexagono {
+  position: absolute;
+  box-sizing: border-box;
+  transition: transform 0.1s ease;
+}
+
+/* Efeito padrão de leve zoom ao focar em qualquer hexágono */
+.hexagono:hover {
+  transform: scale(1.05);
+  z-index: 50 !important; 
+}
+
+.conteudoHex {
+  width: 100%;
+  height: 100%;
+  position: relative;
+  clip-path: polygon(25% 0%, 75% 0%, 100% 50%, 75% 100%, 25% 100%, 0% 50%);
+  background-color: #fff3cc; 
+  transition: background-color 0.15s ease;
+}
+
+/* MODIFICAÇÃO: Se o bloco tiver barreiras, o fundo ganha um leve contorno interno (inset) azulado no hover */
+.hexagono.comBarreiras:hover .conteudoHex {
+  background-color: #e3f0ff; /* Muda sutilmente o tom arenoso para azul claro */
+  box-shadow: inset 0 0 0 4px rgba(0, 102, 255, 0.45); /* Borda interna azul seguindo o clip-path */
+}
+
+.camadaBase {
+  position: absolute;
+  top: -4px;
+  left: -3px;
+  width: 110%;
+  height: 110%;
+  object-fit: contain;
+  z-index: 1;
+}
+
+.camadaBlankMark {
   position: absolute;
   top: 0;
   left: 0;
   width: 100%;
   height: 100%;
+  object-fit: fill;
+  z-index: 2;
 }
 
+.camadaLandmark {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  object-fit: fill;
+  z-index: 3;
+  filter: invert(18%) sepia(85%) saturate(5432%) hue-rotate(354deg) brightness(91%) contrast(118%);
+}
+
+.camadaBarreira {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  pointer-events: none;
+  z-index: 4;
+}
+
+.bolhinhaMito {
+  position: absolute;
+  top: 1px;
+  left: 21px;
+  width: 20px;
+  height: 20px;
+  background-color: #fff3cc;
+  color: #e62222;
+  border: 2px solid #e62222;
+  border-radius: 50%;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  font-size: 0.81rem;
+  font-weight: 900;
+  font-family: 'Cinzel', Georgia, serif;
+  box-shadow: 1px 1px 3px rgba(0, 0, 0, 0.4);
+  z-index: 5;
+}
+
+.coordenada {
+  position: absolute;
+  bottom: 4px;
+  left: 50%;
+  transform: translateX(-50%);
+  font-size: 0.55rem;
+  color: #4a3e2b;
+  font-weight: bold;
+  opacity: 0.35;
+  z-index: 10;
+}
+
+.seatOfPower {
+  filter: drop-shadow(0px 0px 8px var(--dourado, #d4af37));
+}
+
+/* ==========================================================================
+   INTERFACES FLUTUANTES DA ABA DO JOGO (UI)
+   ========================================================================== */
 .mapaZoom {
   position: absolute;
   bottom: 1rem;
@@ -38,9 +154,9 @@
 .zoomBotao {
   width: 28px;
   height: 28px;
-  background: rgba(14,12,10,0.9);
-  border: 1px solid var(--fundo3);
-  color: var(--cinzaClaro);
+  background: rgba(14, 12, 10, 0.9);
+  border: 1px solid var(--fundo3, #4a3e2b);
+  color: var(--cinzaClaro, #bfae96);
   cursor: pointer;
   display: flex;
   align-items: center;
@@ -48,99 +164,105 @@
   font-size: 0.9rem;
   transition: all 0.15s;
 }
+
 .zoomBotao:hover {
-  border-color: var(--dourado2);
-  color: var(--dourado);
+  border-color: var(--dourado2, #d4af37);
+  color: var(--dourado, #f2ebd9);
 }
+
 .nomeCena {
   position: absolute;
   bottom: 1rem;
   left: calc(50vw - 40px + 1vw);
   transform: translateX(-50%);
-  font-family: 'Cinzel',serif;
+  font-family: 'Cinzel', serif;
   font-size: 0.58rem;
   letter-spacing: 0.2em;
-  color: var(--dourado2);
+  color: var(--dourado2, #d4af37);
   text-transform: uppercase;
-  background: rgba(14,12,10,0.7);
-  border: 1px solid var(--fundo3);
+  background: rgba(14, 12, 10, 0.7);
+  border: 1px solid var(--fundo3, #4a3e2b);
   padding: 0.3rem 0.8rem;
   pointer-events: none;
   z-index: 30;
 }
 
-/* iniciativa */
 .iniciativa {
   position: absolute;
   top: 0.7rem;
   right: 0.7rem;
-  background: rgba(14,12,10,0.94);
-  border: 1px solid var(--dourado2);
+  background: rgba(14, 12, 10, 0.94);
+  border: 1px solid var(--dourado2, #4a3e2b);
   padding: 0.4rem 0.6rem;
   z-index: 30;
   display: flex;
   flex-direction: column;
   gap: 0.3rem;
   min-width: 120px;
-  transition: right 0.25s ease-in-out; 
+  transition: right 0.25s ease-in-out;
 }
 
 .iniciativaDeslocada {
-  /* Explicação do cálculo: 
-     A barra expandida mede 850px, mas 280px já estão reservados no fluxo.
-     Subtraímos os 280px para descobrir quanto ela avançou por cima do mapa (570px).
-     Somamos 0.7rem (a margem original) para ela ficar coladinha à esquerda da nova borda.
-  */
   right: calc(570px + 0.7rem);
 }
+
 .iniciativaTitulo {
-  font-family: 'Cinzel',serif;
+  font-family: 'Cinzel', serif;
   font-size: 0.52rem;
   letter-spacing: 0.2em;
-  color: var(--dourado2);
+  color: var(--dourado2, #d4af37);
   text-transform: uppercase;
   padding-bottom: 0.3rem;
-  border-bottom: 1px solid var(--fundo3);
+  border-bottom: 1px solid var(--fundo3, #4a3e2b);
   margin-bottom: 0.1rem;
 }
+
 .iniciativaPersonagem {
   display: flex;
   align-items: center;
   gap: 0.5rem;
   padding: 0.2rem 0;
 }
+
 .iniciativaPersonagem.atual {
-  background: rgba(201,162,39,0.07);
+  background: rgba(201, 162, 39, 0.07);
   margin: 0 -0.3rem;
   padding: 0.2rem 0.3rem;
 }
+
 .iniciativaPonto {
   width: 8px;
   height: 8px;
   border-radius: 50%;
   flex-shrink: 0;
 }
+
 .iniciativaPonto.jogador {
-  background: var(--dourado);
+  background: var(--dourado, #d4af37);
 }
+
 .iniciativaPonto.inimigo {
-  background: var(--vermelho);
+  background: var(--vermelho, #ba1a1a);
 }
+
 .iniciativaPonto.npc {
-  background: var(--cinzaClaro);
+  background: var(--cinzaClaro, #8c7e6b);
 }
+
 .iniciativaNome {
-  font-family: 'Cinzel',serif;
+  font-family: 'Cinzel', serif;
   font-size: 0.6rem;
   letter-spacing: 0.08em;
-  color: var(--branco);
+  color: var(--branco, #f2ebd9);
   flex: 1;
 }
+
 .iniciativaPersonagem.atual .iniciativaNome {
-  color: var(--dourado);
+  color: var(--dourado, #d4af37);
 }
+
 .iniciativaNum {
-  font-family: 'Cinzel',serif;
+  font-family: 'Cinzel', serif;
   font-size: 0.65rem;
-  color: var(--branco);
+  color: var(--branco, #f2ebd9);
 }
