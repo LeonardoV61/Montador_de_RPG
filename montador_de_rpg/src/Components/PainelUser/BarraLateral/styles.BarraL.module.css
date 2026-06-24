@@ -34,7 +34,8 @@
 
 .roles .active, .roles .active:hover {
   background: var(--dourado);
-  color: var(--branco);
+  font-weight: 700;
+  color: var(--preto2);
   border: var(--dourado);
 }
 
@@ -85,7 +86,7 @@
 }
 
 .menu a.active {
-  background: linear-gradient(to right, var(--dourado2), var(--preto));
+  background: linear-gradient(to right, var(--dourado3), var(--preto));
   border-left: 2px solid var(--dourado);
   color: var(--branco);
   padding-left: 18px; /* Mantém o recuo enquanto estiver ativo */

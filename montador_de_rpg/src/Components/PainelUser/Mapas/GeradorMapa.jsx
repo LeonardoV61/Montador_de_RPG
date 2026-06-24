@@ -29,7 +29,7 @@ const LANDMARKS_TYPES = [
   { nome: "Cursed", svg: "cursed.svg" },
   { nome: "Dwellings", svg: "dwellings.svg" },
   { nome: "Hazards", svg: "hazards.svg" },
-  { nome: "Monuments", svg: "monuments.svg" },
+  { nome: "Monument", svg: "monument.svg" },
   { nome: "Ruins", svg: "ruins.svg" },
   { nome: "Sanctum", svg: "sanctum.svg" }
 ];
@@ -68,9 +68,9 @@ export default function GeradorMapa() {
   const areaMapaRef = useRef(null);
 
   const hexLargura = 100;
-  const hexAltura = 86.6; 
+  const hexAltura = 86.85;    // Aumentamos para 87px para dar uma margem de sangria vertical
   const hEspaco = 75; 
-  const vEspaco = 86.6; 
+  const vEspaco = 86.5;
 
   const handleInputChange = (val, setFunc) => {
     const apenasNum = val.replace(/\D/g, "");
@@ -369,6 +369,7 @@ export default function GeradorMapa() {
                     top: `${posY}px`,
                     width: `${hexLargura}px`,
                     height: `${hexAltura}px`,
+                    // Mantém o zIndex padrão para evitar que rios estáticos matem vizinhos
                     zIndex: ehRio ? 10 : (tile.holding ? 5 : 1)
                   }}
                 >
@@ -401,14 +402,25 @@ export default function GeradorMapa() {
                     )}
                   </div>
 
-                  {/* CORREÇÃO AQUI: Camada do SVG de Barreiras movida para fora do clip-path */}
+                  {/* O SVG fica DENTRO do .hexagono para expandir junto no hover, mas ganha elevação via Z-index 3D do CSS */}
                   <svg viewBox="0 0 100 86.6" className={styles.camadaBarreira}>
-                    {tile.barriers[1] && <line x1="25" y1="0"    x2="75" y2="0"    stroke="#ba1a1a" strokeWidth="6" strokeLinecap="round" />}
-                    {tile.barriers[2] && <line x1="75" y1="0"    x2="100" y2="43.3" stroke="#ba1a1a" strokeWidth="6" strokeLinecap="round" />}
-                    {tile.barriers[3] && <line x1="100" y1="43.3" x2="75" y2="86.6" stroke="#ba1a1a" strokeWidth="6" strokeLinecap="round" />}
-                    {tile.barriers[4] && <line x1="75" y1="86.6" x2="25" y2="86.6" stroke="#ba1a1a" strokeWidth="6" strokeLinecap="round" />}
-                    {tile.barriers[5] && <line x1="25" y1="86.6" x2="0"   y2="43.3" stroke="#ba1a1a" strokeWidth="6" strokeLinecap="round" />}
-                    {tile.barriers[6] && <line x1="0"  y1="43.3" x2="25" y2="0"    stroke="#ba1a1a" strokeWidth="6" strokeLinecap="round" />}
+                    {/* Lado 1: Topo Superior */}
+                    {tile.barriers[1] && (<polygon points="25,0 75,0 71.88,5.41 28.13,5.41" fill="var(--vermelho)" />)}
+                    
+                    {/* Lado 2: Nordeste (Superior Direito) */}
+                    {tile.barriers[2] && (<polygon points="75,0 100,43.3 93.75,43.3 71.88,5.41" fill="var(--vermelho)" />)}
+                    
+                    {/* Lado 3: Sudeste (Inferior Direito) */}
+                    {tile.barriers[3] && (<polygon points="100,43.3 75,86.6 71.88,81.19 93.75,43.3" fill="var(--vermelho)" />)}
+                    
+                    {/* Lado 4: Base Inferior */}
+                    {tile.barriers[4] && (<polygon points="75,86.6 25,86.6 28.13,81.19 71.88,81.19" fill="var(--vermelho)" />)}
+                    
+                    {/* Lado 5: Sudoeste (Inferior Esquerdo) */}
+                    {tile.barriers[5] && (<polygon points="25,86.6 0,43.3 6.25,43.3 28.13,81.19" fill="var(--vermelho)" />)}
+                    
+                    {/* Lado 6: Noroeste (Superior Esquerdo) */}
+                    {tile.barriers[6] && (<polygon points="0,43.3 25,0 28.13,5.41 6.25,43.3" fill="var(--vermelho)" />)}
                   </svg>
                 </div>
               );
