@@ -34,16 +34,10 @@ Hoje, jogadores e mestres frequentemente utilizam várias abas e aplicativos par
 
 ## Funcionalidades
 
-### Para o Jogador
-
-- **Experiência 3D:** mapas e cenários renderizados no navegador  
+- **Experiência 3D:** dados renderizados no navegador  
 - **HUD imersivo:** interface limpa e não intrusiva  
-- **Gestão de ficha:** formulários inteligentes com validação  
-
-### Para o Mestre / Admin
-
-- **Controle de acesso por nível**
-- **Criação de campanhas e mundos**
+- **Gestão de ficha:** formulários inteligentes com validação 
+- **Criação de campanhas e mundos:** processos simples e intuitivos para começar uma aventura
 - **Login seguro com OAuth2**
 
 ---
@@ -52,14 +46,13 @@ Hoje, jogadores e mestres frequentemente utilizam várias abas e aplicativos par
   <tr>
     <td align="center" width="25%"><strong>Front-end</strong></td>
     <td align="center" width="25%"><strong>3D & Física</strong></td>
-    <td align="center" width="25%"><strong>Validação & Forms</strong></td>
-    <td align="center" width="25%"><strong>Back-end & Outros</strong></td>
+    <td align="center" width="25%"><strong>Navegação Interna</strong></td>
+    <td align="center" width="25%"><strong>Comunicação & Outros</strong></td>
   </tr>
   <tr>
     <td valign="top" align="center"><br>
       <img src="https://img.shields.io/badge/React-20232A?style=for-the-badge&logo=react&logoColor=61DAFB" alt="React" /><br><br>
-      <img src="https://img.shields.io/badge/Vite-646CFF?style=for-the-badge&logo=vite&logoColor=white" alt="Vite" /><br><br>
-      <img src="https://img.shields.io/badge/React_Router-CA4245?style=for-the-badge&logo=react-router&logoColor=white" alt="React Router" />
+      <img src="https://img.shields.io/badge/Vite-646CFF?style=for-the-badge&logo=vite&logoColor=white" alt="Vite" />
     </td>
     <td valign="top" align="center"><br>
       <img src="https://img.shields.io/badge/Three.js-000000?style=for-the-badge&logo=three.js&logoColor=white" alt="Three.js" /><br><br>
@@ -68,7 +61,8 @@ Hoje, jogadores e mestres frequentemente utilizam várias abas e aplicativos par
     </td>
     <td valign="top" align="center"><br>
       <img src="https://img.shields.io/badge/React_Hook_Form-EC5990?style=for-the-badge&logo=reacthookform&logoColor=white" alt="React Hook Form" /><br><br>
-      <img src="https://img.shields.io/badge/Zod-3E67B1?style=for-the-badge&logo=zod&logoColor=white" alt="Zod" />
+      <img src="https://img.shields.io/badge/React_Router-CA4245?style=for-the-badge&logo=react-router&logoColor=white" alt="React Router" />
+      <!-- <img src="https://img.shields.io/badge/Zod-3E67B1?style=for-the-badge&logo=zod&logoColor=white" alt="Zod" /> -->
     </td>
     <td valign="top" align="center"><br>
       <img src="https://img.shields.io/badge/Node.js-339933?style=for-the-badge&logo=nodedotjs&logoColor=white" alt="Node.js" /><br><br>
@@ -89,8 +83,6 @@ Hoje, jogadores e mestres frequentemente utilizam várias abas e aplicativos par
 |------|----------------|----------------------|--------|
 | ![](./public/Login.png) | ![](./public/MasterPanel.png) | ![](./public/CharacterForm.png) | ![](./public/WorldSettings.png) |
 
-> ⚠️ Certifique-se de que as imagens estejam na pasta `public/`
-
 ---
 
 ## Estrutura do Projeto
@@ -98,9 +90,18 @@ Hoje, jogadores e mestres frequentemente utilizam várias abas e aplicativos par
 ```plaintext
 montador_de_rpg/
 ├── public/
+│   ├── prints/
 ├── src/
 │   ├── assets/
 │   ├── Components/
+│   │   ├── Footer/
+│   │   ├── Form/
+│   │   ├── Jogo/
+│   │   ├── NavBar/
+│   │   ├── OldComponents/
+│   │   ├── PaginaInicial/
+│   │   ├── PainelUser/
+│   │   ├── utils/
 │   ├── pages/
 │   ├── Routes/
 │   ├── utils/
