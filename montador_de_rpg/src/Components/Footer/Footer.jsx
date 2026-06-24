@@ -5,12 +5,12 @@ export default function Footer() {
 
   return (
     <>
-    <footer>
+    <footer className={styles.rodape}>
         <p>Projeto Acadêmico · TTRPG Online · 2026</p>
         <div>
-            <a href="#">Sobre</a>
-            <a href="#">GitHub</a>
-            <a href="#">Contato</a>
+            <a href="https://github.com/LeonardoV61/Montador_de_RPG/blob/main/README.md">Sobre</a>
+            <a href="https://github.com/LeonardoV61/Montador_de_RPG">GitHub</a>
+            <a href="mailto:montadorderpg@gmail.com">Contato</a>
         </div>
     </footer>
     </>

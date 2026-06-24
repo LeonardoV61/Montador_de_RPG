@@ -1,4 +1,4 @@
-footer {
+.rodape {
     background: rgba(10,9,8,0.8);
     border-top: 1px solid var(--fundo3);
     padding: 2rem 3rem;
@@ -8,17 +8,17 @@ footer {
     flex-wrap: wrap;
     gap: 1rem;
 }
-footer p {
+.rodape p {
     font-size: 0.82rem;
     color: var(--branco);
     font-family: 'Cinzel', serif;
     letter-spacing: 0.08em;
 }
-footer div {
+.rodape div {
     display: flex;
     gap: 2rem;
 }
-footer a {
+.rodape a {
     color: var(--dourado2);
     text-decoration: none;
     font-size: 0.78rem;
@@ -26,6 +26,6 @@ footer a {
     letter-spacing: 0.1em;
     transition: color 0.2s;
 }
-footer a:hover {
+.rodape a:hover {
     color: var(--dourado);
 }
