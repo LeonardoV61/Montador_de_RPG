@@ -4,7 +4,7 @@
     gap: 1.5rem;
     padding: 0 3rem;
     margin: 3rem 0; /* 1.5 */
-    color: var(--dourado2);
+    color: var(--dourado);
 }
 .divisor::before, .divisor::after {
     content: '';
@@ -16,6 +16,6 @@
     width: 8px;
     height: 8px;
     background:
-    var(--dourado2);
+    var(--dourado);
     transform: rotate(45deg);
 }

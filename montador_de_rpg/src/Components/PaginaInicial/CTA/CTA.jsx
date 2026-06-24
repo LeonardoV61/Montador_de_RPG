@@ -9,7 +9,7 @@ export default function CTA() {
     <div className={styles.cta}>
         <h2>Pronto para sua <em>primeira sessão?</em></h2>
         <p>A mesa está posta. Os dados, rolados. Falta apenas você e seu grupo.</p>
-        <button className={styles.btnDouradoCheio}><Link to="/login" onClick={() => Location.reload()} className={styles.link}>Começar gratuitamente ↗</Link></button>
+        <Link to="/login" onClick={() => Location.reload()} className={styles.link}><button className={styles.btnDouradoCheio}>Começar gratuitamente ↗</button></Link>
     </div>
     </>
   )

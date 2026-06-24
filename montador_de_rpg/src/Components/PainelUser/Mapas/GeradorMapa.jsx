@@ -416,7 +416,8 @@ export default function GeradorMapa() {
       </div>
 
       <div className={styles.painelConfig}>
-        <h2 className={styles.tituloSecao}>MYTHS & RUMORS</h2>
+        {/* <h2 className={styles.tituloSecao}>MYTHS & RUMORS</h2> */}
+        <h2 className={styles.tituloSecao}>MITOS & RUMORES</h2>
         <div className={styles.containerListaMitos}>
           {listaMitos.map((mito) => (
             <div key={mito.id} className={styles.linhaMitoEditavel}>
@@ -435,9 +436,9 @@ export default function GeradorMapa() {
         </div>
 
         <div className={styles.headerConfig}>
-          <h3 className={styles.subTitulo}>CONFIGURATION</h3>
+          <h3 className={styles.subTitulo}>CONFIGURAÇÃO</h3>
           <button onClick={handleGerarNovoMapa} className={styles.linkRegerar}>
-            Regenerate Realm
+            Regerar Mundo
           </button>
         </div>
         
@@ -445,19 +446,19 @@ export default function GeradorMapa() {
           <table className={styles.tabelaConfig}>
             <tbody>
               <tr>
-                <td>Width</td>
+                <td>Largura</td>
                 <td><input type="text" value={widthInput} maxLength={2} onChange={(e) => handleInputChange(e.target.value, setWidthInput)} /></td>
               </tr>
               <tr>
-                <td>Height</td>
+                <td>Altura</td>
                 <td><input type="text" value={heightInput} maxLength={2} onChange={(e) => handleInputChange(e.target.value, setHeightInput)} /></td>
               </tr>
               <tr>
-                <td>Holdings</td>
+                <td>Territórios</td>
                 <td><input type="text" value={holdingInput} maxLength={2} onChange={(e) => handleInputChange(e.target.value, setHoldingInput)} /></td>
               </tr>
               <tr>
-                <td>Myths</td>
+                <td>Mitos</td>
                 <td><input type="text" value={mythsInput} maxLength={2} onChange={(e) => handleInputChange(e.target.value, setMythsInput)} /></td>
               </tr>
             </tbody>
