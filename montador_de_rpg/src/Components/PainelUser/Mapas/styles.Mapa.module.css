@@ -62,6 +62,17 @@
     color: inset 0 0 0 4px rgba(0, 102, 255, 0.45);
 }
 
+.hexagono:hover,
+.hexagono.focoExterno {
+    transform: scale(1.06) translateZ(10px) !important;
+    z-index: 900 !important; 
+}
+
+.hexagono.comBarreiras:hover .conteudoHex,
+.hexagono.comBarreiras.focoExterno .conteudoHex {
+    color: inset 0 0 0 4px rgba(0, 102, 255, 0.45);
+}
+
 .conteudoHex {
     width: 100%;
     height: 100%;
@@ -107,6 +118,7 @@
     filter: invert(18%) sepia(85%) saturate(5432%) hue-rotate(354deg) brightness(91%) contrast(118%);
 }
 
+
 /* CAMADA 4: Barreiras Limítrofes (Atualizado para o contêiner do SVG sem clip-path) */
 .camadaBarreira {
     position: absolute;
@@ -115,14 +127,24 @@
     width: 100%;
     height: 100%;
     pointer-events: none;
-    /* IMPORTANTE: Remove o recorte de overflow do SVG para as linhas grossas vazarem perfeitamente */
-    overflow: visible !important;
-    /* SOLUÇÃO DO COMPORTAMENTO VISUAL: Joga as barreiras para uma camada de elevação física à frente (Z-axis).
-       Isso impede que rios ou tiles vizinhos cubram a linha vermelha */
-    transform: translateZ(1px);
     z-index: 4;
 }
 
+/* Cor padrão da barreira (o vermelho original) */
+.camadaBarreira polygon {
+    fill: #ba1a1a;
+    transition: fill 0.12s ease-out; /* Transição suave para a troca de cor */
+}
+
+/* QUANDO PASSAR O MOUSE NO HEXÁGONO: Muda a cor dos polígonos internos */
+.hexagono:hover .camadaBarreira polygon {
+    fill: #ff3b3b; /* Insira aqui a cor que você deseja no hover (ex: um vermelho mais brilhante, azul, dourado, etc.) */
+}
+
+.hexagono:hover .camadaBarreira polygon,
+.hexagono.focoExterno .camadaBarreira polygon {
+    fill: #ff3b3b;
+}
 /* CAMADA 5: Bolhinha do Mito Ajustada com Inversão de Cores */
 .bolhinhaMito {
     position: absolute;
@@ -275,4 +297,132 @@
     padding: 0.2rem;
     text-align: center;
     border-radius: 3px;
+}
+
+/* ==========================================================================
+   MODAL OVERLAY & CONTAINER DIALOG
+   ========================================================================== */
+.modalOverlay {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100vw;
+    height: 100vh;
+    background-color: rgba(0, 0, 0, 0.75);
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    z-index: 9999; /* Fica acima de absolutamente tudo */
+}
+
+.modalContainer {
+    background-color: #1a1a1a;
+    border: 2px solid #4a3e2b;
+    border-radius: 8px;
+    width: 820px; /* Expandido de 650px para 820px para caber as 5 colunas confortavelmente */
+    padding: 1.5rem;
+    box-shadow: 0 10px 40px rgba(0,0,0,0.8);
+    font-family: 'Crimson Pro', Georgia, serif;
+}
+
+.modalHeader {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    border-bottom: 1px solid #4a3e2b;
+    padding-bottom: 0.5rem;
+    margin-bottom: 1rem;
+}
+
+.modalHeader h2 {
+    margin: 0;
+    color: #d4af37;
+    font-size: 1.4rem;
+    letter-spacing: 1px;
+}
+
+.botaoFecharX {
+    background: none;
+    border: none;
+    color: #8c7e6b;
+    font-size: 1.6rem;
+    cursor: pointer;
+    line-height: 1;
+}
+
+.botaoFecharX:hover {
+    color: #f2ebd9;
+}
+
+.modalGridOpcoes {
+    display: grid;
+    grid-template-columns: repeat(4, 1fr); /* Alterado de 4 para 5 colunas */
+    gap: 1.2rem;
+    margin-bottom: 1.5rem;
+}
+
+.modalColuna {
+    display: flex;
+    flex-direction: column;
+    gap: 0.35rem;
+}
+
+.modalColuna h3 {
+    font-size: 1.05rem;
+    color: #d4af37;
+    margin: 0 0 0.5rem 0;
+    border-bottom: 1px dashed #4a3e2b;
+    padding-bottom: 0.25rem;
+}
+
+.modalLabelRadio {
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+    font-size: 0.95rem;
+    color: #bfae96;
+    cursor: pointer;
+    user-select: none;
+}
+
+.modalLabelRadio input {
+    accent-color: #0066ff; /* Deixa o check azul igual seu contorno */
+    cursor: pointer;
+}
+
+.modalAcoes {
+    display: flex;
+    justify-content: flex-end;
+    gap: 0.75rem;
+    border-top: 1px solid #4a3e2b;
+    padding-top: 1rem;
+}
+
+.btnConfirmar {
+    background: #26201a;
+    border: 1px solid #4a3e2b;
+    color: #f2ebd9;
+    padding: 0.4rem 1rem;
+    cursor: pointer;
+    border-radius: 4px;
+    font-weight: bold;
+}
+
+.btnConfirmar:hover {
+    background: #3a3128;
+    border-color: #d4af37;
+}
+
+.btnCancelar {
+    background: #ba1a1a;
+    border: 1px solid #4a3e2b;
+    color: #f2ebd9;
+    padding: 0.4rem 1rem;
+    cursor: pointer;
+    border-radius: 4px;
+    font-weight: bold;
+}
+
+.btnCancelar:hover {
+    background: #e62222;
 }
