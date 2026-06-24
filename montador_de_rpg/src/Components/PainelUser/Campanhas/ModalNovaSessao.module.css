@@ -1,0 +1,54 @@
+.overlay {
+  position: fixed;
+  inset: 0;
+  background: rgba(0,0,0,0.7);
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  z-index: 1000;
+}
+.modal {
+  background: #1a1a1a;
+  border: 1px solid #b3924e;
+  padding: 2rem;
+  border-radius: 8px;
+  min-width: 360px;
+  color: #eee;
+}
+.modal h2 {
+  color: #b3924e;
+  font-family: 'Cinzel', serif;
+  margin-top: 0;
+}
+.modal label {
+  display: block;
+  margin: 0.8rem 0 0.3rem;
+}
+.modal input,
+.modal textarea,
+.modal select {
+  width: 100%;
+  padding: 0.4rem;
+  background: #111;
+  border: 1px solid #333;
+  color: #ddd;
+  border-radius: 4px;
+}
+.acoes {
+  display: flex;
+  justify-content: flex-end;
+  gap: 0.5rem;
+  margin-top: 1.5rem;
+}
+.acoes button {
+  padding: 0.4rem 1rem;
+  border: 1px solid #b3924e;
+  background: transparent;
+  color: #b3924e;
+  cursor: pointer;
+  border-radius: 4px;
+}
+.acoes button:disabled {
+  opacity: 0.5;
+  cursor: not-allowed;
+}

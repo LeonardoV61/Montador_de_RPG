@@ -1,4 +1,4 @@
-import { useState, useEffect } from "react";
+import { useState, useEffect, useRef } from "react";
 import styles from "../Components/PainelUser/Css/styles.UserMenu.module.css";
 import NavBarU from "../Components/NavBar/navBarU.jsx";
 import Recepcao from "../Components/PainelUser/Recepcao/Recepcao.jsx";
@@ -25,6 +25,12 @@ import Anotacao from "../Components/PainelUser/Anotacao/Anotacao.jsx";
 import Loots from "../Components/PainelUser/Loot/Loots.jsx";
 import Inventario from "../Components/PainelUser/Inventário/inventario.jsx";
 import HeronPadrao from "../assets/perfil/Heron.png";
+import SelecaoSistema from "../Components/CriacaoPersonagem/SelecaoSistema.jsx";
+import SelecaoCampanha from "../Components/CriacaoPersonagem/SelecaoCampanha.jsx";
+import FichaCriacaoPersonagem from "../Components/CriacaoPersonagem/FichaCriacaoPersonagem.jsx";
+import ModalNovaCampanha from "../Components/PainelUser/Campanhas/ModalNovaCampanha.jsx";
+import ModalNovaSessao from "../Components/PainelUser/Campanhas/ModalNovaSessao.jsx";
+import ModalNovaCena from "../Components/PainelUser/Campanhas/ModalNovaCena.jsx";
 
 import { campanhaService } from "../services/campanhaService.js";
 import { usuarioService } from "../services/usuarioService.js";
@@ -32,43 +38,27 @@ import { usuarioService } from "../services/usuarioService.js";
 export default function UserMenu() {
   const [roleAtiva, setRoleAtiva] = useState("mestre");
   const [menuAtivo, setMenuAtivo] = useState("dashboard");
+  const [usuarioId, setUsuarioId] = useState(null);
+  const [sistemaCriacao, setSistemaCriacao] = useState(null);
+  const [campanhaId, setCampanhaId] = useState(null);
+  const [modalNovaCampanha, setModalNovaCampanha] = useState(false);
+  const [modalNovaSessao, setModalNovaSessao] = useState(null);
+  const [modalNovaCena, setModalNovaCena] = useState(null);
 
   const [campanhas, setCampanhas] = useState([
-    {
-      id: 1,
-      titulo: "O REINO ARRUINADO",
-      detalhes: "Mythic Bastionland • 4 jogadores",
-      status: "ATIVA",
-    },
-    {
-      id: 2,
-      titulo: "CINZAS DA VELHA CIDADE",
-      detalhes: "Rune 2e • 3 jogadores",
-      status: "PAUSADA",
-    },
-    {
-      id: 3,
-      titulo: "O TEMPLO SUBMERSO",
-      detalhes: "OSE • 2 jogadores",
-      status: "FINALIZADA",
-    },
+    { id: 1, titulo: "O REINO ARRUINADO", detalhes: "Mythic Bastionland • 4 jogadores", status: "ATIVA" },
+    { id: 2, titulo: "CINZAS DA VELHA CIDADE", detalhes: "Rune 2e • 3 jogadores", status: "PAUSADA" },
+    { id: 3, titulo: "O TEMPLO SUBMERSO", detalhes: "OSE • 2 jogadores", status: "FINALIZADA" },
   ]);
 
-  const [amigos, setAmigos] = useState([
-    { id: 1, nome: "Erik Guilherme", online: true },
-    { id: 2, nome: "Leonardo ProPlayer", online: true },
-    { id: 3, nome: "Lucas Carril", online: false },
-    { id: 4, nome: "Oséias Augusto", online: false },
-    { id: 5, nome: "Vinícius Lemos", online: true },
-  ].sort((a, b) => a.nome.localeCompare(b.nome)));
-
-  const [atividades, setAtividades] = useState([
+  const [amigos, setAmigos] = useState([]);
+  const [atividades] = useState([
     { id: 1, descricao: "Oséias atualizou a ficha", momento: "15:25:54" },
     { id: 2, descricao: "Erik Guilherme criou personagem", momento: "13:10:35" },
     { id: 3, descricao: "Sessão VII finalizada", momento: "11:14:24" },
   ]);
 
-  const [tarefas, setTarefas] = useState([
+  const [tarefas] = useState([
     { id: 1, descricao: "Escrever resumo da sessão anterior", feito: true },
     { id: 2, descricao: "Preparar mapa do templo", feito: true },
     { id: 3, descricao: "Definir estatísticas dos guardas", feito: false },
@@ -80,19 +70,21 @@ export default function UserMenu() {
   const [zoom, setZoom] = useState(1);
   const [posX, setPosX] = useState(0);
   const [posY, setPosY] = useState(0);
+  const [indicadores, setIndicadores] = useState(null);
 
+  // Perfil do usuário
   useEffect(() => {
-    const carregarDados = async () => {
-      // Perfil do usuário
+    (async () => {
       try {
         const resPerfil = await usuarioService.perfil();
         const perfil = resPerfil?.data?.data || resPerfil?.data || resPerfil;
-        if (perfil && perfil.apelido) {
+        if (perfil) {
           setNome(perfil.apelido);
           setImagem(perfil.urlImagem || HeronPadrao);
           setZoom(perfil.zoom || 1);
           setPosX(perfil.posX || 0);
           setPosY(perfil.posY || 0);
+          setUsuarioId(perfil.id);
         }
       } catch {
         const dadosSalvos = localStorage.getItem("perfil_rpg");
@@ -103,10 +95,73 @@ export default function UserMenu() {
           setZoom(perfil.zoom || 1);
           setPosX(perfil.posX || 0);
           setPosY(perfil.posY || 0);
+          setUsuarioId(perfil.id);
         }
       }
+    })();
+  }, []);
 
-      // Campanhas
+  // Indicadores com fallback mock
+  useEffect(() => {
+    async function carregarIndicadores() {
+      try {
+        const token = localStorage.getItem("token");
+        if (!token) throw new Error("Sem token");
+        const res = await fetch("/api/dashboard", {
+          headers: { Authorization: `Bearer ${token}` },
+        });
+        if (!res.ok) throw new Error("Status " + res.status);
+        const data = await res.json();
+        setIndicadores(data);
+      } catch {
+        setIndicadores({
+          campanhasAtivas: 2,
+          jogadores: 5,
+          cenasCriadas: 10,
+          sessoesEsteMes: 3,
+          cenasParaPreparar: 1,
+        });
+      }
+    }
+    carregarIndicadores();
+  }, []);
+
+  // Amigos com fallback mock
+  useEffect(() => {
+    if (!usuarioId) return;
+    async function carregarAmigos() {
+      try {
+        const token = localStorage.getItem("token");
+        if (!token) throw new Error("Sem token");
+        const res = await fetch("/api/amigos", {
+          headers: { Authorization: `Bearer ${token}` },
+        });
+        if (!res.ok) throw new Error("Status " + res.status);
+        const lista = await res.json();
+        const formatados = lista
+          .map((a) => ({
+            id: a.remetenteId === usuarioId ? a.destinatarioId : a.remetenteId,
+            nome: a.remetenteId === usuarioId ? a.destinatarioApelido : a.remetenteApelido,
+            online: false,
+          }))
+          .sort((a, b) => a.nome.localeCompare(b.nome));
+        setAmigos(formatados);
+      } catch {
+        setAmigos([
+          { id: 1, nome: "Erik Guilherme", online: true },
+          { id: 2, nome: "Leonardo ProPlayer", online: true },
+          { id: 3, nome: "Lucas Carril", online: false },
+          { id: 4, nome: "Oséias Augusto", online: false },
+          { id: 5, nome: "Vinícius Lemos", online: true },
+        ].sort((a, b) => a.nome.localeCompare(b.nome)));
+      }
+    }
+    carregarAmigos();
+  }, [usuarioId]);
+
+  // Campanhas
+  useEffect(() => {
+    async function carregarCampanhas() {
       try {
         const resCamp = await campanhaService.listarTodas();
         const campanhasData = resCamp?.data?.data || resCamp?.data || resCamp;
@@ -116,28 +171,18 @@ export default function UserMenu() {
       } catch {
         // mantém mock
       }
-
-      // Amigos (usuários)
-      try {
-        const resUsuarios = await usuarioService.listarTodos();
-        const usuariosData = resUsuarios?.data?.data || resUsuarios?.data || resUsuarios;
-        if (Array.isArray(usuariosData) && usuariosData.length > 0) {
-          const formatados = usuariosData
-            .map((u) => ({
-              id: u.id,
-              nome: u.apelido,
-              online: u.online ?? false,
-            }))
-            .sort((a, b) => a.nome.localeCompare(b.nome));
-          setAmigos(formatados);
-        }
-      } catch {
-        // mantém mock
-      }
-    };
-
-    carregarDados();
+    }
+    carregarCampanhas();
   }, []);
+
+  const prevMenuAtivo = useRef(menuAtivo);
+  useEffect(() => {
+    if (prevMenuAtivo.current === 'criarPersonagem' && menuAtivo !== 'criarPersonagem') {
+      setSistemaCriacao(null);
+      setCampanhaId(null);
+    }
+    prevMenuAtivo.current = menuAtivo;
+  }, [menuAtivo]);
 
   return (
     <div className={styles.app}>
@@ -151,24 +196,28 @@ export default function UserMenu() {
         zoom={zoom}
         posX={posX}
         posY={posY}
+        onNovaCampanha={() => setModalNovaCampanha(true)}
+        onNovaSessao={() => setModalNovaSessao(null)}
+        onNovaCena={() => setModalNovaCena(null)}
       />
       <main className={styles.main}>
         <NavBarU />
         {roleAtiva === "mestre" ? (
-          menuAtivo === "dashboard" && (
+          menuAtivo === "dashboard" ? (
             <>
               <Recepcao nome={nome} />
-              <IndicadorC />
+              <IndicadorC dados={indicadores} />
               <section className={styles.grid}>
-                <PanelDashboard titulo={"MINHAS CAMPANHAS"} canto={"btn"}>
+                <PanelDashboard
+                  titulo={"MINHAS CAMPANHAS"}
+                  canto={"btn"}
+                  botao={<button onClick={() => setModalNovaCampanha(true)}>+ Nova</button>}
+                >
                   {campanhas.map((campanha) => (
                     <CampanhasP key={campanha.id} campanha={campanha} roleAtiva={roleAtiva} />
                   ))}
                 </PanelDashboard>
-                <PanelDashboard
-                  titulo={"JOGADORES ONLINE"}
-                  canto={amigos.filter((amigo) => amigo.online).length}
-                >
+                <PanelDashboard titulo={"JOGADORES ONLINE"} canto={amigos.filter((a) => a.online).length}>
                   {amigos.map((amigo) => (
                     <AmigoP key={amigo.id} amigo={amigo} />
                   ))}
@@ -185,30 +234,26 @@ export default function UserMenu() {
                 </PanelDashboard>
               </section>
             </>
-          )
-          || menuAtivo === "wiki" && ( <><Wiki /></> )
-          || menuAtivo === "mapas" && ( <><GeradorMapa /></> )
-          || menuAtivo === "compendio" && ( <><Compendio /></> )
-          || menuAtivo === "codexArcano" && ( <><CodexArcano /></> )
-          || menuAtivo === "bestiario" && ( <><Bestiario /></> )
-          || menuAtivo === "eventos" && ( <><GerenciadorNarrativo /></> )
-          || menuAtivo === "anotacoes" && ( <><Anotacao /></> )
-          || menuAtivo === "itens" && ( <><Loots /></> )
+          ) : menuAtivo === "wiki" ? <Wiki /> :
+            menuAtivo === "mapas" ? <GeradorMapa /> :
+            menuAtivo === "compendio" ? <Compendio /> :
+            menuAtivo === "codexArcano" ? <CodexArcano /> :
+            menuAtivo === "bestiario" ? <Bestiario /> :
+            menuAtivo === "eventos" ? <GerenciadorNarrativo /> :
+            menuAtivo === "anotacoes" ? <Anotacao /> :
+            menuAtivo === "itens" ? <Loots /> : null
         ) : (
-          menuAtivo === "dashboard" && (
+          menuAtivo === "dashboard" ? (
             <>
               <Recepcao nome={nome} />
-              <IndicadorC />
+              <IndicadorC dados={indicadores} />
               <section className={styles.grid}>
                 <PanelDashboard titulo={"MINHAS CAMPANHAS"} canto={"btn"}>
                   {campanhas.map((campanha) => (
                     <CampanhasP key={campanha.id} campanha={campanha} roleAtiva={roleAtiva} />
                   ))}
                 </PanelDashboard>
-                <PanelDashboard
-                  titulo={"JOGADORES ONLINE"}
-                  canto={amigos.filter((amigo) => amigo.online).length}
-                >
+                <PanelDashboard titulo={"JOGADORES ONLINE"} canto={amigos.filter((a) => a.online).length}>
                   {amigos.map((amigo) => (
                     <AmigoP key={amigo.id} amigo={amigo} />
                   ))}
@@ -225,22 +270,57 @@ export default function UserMenu() {
                 </PanelDashboard>
               </section>
             </>
-          ) 
-          || menuAtivo === "personagens" && ( <><Personagens /></> )
-          || menuAtivo === "perfil" && (
-            <Perfil
-              nome={nome} setNome={setNome}
-              imagem={imagem} setImagem={setImagem}
-              zoom={zoom} setZoom={setZoom}
-              posX={posX} setPosX={setPosX}
-              posY={posY} setPosY={setPosY}
-            />
-          )
-          || menuAtivo === "regras" && ( <><Regras /></> )
-          || menuAtivo === "habilidades" && ( <><Habilidades /></> )
-          || menuAtivo === "diario" && ( <><Diario /></> )
-          || menuAtivo === "eventos" && ( <><Eventos /></> )
-          || menuAtivo === "inventario" && ( <><Inventario /></> )
+          ) : menuAtivo === "personagens" ? <Personagens /> :
+            menuAtivo === "perfil" ? (
+              <Perfil
+                nome={nome} setNome={setNome}
+                imagem={imagem} setImagem={setImagem}
+                zoom={zoom} setZoom={setZoom}
+                posX={posX} setPosX={setPosX}
+                posY={posY} setPosY={setPosY}
+              />
+            ) :
+            menuAtivo === "regras" ? <Regras /> :
+            menuAtivo === "habilidades" ? <Habilidades /> :
+            menuAtivo === "diario" ? <Diario /> :
+            menuAtivo === "eventos" ? <Eventos /> :
+            menuAtivo === "inventario" ? <Inventario /> :
+            menuAtivo === 'criarPersonagem' && !sistemaCriacao ? (
+              <SelecaoSistema onConfirmar={(dados) => setSistemaCriacao(dados.sistema)} />
+            ) : menuAtivo === 'criarPersonagem' && !campanhaId ? (
+              <SelecaoCampanha usuarioId={usuarioId} onConfirmar={(idCamp) => setCampanhaId(idCamp)} />
+            ) : menuAtivo === 'criarPersonagem' ? (
+              <FichaCriacaoPersonagem
+                sistema={sistemaCriacao}
+                usuarioId={usuarioId}
+                campanhaId={campanhaId}
+                onConcluido={() => { setMenuAtivo('personagens'); setSistemaCriacao(null); setCampanhaId(null); }}
+                onErro={(msg) => console.error(msg)}
+              />
+            ) : null
+        )}
+
+        {/* Modais */}
+        {modalNovaCampanha && (
+          <ModalNovaCampanha
+            usuarioId={usuarioId}
+            onClose={() => setModalNovaCampanha(false)}
+            onCriada={(nova) => setCampanhas(prev => [...prev, nova])}
+          />
+        )}
+        {modalNovaSessao && (
+          <ModalNovaSessao
+            campanhaId={modalNovaSessao}
+            onClose={() => setModalNovaSessao(null)}
+            onCriada={(sessao) => console.log('Sessão iniciada', sessao)}
+          />
+        )}
+        {modalNovaCena && (
+          <ModalNovaCena
+            sessaoId={modalNovaCena}
+            onClose={() => setModalNovaCena(null)}
+            onCriada={(cena) => console.log('Cena criada', cena)}
+          />
         )}
       </main>
     </div>

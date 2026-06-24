@@ -43,6 +43,7 @@ export default function Personagens() {
         setUsuarioId(id);
         if (id) {
           const resp = await personagemService.listarPorUsuario(id);
+          console.log("RESPOSTA PERSONAGEM:", resp)
           const lista = resp?.data || resp || [];
           setPersonagens(Array.isArray(lista) ? lista : []);
         }

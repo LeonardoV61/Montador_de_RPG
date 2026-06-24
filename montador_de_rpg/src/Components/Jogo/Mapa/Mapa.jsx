@@ -1,155 +1,140 @@
-import { useState, useEffect, useRef, useContext } from 'react';
-import { createContext } from 'react';
-import { Canvas } from '@react-three/fiber';
-import { Physics } from '@react-three/cannon';
+import { useState, useRef, useEffect, useContext, createContext } from 'react';
 import styles from './styles.Mapa.module.css';
+import { ContextoAbasPersonagem } from '../../../pages/Jogo/Jogo.jsx';
 import MapaFerramentas from '../MapaFerramentas/MapaFerramentas.jsx';
 import AvatarPersonagem from '../AvatarPersonagem/AvatarPersonagem.jsx';
 import MenuContexto from '../MenuContexto/MenuContexto';
-import { ContextoAbasPersonagem, ContextoRegistros, ContextoMesaFisica } from '../../../pages/Jogo/Jogo.jsx';
-import { DadoFisicoPoliedro, MoedaFisica, ChaoMesa } from '../AbaDados/MesaFisica';
-import api from '../../../utils/api';
 
 export const ContextoAvatar = createContext(null);
 
-export default function Mapa() {
-   const { abasAbertas } = useContext(ContextoAbasPersonagem);
-   const dadosAberta = !!abasAbertas?.Dados;
-   const anotacoesAberta = !!abasAbertas?.Anotacoes;
+/**
+ * Converte os atributos atuais do personagem (formato do backend) em
+ * porcentagem de HP para a barra visual. No MB, HP = VIG, e o máximo
+ * teórico de VIG é 19 (definido no schema). Se preferir não hardcodar,
+ * podemos usar o próprio VIG como valor total da barra (sempre 100%).
+ */
+function calcularPorcentagemHP(attrs) {
+  if (!attrs || attrs.VIG === undefined) return 100;
+  const vig = Number(attrs.VIG);
+  const maxVig = 19; // máximo do schemaAtributos do sistema
+  return Math.round((vig / maxVig) * 100);
+}
 
-   const [contextoAberto, setContextoAberto] = useState(false);
-   const [avatarSelecionado, setAvatarSelecionado] = useState("Aldric");
+export default function Mapa({ mapaData, participantes }) {
+  const [zoom, setZoom] = useState(1);
+  const [posicao, setPosicao] = useState({ x: 0, y: 0 });
+  const [isDragging, setIsDragging] = useState(false);
+  const dragStart = useRef({ x: 0, y: 0 });
+  const areaMapaRef = useRef(null);
 
-   const canvasRef = useRef(null);
-   const canvasCtx2d = useRef(null);
-   
-   useEffect(() => {
-      if (canvasRef.current) {
-         canvasCtx2d.current = canvasRef.current.getContext('2d');
-      }
-   }, []);
-   
-   const HEX_SIZE = 54;
-   const mapOffsetX = useRef(0);
-   const mapOffsetY = useRef(0);
-   const mapScale = useRef(1);
-   const dragging = useRef(false);
-   const dragStartX = useRef(0);
-   const dragStartY = useRef(0);
+  const { abasAbertas } = useContext(ContextoAbasPersonagem);
 
-   function drawHexMap() { if (!canvasCtx2d.current) return; }
-   function canvasWheel(e) { e.preventDefault(); drawHexMap(); }
-   function canvasClick(e) {}
-   function canvasMouseDown(e) { if (e.button === 0) { dragging.current = true; } }
-   function canvasMouseMove(e) { if (dragging.current) { drawHexMap(); } }
-   function canvasMouseUp() { dragging.current = false; }
+  // Handlers de arrasto e zoom
+  const handleMouseDown = e => {
+    setIsDragging(true);
+    dragStart.current = { x: e.clientX - posicao.x, y: e.clientY - posicao.y };
+  };
+  const handleMouseMove = e => {
+    if (!isDragging) return;
+    setPosicao({ x: e.clientX - dragStart.current.x, y: e.clientY - dragStart.current.y });
+  };
+  const handleMouseUp = () => setIsDragging(false);
+  const handleWheel = e => {
+    e.preventDefault();
+    const delta = e.deltaY < 0 ? 0.1 : -0.1;
+    setZoom(prev => Math.max(0.4, Math.min(2.5, prev + delta)));
+  };
 
-   const [ctxMenuX, setCtxMenuX] = useState(0);
-   const [ctxMenuY, setCtxMenuY] = useState(0);
+  useEffect(() => {
+    const el = areaMapaRef.current;
+    if (el) el.addEventListener('wheel', handleWheel, { passive: false });
+    return () => { if (el) el.removeEventListener('wheel', handleWheel); };
+  }, []);
 
-   function canvasCtxMenu(e) {
-      e.preventDefault();
-      setCtxMenuX(e.clientX > window.innerWidth / 2 ? e.clientX - 172 : e.clientX);
-      setCtxMenuY(e.clientY > window.innerHeight / 2 ? e.clientY - 165 : e.clientY);
-      setContextoAberto(true);
-   }
+  // Avatares a partir dos participantes reais
+  const avatares = (participantes || []).map(p => ({
+    idInstancia: p.idInstancia,
+    nome: p.nome || '???',
+    icone: p.tipo === 'jogador' ? '⚔' : '💀',
+    porcentagemHP: calcularPorcentagemHP(p.atributosAtuais),
+    pos: p.posicao ? { x: p.posicao.x, y: p.posicao.y } : { x: 0, y: 0 },
+    tipo: p.tipo || 'npc',
+  }));
 
-   // --- CAPTURA DE RESULTADO DA MESA FÍSICA ---
-   const { registros, setRegistros } = useContext(ContextoRegistros);
-   const { dadosAtivosNaMesa, setDadosAtivosNaMesa, setResultado, setTipoRolamento } = useContext(ContextoMesaFisica);
+  if (!mapaData) return <div className={styles.mapa}>Carregando mapa...</div>;
 
-   async function handleDadoParou(id, valorReal, lados) {
-      const nomeDado = lados === 2 ? "Moeda" : 'd' + lados;
-      
-      setTipoRolamento(nomeDado);
-      setResultado(valorReal);
+  const grid = mapaData.tiles || [];
 
-      let novoRoll = {
-         id: registros.length + 1,
-         aba: "Roll",
-         icone: lados === 2 ? "🪙" : "🎲",
-         autor: "VOCÊ",
-         tipo: nomeDado,
-         valor: valorReal,
-         dado: nomeDado,
-         valorAtributo: false
-      };
+  // Iniciativa (exemplo estático – substituir pelo estado da cena)
+  const iniciativa = [
+    { nome: 'Aldric', icone: '⚔', valor: 18, tipo: 'jogador' },
+    { nome: 'Guarda 1', icone: '💀', valor: 14, tipo: 'inimigo' },
+    { nome: 'Sena', icone: '🏹', valor: 11, tipo: 'jogador' },
+  ];
 
-      try {
-         await api.post('/jogadas/rolar', { dado: nomeDado, resultado: valorReal });
-      } catch (err) {
-         console.error("Erro ao salvar jogada:", err);
-      }
+  return (
+    <main
+      className={styles.mapa}
+      ref={areaMapaRef}
+      onMouseDown={handleMouseDown}
+      onMouseMove={handleMouseMove}
+      onMouseUp={handleMouseUp}
+      onMouseLeave={handleMouseUp}
+    >
+      {/* Grade hexagonal */}
+      <div
+        className={styles.mapaGrid}
+        style={{
+          transform: `translate(${posicao.x}px, ${posicao.y}px) scale(${zoom})`,
+          transformOrigin: '0 0',
+        }}
+      >
+        {grid.map((linha, r) =>
+          linha.map((tile, c) => {
+            if (!tile) return null;
+            const posX = c * 75;
+            const posY = r * 86.6 + (c % 2 === 0 ? 0 : 43.3);
+            const tipo = tile.terreno || 'grass';
+            return (
+              <div key={`${r}-${c}`} className={styles.hexagono} style={{ left: posX, top: posY }}>
+                <div className={styles.conteudoHex}>
+                  <img src={`/assets/terrains/${tipo}.svg`} alt="" />
+                  {tile.holding && <img src={`/assets/structures/${tile.holding}.svg`} alt="" />}
+                </div>
+              </div>
+            );
+          })
+        )}
+      </div>
 
-      setRegistros(prev => [...prev, novoRoll]);
+      {/* Iniciativa */}
+      <div className={styles.iniciativa}>
+        <div className={styles.iniciativaTitulo}>Iniciativa</div>
+        {iniciativa.map((item, idx) => (
+          <div key={idx} className={`${styles.iniciativaPersonagem} ${idx === 0 ? styles.atual : ''}`}>
+            <div className={`${styles.iniciativaPonto} ${item.tipo === 'jogador' ? styles.jogador : styles.inimigo}`} />
+            <span className={styles.iniciativaNome}>{item.icone} {item.nome}</span>
+            <span className={styles.iniciativaNum}>{item.valor}</span>
+          </div>
+        ))}
+      </div>
 
-      // Remove o dado da tela após alguns segundos de contemplação do resultado
-      setTimeout(() => {
-         setDadosAtivosNaMesa(prev => prev.filter(d => d.id !== id));
-      }, 5000);
-   }
+      <MapaFerramentas />
 
-   return (
-      <main className={styles.mapa} id="map" onClick={() => setContextoAberto(false)}>
-         <canvas 
-            ref={canvasRef} 
-            className={styles.mapaHexagonal} 
-            onWheel={canvasWheel} onClick={canvasClick}
-            onMouseDown={canvasMouseDown} onMouseMove={canvasMouseMove} onMouseUp={canvasMouseUp}
-            onContextMenu={canvasCtxMenu} 
-         />
+      <ContextoAvatar.Provider value={{ avatarSelecionado: null, setAvatarSelecionado: () => {} }}>
+        {avatares.map(av => (
+          <AvatarPersonagem
+            key={av.idInstancia}
+            nome={av.nome}
+            icone={av.icone}
+            porcentagemHP={av.porcentagemHP}
+            tipo={av.tipo}
+            posicao={av.pos}
+          />
+        ))}
+      </ContextoAvatar.Provider>
 
-         {/* CAMADA INVISÍVEL 3D - NÃO BLOQUEIA O FUNDO DO MAPA */}
-         <div style={{
-            position: 'absolute',
-            top: 0, left: 0, width: '100%', height: '100%',
-            zIndex: 25,
-            pointerEvents: dadosAtivosNaMesa.length > 0 ? 'auto' : 'none'
-         }}>
-            {dadosAtivosNaMesa.length > 0 && (
-               <Canvas camera={{ position: [0, 5.5, 5.5], fov: 40 }} shadows gl={{ alpha: true }} onContextMenu={(e) => e.preventDefault()}>
-                  {/* Iluminação de Estúdio Fotográfico para dar Brilho na Resina */}
-                  <ambientLight intensity={0.6} />
-                  <pointLight position={[8, 12, 8]} castShadow intensity={1.5} shadow-mapSize={[2048, 2048]} />
-                  <directionalLight position={[-5, 8, -2]} intensity={0.4} />
-                  
-                  <Physics gravity={[0, -12, 0]}>
-                     <ChaoMesa />
-                     {dadosAtivosNaMesa.map((dado) => (
-                        dado.lados === 2 ? (
-                           <MoedaFisica key={dado.id} position={dado.posicao} onStopped={(val) => handleDadoParou(dado.id, val, dado.lados)} />
-                        ) : (
-                           <DadoFisicoPoliedro key={dado.id} lados={dado.lados} position={dado.posicao} onStopped={(val) => handleDadoParou(dado.id, val, dado.lados)} />
-                        )
-                     ))}
-                  </Physics>
-               </Canvas>
-            )}
-         </div>
-
-         <MapaFerramentas />
-
-         <ContextoAvatar.Provider value={{avatarSelecionado, setAvatarSelecionado}}>
-            <AvatarPersonagem tipo="jogador" nome="Aldric" icone="⚔" porcentagemHP="67"/>
-            <AvatarPersonagem tipo="jogador" nome="Sena" icone="🏹" porcentagemHP="100"/>
-            <AvatarPersonagem tipo="inimigo" nome="Guarda 1" icone="💀" porcentagemHP="30"/>
-            <AvatarPersonagem tipo="inimigo" nome="Guarda 2" icone="💀" porcentagemHP="80"/>
-            <AvatarPersonagem tipo="npc" nome="Ancião" icone="🧙" porcentagemHP="100"/>
-         </ContextoAvatar.Provider>
-
-         <div className={`${styles.iniciativa} ${anotacoesAberta ? styles.iniciativaDeslocada : ""}`}>
-            <div className={styles.iniciativaTitulo}>Iniciativa</div>
-            <div className={`${styles.iniciativaPersonagem} ${styles.atual}`}><div className={`${styles.iniciativaPonto} ${styles.jogador}`}></div><span className={styles.iniciativaNome}>Aldric</span><span className={styles.iniciativaNum}>18</span></div>
-            <div className={styles.iniciativaPersonagem}><div className={`${styles.iniciativaPonto} ${styles.inimigo}`}></div><span className={styles.iniciativaNome}>Guarda 1</span><span className={styles.iniciativaNum}>14</span></div>
-            <div className={`${styles.iniciativaPersonagem}`}><div className={`${styles.iniciativaPonto} ${styles.jogador}`}></div><span className={styles.iniciativaNome}>Sena</span><span className={styles.iniciativaNum}>11</span></div>
-         </div>
-
-         <div className={`${styles.mapaZoom} ${dadosAberta ? styles.mapaZoomDeslocado : ""}`}>
-            <button className={styles.zoomBotao}>+</button>
-            <button className={styles.zoomBotao}>−</button>
-            <button className={styles.zoomBotao}>⌖</button>
-         </div>
-         <div className={styles.nomeCena}>Região de Bastionland · Mapa Hexagonal</div>
-      </main>
-   );
+      <MenuContexto />
+    </main>
+  );
 }
