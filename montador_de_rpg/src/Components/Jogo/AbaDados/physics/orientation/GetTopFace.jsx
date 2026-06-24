@@ -10,7 +10,7 @@ const _vB = new THREE.Vector3();
 const _vC = new THREE.Vector3();
 const _e1 = new THREE.Vector3();
 const _e2 = new THREE.Vector3();
-const _localNormal = new THREE.Vector3();
+const _groupNormal = new THREE.Vector3();
 
 // Dicionário estático para o D6 mapeado de forma limpa e imutável
 const D6_FACE_MAP = [
@@ -25,82 +25,99 @@ const D6_FACE_MAP = [
 /**
  * Função utilitária pura para determinar a face superior de uma malha 3D.
  * Mantida separada para permitir chamadas imperativas fora de escopos reativos do React.
- * * @param {THREE.Mesh} mesh - Instância tridimensional do dado
- * @param {number} lados - Quantidade de lados do poliedro (ex: 6, 10, 20)
- * @returns {number} O número da face que está voltada para cima
  */
 export function determinarFaceSuperior(mesh, lados) {
-   if (!mesh || !mesh.geometry) return 1;
-   
-   // Sincroniza as matrizes de transformações globais do objeto no frame atual
-   mesh.updateMatrixWorld(true);
-   _quaternion.setFromRotationMatrix(mesh.matrixWorld);
+   if (!mesh) return 1;
 
-   // Caso otimizado específico para Cubos (D6)
+   // Garante que as transformações físicas do Cannon estejam computadas no Three.js
+   mesh.updateMatrixWorld(true);
+   mesh.getWorldQuaternion(_quaternion);
+
+   // O d6 não precisa varrer triângulos, usa o mapa de vetores diretos por performance
    if (lados === 6) {
       let maxDot = -Infinity;
-      let bestFace = 1;
+      let faceVencedora = 1;
 
-      D6_FACE_MAP.forEach(({ local, value }) => {
-         _worldNormal.copy(local).applyQuaternion(_quaternion);
+      for (const f of D6_FACE_MAP) {
+         _worldNormal.copy(f.local).applyQuaternion(_quaternion);
          const dot = _worldNormal.dot(_worldUp);
          if (dot > maxDot) {
             maxDot = dot;
-            bestFace = value;
+            faceVencedora = f.value;
          }
-      });
-      return bestFace;
+      }
+      return faceVencedora;
    }
 
-   // Caso genérico e matemático para demais Poliedros Convexos (D4, D8, D10, D12, D20)
-   const posAttr = mesh.geometry.attributes.position;
+   const geo = mesh.geometry;
+   if (!geo) return 1;
+
+   const posAttr = geo.attributes.position;
    if (!posAttr) return 1;
 
+   const groups = geo.groups;
+   if (!groups || groups.length === 0) return 1;
+
+   // FIX CRÍTICO: Itera por GRUPOS (faces lógicas) em vez de vértices individuais.
+   // Cada grupo representa uma face do dado com seu próprio materialIndex.
+   // A normal do grupo é calculada como média das normais de todos os seus triângulos,
+   // o que é robusto tanto para geometrias indexadas quanto não-indexadas.
    let maxDot = -Infinity;
    let faceVencedora = 1;
 
-   // Percorre os triângulos da geometria indexada/não-indexada
-   for (let i = 0; i < posAttr.count; i += 3) {
-      _vA.fromBufferAttribute(posAttr, i);
-      _vB.fromBufferAttribute(posAttr, i + 1);
-      _vC.fromBufferAttribute(posAttr, i + 2);
+   // Índices reais de vértice — lê da index buffer se existir, ou direto da posição
+   const index = geo.index;
 
-      _e1.subVectors(_vB, _vA);
-      _e2.subVectors(_vC, _vA);
-      _localNormal.crossVectors(_e1, _e2).normalize();
-      _worldNormal.copy(_localNormal).applyQuaternion(_quaternion);
+   for (const group of groups) {
+      _groupNormal.set(0, 0, 0);
+      let triCount = 0;
+
+      const end = group.start + group.count;
+
+      for (let i = group.start; i < end; i += 3) {
+         // Se a geometria for indexada, busca os índices reais; senão usa i diretamente
+         const ia = index ? index.getX(i)     : i;
+         const ib = index ? index.getX(i + 1) : i + 1;
+         const ic = index ? index.getX(i + 2) : i + 2;
+
+         _vA.fromBufferAttribute(posAttr, ia);
+         _vB.fromBufferAttribute(posAttr, ib);
+         _vC.fromBufferAttribute(posAttr, ic);
+
+         _e1.subVectors(_vB, _vA);
+         _e2.subVectors(_vC, _vA);
+
+         // Acumula a normal deste triângulo na normal do grupo
+         _groupNormal.addScaledVector(
+            new THREE.Vector3().crossVectors(_e1, _e2).normalize(),
+            1
+         );
+         triCount++;
+      }
+
+      if (triCount === 0) continue;
+
+      // Normal média do grupo → espaço de mundo
+      _groupNormal.divideScalar(triCount).normalize();
+      _worldNormal.copy(_groupNormal).applyQuaternion(_quaternion);
 
       const dot = _worldNormal.dot(_worldUp);
       if (dot > maxDot) {
          maxDot = dot;
-         
-         // Encontra a qual grupo de material o triângulo processado pertence
-         const groups = mesh.geometry.groups || [];
-         const group = groups.find(
-            g => g.start <= i && (g.start + g.count) > i
-         );
-         
-         if (group !== undefined) {
-            faceVencedora = group.materialIndex + 1;
-         }
+         // materialIndex é base-0; valor da face é base-1
+         faceVencedora = group.materialIndex + 1;
       }
    }
-   
+
    return faceVencedora;
 }
 
 /**
  * Custom Hook React: useTopFaceDeterminer
  * Abstrai a lógica tridimensional e expõe uma função memoizada estável
- * ideal para ser consumida em loops de física como useFrame ou callbacks de parada.
- * * @returns {Function} Função wrapper para detecção de face estável
  */
 export function useTopFaceDeterminer() {
-   const obterFaceVencedora = useCallback((mesh, lados) => {
-      return determinarFaceSuperior(mesh, lados);
-   }, []);
-
-   return obterFaceVencedora;
+   return useCallback((mesh, lados) => determinarFaceSuperior(mesh, lados), []);
 }
 
 export default useTopFaceDeterminer;

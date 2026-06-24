@@ -18,46 +18,52 @@ export function applyD4UVs(geo) {
    const uvs = new Float32Array(pos.count * 2);
 
    const cornerMap = new Map();
+   const uniqueCorners = [];
    const PREC = 4;
    for (let i = 0; i < pos.count; i++) {
       const x = Number(pos.getX(i).toFixed(PREC));
       const y = Number(pos.getY(i).toFixed(PREC));
       const z = Number(pos.getZ(i).toFixed(PREC));
+      const key = `${x}_${y}_${z}`;
       
       if (!cornerMap.has(key)) {    
-         const corner = { x, y, z, id: uniqueCorners.length, faces: [] };
-         uniqueCorners.push(corner);
-         cornerMap.set(key, corner);; cornerMap.set(key, corner); 
+         const c = { id: uniqueCorners.length, x, y, z };
+         cornerMap.set(key, c);
+         uniqueCorners.push(c);
       }
    }
 
+   const cornersByFace = [];
    for (let f = 0; f < 4; f++) {
+      const faceCorners = [];
       for (let v = 0; v < 3; v++) {
          const idx = f * 3 + v;
          const x = Number(pos.getX(idx).toFixed(PREC));
          const y = Number(pos.getY(idx).toFixed(PREC));
          const z = Number(pos.getZ(idx).toFixed(PREC));
-         const corner = cornerMap.get(`${x}_${y}_${z}`);
-         if (corner && !corner.faces.includes(f)) {
-            corner.faces.push(f);
-         }
+         const c = uniqueCorners.find(uniqueC => uniqueC.x === x && uniqueC.y === y && uniqueC.z === z);
+         faceCorners.push(c.id);
       }
+      cornersByFace.push(faceCorners);
    }
 
-   const cornerToNumber = {};
-   uniqueCorners.forEach(c => {
-      const f = c.faces;
-      if (f.includes(0) && f.includes(1) && f.includes(2)) cornerToNumber[c.id] = "1";
-      else if (f.includes(0) && f.includes(1) && f.includes(3)) cornerToNumber[c.id] = "2";
-      else if (f.includes(0) && f.includes(2) && f.includes(3)) cornerToNumber[c.id] = "3";
-      else if (f.includes(1) && f.includes(2) && f.includes(3)) cornerToNumber[c.id] = "4";
-   });
-
-   const arrTriades = [["1","2","3"], ["1","4","2"], ["1","3","4"], ["2","4","3"]];
+   const faceOppositeCorner = [3, 0, 1, 2];
 
    for (let f = 0; f < 4; f++) {
-      const [nTopo, nEsq, nDir] = arrTriades[f];
-      
+      const opp = faceOppositeCorner[f];
+      let nTopo = -1, nEsq = -1, nDir = -1;
+
+      if (opp === 0) { nTopo = 2; nEsq = 1; nDir = 3; }
+      else if (opp === 1) { nTopo = 2; nEsq = 3; nDir = 0; }
+      else if (opp === 2) { nTopo = 3; nEsq = 1; nDir = 0; }
+      else if (opp === 3) { nTopo = 2; nEsq = 0; nDir = 1; }
+
+      const cornerToNumber = {};
+      const fC = cornersByFace[f];
+      cornerToNumber[fC[0]] = fC[0];
+      cornerToNumber[fC[1]] = fC[1];
+      cornerToNumber[fC[2]] = fC[2];
+
       for (let v = 0; v < 3; v++) {
          const idx = f * 3 + v;
          const x = Number(pos.getX(idx).toFixed(PREC));
@@ -83,21 +89,15 @@ export function applyD4UVs(geo) {
 
 export function applyPentagonUVs(geo) {
    const pos = geo.attributes.position;
+   // SAFETY ADJUSTMENT: Protegemos o alocador garantindo leitura isolada das coordenadas
    const uvs = new Float32Array((pos.count / 3) * 6);
    
    for (let i = 0; i < pos.count; i += 9) {
-      const idx = (i / 3) * 6;
-      uvs[idx]     = 0.5;  uvs[idx + 1] = 0.5;
-      uvs[idx + 2] = 0.1;  uvs[idx + 3] = 0.2;
-      uvs[idx + 4] = 0.9;  uvs[idx + 5] = 0.2;
-      uvs[idx + 6] = 0.5;  uvs[idx + 7] = 0.5;
-      uvs[idx + 8] = 0.9;  uvs[idx + 9] = 0.2;
-      uvs[idx + 10]= 0.7;  uvs[idx + 11]= 0.9;
-      uvs[idx + 12]= 0.5;  uvs[idx + 13]= 0.5;
-      uvs[idx + 14]= 0.7;  uvs[idx + 15]= 0.9;
-      uvs[idx + 16]= 0.3;  uvs[idx + 17]= 0.9;
+      const idx = (i / 9) * 6;
+      uvs[idx]     = 0.05; uvs[idx + 1] = 0.05;
+      uvs[idx + 2] = 0.95; uvs[idx + 3] = 0.05;
+      uvs[idx + 4] = 0.50; uvs[idx + 5] = 0.95;
    }
    geo.setAttribute('uv', new THREE.BufferAttribute(uvs, 2));
    return geo;
 }
-

@@ -29,7 +29,7 @@ const LANDMARKS_TYPES = [
   { nome: "Cursed", svg: "cursed.svg" },
   { nome: "Dwellings", svg: "dwellings.svg" },
   { nome: "Hazards", svg: "hazards.svg" },
-  { nome: "Monuments", svg: "monuments.svg" },
+  { nome: "Monument", svg: "monument.svg" },
   { nome: "Ruins", svg: "ruins.svg" },
   { nome: "Sanctum", svg: "sanctum.svg" }
 ];
@@ -60,6 +60,8 @@ export default function GeradorMapa() {
 
   const [gridHex, setGridHex] = useState([]);
   const [listaMitos, setListaMitos] = useState([]);
+  const [mitoSobFoco, setMitoSobFoco] = useState(null);
+  const [tileSendoEditado, setTileSendoEditado] = useState(null); // Guarda { r, c, dados }
 
   const [zoom, setZoom] = useState(1);
   const [posicao, setPosicao] = useState({ x: 0, y: 0 });
@@ -68,9 +70,9 @@ export default function GeradorMapa() {
   const areaMapaRef = useRef(null);
 
   const hexLargura = 100;
-  const hexAltura = 86.6; 
+  const hexAltura = 86.85;    // Aumentamos para 87px para dar uma margem de sangria vertical
   const hEspaco = 75; 
-  const vEspaco = 86.6; 
+  const vEspaco = 86.5;
 
   const handleInputChange = (val, setFunc) => {
     const apenasNum = val.replace(/\D/g, "");
@@ -247,7 +249,8 @@ export default function GeradorMapa() {
               if (neighborTile && neighborTile.terreno !== 6) {
                 if (Math.random() < 0.08) {
                   tile.barriers[v.indoPara] = true;
-                  neighborTile.barriers[v.vindoDe] = true;
+                  // Apenas o hexágono atual assume a responsabilidade de desenhar esta barreira
+                  // para evitar duplicação do mesmo segmento no hexágono vizinho.
                 }
               }
             }
@@ -313,6 +316,26 @@ export default function GeradorMapa() {
     setZoom((prev) => Math.max(0.4, Math.min(2.5, prev + delta)));
   };
 
+  const salvarEdicaoTile = (e) => {
+    if (e) e.preventDefault();
+    if (!tileSendoEditado) return;
+
+    setGridHex(prevGrid => {
+      const novoGrid = [...prevGrid.map(linha => [...linha])];
+      novoGrid[tileSendoEditado.r][tileSendoEditado.c] = {
+        terreno: tileSendoEditado.terreno,
+        holding: tileSendoEditado.holding,
+        landmark: tileSendoEditado.landmark,
+        isSeatOfPower: tileSendoEditado.isSeatOfPower,
+        barriers: tileSendoEditado.barriers,
+        valleys: tileSendoEditado.valleys
+      };
+      return novoGrid;
+    });
+
+    setTileSendoEditado(null);
+  };
+
   return (
     <div className={styles.containerPainel}>
       <div 
@@ -339,6 +362,7 @@ export default function GeradorMapa() {
               const posY = rIndex * vEspaco + deslocamentoTopo;
 
               const temMitoAqui = listaMitos.find(m => m.r === rIndex && m.c === cIndex);
+              const temAlgumaBarreira = Object.values(tile.barriers || {}).some(Boolean);
               
               let srcChaoBase = "";
               let srcHoldingStr = null;
@@ -360,16 +384,21 @@ export default function GeradorMapa() {
 
               return (
                 <div
-                  key={`${rIndex}-${cIndex}`}
-                  className={styles.hexagono}
-                  style={{
-                    left: `${posX}px`,
-                    top: `${posY}px`,
-                    width: `${hexLargura}px`,
-                    height: `${hexAltura}px`,
-                    zIndex: ehRio ? 10 : (tile.holding ? 5 : 1)
-                  }}
-                >
+                    key={`${rIndex}-${cIndex}`}
+                    className={`
+                      ${styles.hexagono} 
+                      ${temAlgumaBarreira ? styles.comBarreiras : ""}
+                      ${mitoSobFoco && mitoSobFoco.r === rIndex && mitoSobFoco.c === cIndex ? styles.focoExterno : ""}
+                    `}
+                    onDoubleClick={() => setTileSendoEditado({ r: rIndex, c: cIndex, ...tile })} // <--- ADICIONE ESTA LINHA
+                    style={{
+                      left: `${posX}px`,
+                      top: `${posY}px`,
+                      width: `${hexLargura}px`,
+                      height: `${hexAltura}px`,
+                      zIndex: mitoSobFoco && mitoSobFoco.r === rIndex && mitoSobFoco.c === cIndex ? 900 : (ehRio ? 10 : (tile.holding ? 5 : 1))
+                    }}
+                  >
                   {/* Camada Visual do Terreno (Sob o efeito do clip-path do Hexágono) */}
                   <div className={styles.conteudoHex}>
                     {srcChaoBase && (
@@ -385,11 +414,11 @@ export default function GeradorMapa() {
                     )}
 
                     {srcLandmark && srcBlankMark && (
-                      <img src={srcBlankMark} className={styles.camadaBase} alt="" />
+                      <img src={srcBlankMark} className={styles.camadaBlankMark} alt="" />
                     )}
 
                     {srcLandmark && (
-                      <img src={srcLandmark} className={styles.camadaBase} alt="" />
+                      <img src={srcLandmark} className={styles.camadaLandmark} alt="" />
                     )}
 
                     {temMitoAqui && (
@@ -399,14 +428,25 @@ export default function GeradorMapa() {
                     )}
                   </div>
 
-                  {/* CORREÇÃO AQUI: Camada do SVG de Barreiras movida para fora do clip-path */}
+                  {/* O SVG fica DENTRO do .hexagono para expandir junto no hover, mas ganha elevação via Z-index 3D do CSS */}
                   <svg viewBox="0 0 100 86.6" className={styles.camadaBarreira}>
-                    {tile.barriers[1] && <line x1="25" y1="0"    x2="75" y2="0"    stroke="#ba1a1a" strokeWidth="6" strokeLinecap="round" />}
-                    {tile.barriers[2] && <line x1="75" y1="0"    x2="100" y2="43.3" stroke="#ba1a1a" strokeWidth="6" strokeLinecap="round" />}
-                    {tile.barriers[3] && <line x1="100" y1="43.3" x2="75" y2="86.6" stroke="#ba1a1a" strokeWidth="6" strokeLinecap="round" />}
-                    {tile.barriers[4] && <line x1="75" y1="86.6" x2="25" y2="86.6" stroke="#ba1a1a" strokeWidth="6" strokeLinecap="round" />}
-                    {tile.barriers[5] && <line x1="25" y1="86.6" x2="0"   y2="43.3" stroke="#ba1a1a" strokeWidth="6" strokeLinecap="round" />}
-                    {tile.barriers[6] && <line x1="0"  y1="43.3" x2="25" y2="0"    stroke="#ba1a1a" strokeWidth="6" strokeLinecap="round" />}
+                    {/* Lado 1: Topo Superior */}
+                    {tile.barriers[1] && (<polygon points="25,0 75,0 71.88,5.41 28.13,5.41" />)}
+                    
+                    {/* Lado 2: Nordeste (Superior Direito) */}
+                    {tile.barriers[2] && (<polygon points="75,0 100,43.3 93.75,43.3 71.88,5.41" />)}
+                    
+                    {/* Lado 3: Sudeste (Inferior Direito) */}
+                    {tile.barriers[3] && (<polygon points="100,43.3 75,86.6 71.88,81.19 93.75,43.3" />)}
+                    
+                    {/* Lado 4: Base Inferior */}
+                    {tile.barriers[4] && (<polygon points="75,86.6 25,86.6 28.13,81.19 71.88,81.19" />)}
+                    
+                    {/* Lado 5: Sudoeste (Inferior Esquerdo) */}
+                    {tile.barriers[5] && (<polygon points="25,86.6 0,43.3 6.25,43.3 28.13,81.19" />)}
+                    
+                    {/* Lado 6: Noroeste (Superior Esquerdo) */}
+                    {tile.barriers[6] && (<polygon points="0,43.3 25,0 28.13,5.41 6.25,43.3" />)}
                   </svg>
                 </div>
               );
@@ -416,6 +456,7 @@ export default function GeradorMapa() {
       </div>
 
       <div className={styles.painelConfig}>
+<<<<<<< HEAD
         {/* <h2 className={styles.tituloSecao}>MYTHS & RUMORS</h2> */}
         <h2 className={styles.tituloSecao}>MITOS & RUMORES</h2>
         <div className={styles.containerListaMitos}>
@@ -434,6 +475,31 @@ export default function GeradorMapa() {
             </div>
           ))}
         </div>
+=======
+        <h2 className={styles.tituloSecao}>MYTHS & RUMORS</h2>
+          <div className={styles.containerListaMitos}>
+            {listaMitos.map((mito) => (
+              <div 
+                key={mito.id} 
+                className={styles.linhaMitoEditavel}
+                // ADICIONE ESTES DOIS EVENTOS ABAIXO:
+                onMouseEnter={() => setMitoSobFoco({ r: mito.r, c: mito.c })}
+                onMouseLeave={() => setMitoSobFoco(null)}
+              >
+                <span className={styles.numeroMito}>#{mito.id}</span>
+                <input 
+                  type="text" 
+                  className={styles.inputNomeMito} 
+                  value={mito.nome}
+                  onChange={(e) => {
+                    setListaMitos(prev => prev.map(m => m.id === mito.id ? {...m, nome: e.target.value} : m));
+                  }}
+                />
+                <span className={styles.coordenadaAlvo}>{mito.r + 1}, {mito.c + 1}</span>
+              </div>
+            ))}
+          </div>
+>>>>>>> 68fd4449985c4fbfebebeee3089c7682133262ff
 
         <div className={styles.headerConfig}>
           <h3 className={styles.subTitulo}>CONFIGURAÇÃO</h3>
@@ -465,6 +531,183 @@ export default function GeradorMapa() {
           </table>
         </form>
       </div>
+
+      {/* ==========================================================================
+         MODAL DE EDIÇÃO DE TILE (ABRE NO CLIQUE DUPLO)
+         ========================================================================== */}
+      {tileSendoEditado && (
+        <div className={styles.modalOverlay}>
+          <div className={styles.modalContainer}>
+            <div className={styles.modalHeader}>
+              <h2>Edit Tile ({tileSendoEditado.r + 1}, {tileSendoEditado.c + 1})</h2>
+              <button className={styles.botaoFecharX} onClick={() => setTileSendoEditado(null)}>×</button>
+            </div>
+
+            <form onSubmit={salvarEdicaoTile} className={styles.modalForm}>
+              <div className={styles.modalGridOpcoes}>
+                
+                {/* COLUNA: LANDSCAPE */}
+                <div className={styles.modalColuna}>
+                  <h3>Landscape</h3>
+                  {Object.entries(TERRENOS_INFO).map(([id, info]) => (
+                    <label key={id} className={styles.modalLabelRadio}>
+                      <input 
+                        type="radio" 
+                        name="terreno" 
+                        checked={Number(tileSendoEditado.terreno) === Number(id)}
+                        onChange={() => setTileSendoEditado(prev => ({ ...prev, terreno: Number(id) }))}
+                      />
+                      {info.nome}
+                    </label>
+                  ))}
+                </div>
+
+                {/* COLUNA: LANDSCAPE (HOLDING) */}
+                <div className={styles.modalColuna}>
+                  <h3>Landscape (Holding)</h3>
+                  <label className={styles.modalLabelRadio}>
+                    <input 
+                      type="radio" 
+                      name="holding" 
+                      checked={tileSendoEditado.holding === null}
+                      onChange={() => setTileSendoEditado(prev => ({ ...prev, holding: null }))}
+                    />
+                    none
+                  </label>
+                  {HOLDINGS_TYPES.map((h) => (
+                    <label key={h.tipo} className={styles.modalLabelRadio}>
+                      <input 
+                        type="radio" 
+                        name="holding" 
+                        checked={tileSendoEditado.holding?.tipo === h.tipo}
+                        onChange={() => setTileSendoEditado(prev => ({ ...prev, holding: h }))}
+                      />
+                      {h.tipo.toLowerCase()}
+                    </label>
+                  ))}
+                </div>
+
+               {/* COLUNA: MULTI-SELECT - BLOCKED (BARREIRAS) */}
+                <div className={styles.modalColuna}>
+                  <h3>Blocked?</h3>
+                  <label className={styles.modalLabelRadio}>
+                    <input 
+                      type="checkbox" 
+                      checked={!Object.values(tileSendoEditado.barriers).some(Boolean)}
+                      onChange={() => setTileSendoEditado(prev => ({ 
+                        ...prev, 
+                        barriers: { 1: false, 2: false, 3: false, 4: false, 5: false, 6: false } 
+                      }))}
+                    />
+                    none
+                  </label>
+                  {[1, 2, 3, 4, 5, 6].map((lado) => (
+                    <label key={lado} className={styles.modalLabelRadio}>
+                      <input 
+                        type="checkbox" 
+                        checked={!!tileSendoEditado.barriers[lado]}
+                        onChange={(e) => {
+                          const valor = e.target.checked;
+                          setTileSendoEditado(prev => ({
+                            ...prev,
+                            barriers: { ...prev.barriers, [lado]: valor }
+                          }));
+                        }}
+                      />
+                      {lado}
+                    </label>
+                  ))}
+                </div>
+
+                {/* COLUNA: LANDMARK */}
+                <div className={styles.modalColuna}>
+                  <h3>Landmark</h3>
+                  <label className={styles.modalLabelRadio}>
+                    <input 
+                      type="radio" 
+                      name="landmark" 
+                      checked={tileSendoEditado.landmark === null}
+                      onChange={() => setTileSendoEditado(prev => ({ ...prev, landmark: null }))}
+                    />
+                    none
+                  </label>
+                  {LANDMARKS_TYPES.map((l) => (
+                    <label key={l.nome} className={styles.modalLabelRadio}>
+                      <input 
+                        type="radio" 
+                        name="landmark" 
+                        checked={tileSendoEditado.landmark?.nome === l.nome}
+                        onChange={() => setTileSendoEditado(prev => ({ ...prev, landmark: l }))}
+                      />
+                      {l.nome.toLowerCase()}
+                    </label>
+                  ))}
+                </div>
+                
+                {/* COLUNA: FROM (VALLEY ENTRADA) */}
+                <div className={styles.modalColuna}>
+                  <h3>From</h3>
+                  {[
+                    { l: 1, d: "N" }, { l: 2, d: "NE" }, { l: 3, d: "SE" },
+                    { l: 4, d: "S" }, { l: 5, d: "SW" }, { l: 6, d: "NW" }
+                  ].map(({ l, d }) => {
+                    const deOndeVem = tileSendoEditado.valleys ? parseInt(tileSendoEditado.valleys.split("-")[0]) : 1;
+                    return (
+                      <label key={`from-${l}`} className={styles.modalLabelRadio}>
+                        <input 
+                          type="radio" 
+                          name="valleyFrom"
+                          disabled={tileSendoEditado.terreno !== 6} // Só ativa se for terreno do tipo rio/valley
+                          checked={tileSendoEditado.terreno === 6 && deOndeVem === l}
+                          onChange={() => {
+                            const paraOndeVai = tileSendoEditado.valleys ? parseInt(tileSendoEditado.valleys.split("-")[1]) : 4;
+                            const novaRota = normalizarRotaRio(l, paraOndeVai);
+                            setTileSendoEditado(prev => ({ ...prev, valleys: novaRota }));
+                          }}
+                        />
+                        {l} ({d})
+                      </label>
+                    );
+                  })}
+                </div>
+
+                {/* COLUNA: TO (VALLEY SAÍDA) */}
+                <div className={styles.modalColuna}>
+                  <h3>To</h3>
+                  {[
+                    { l: 1, d: "N" }, { l: 2, d: "NE" }, { l: 3, d: "SE" },
+                    { l: 4, d: "S" }, { l: 5, d: "SW" }, { l: 6, d: "NW" }
+                  ].map(({ l, d }) => {
+                    const paraOndeVai = tileSendoEditado.valleys ? parseInt(tileSendoEditado.valleys.split("-")[1]) : 4;
+                    return (
+                      <label key={`to-${l}`} className={styles.modalLabelRadio}>
+                        <input 
+                          type="radio" 
+                          name="valleyTo"
+                          disabled={tileSendoEditado.terreno !== 6} // Só ativa se for terreno do tipo rio/valley
+                          checked={tileSendoEditado.terreno === 6 && paraOndeVai === l}
+                          onChange={() => {
+                            const deOndeVem = tileSendoEditado.valleys ? parseInt(tileSendoEditado.valleys.split("-")[0]) : 1;
+                            const novaRota = normalizarRotaRio(deOndeVem, l);
+                            setTileSendoEditado(prev => ({ ...prev, valleys: novaRota }));
+                          }}
+                        />
+                        {l} ({d})
+                      </label>
+                    );
+                  })}
+                </div>
+
+              </div>
+
+              <div className={styles.modalAcoes}>
+                <button type="submit" className={styles.btnConfirmar}>Confirm</button>
+                <button type="button" className={styles.btnCancelar} onClick={() => setTileSendoEditado(null)}>Cancel</button>
+              </div>
+            </form>
+          </div>
+        </div>
+      )}
     </div>
   );
 }

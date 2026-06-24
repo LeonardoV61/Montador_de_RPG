@@ -1,16 +1,12 @@
 import { useState, useEffect, createContext, useCallback, useMemo } from 'react';
-import { Canvas } from '@react-three/fiber';
-import { Physics } from '@react-three/cannon';
-import * as THREE from 'three';
 
 import styles from './styles.Jogo.module.css';
 import NavBarJogo from '../../Components/NavBar/navBarG.jsx';
 import LateralPersonagem from '../../Components/Jogo/LateralPersonagem/LateralPersonagem.jsx';
 import Mapa from '../../Components/Jogo/Mapa/Mapa.jsx';
 import LateralHistorico from '../../Components/Jogo/LateralHistorico/LateralHistorico.jsx';
-
-import { ChaoMesa, DadoFisicoPoliedro, MoedaFisica } from '../../Components/Jogo/AbaDados/MesaFisica.jsx';
 import AbaDados from '../../Components/Jogo/AbaDados/AbaDados.jsx';
+import api from '../../utils/api';
 
 export const ContextoRegistros = createContext(null);
 export const ContextoAbasPersonagem = createContext(null); 
@@ -36,18 +32,15 @@ export default function Jogo() {
       setAbasAbertas(prev => ({ ...prev, [id]: aberto }));
    }, []);
 
-   // Structural Fix: Keep track of state transitions per die
    const [dadosAtivosNaMesa, setDadosAtivosNaMesa] = useState([]);
    const [resultadosMesa, setResultadosMesa] = useState({}); 
    const [tipoRolamento, setTipoRolamento] = useState("Selecione seus dados");
 
-   // Check if any dice are currently awaiting placement/throwing
    const possuiDadosInterativos = useMemo(() => {
       return dadosAtivosNaMesa.some(dado => !dado.lancado);
    }, [dadosAtivosNaMesa]);
 
-   // Structural Fix: Aggregate results instead of overwriting them
-   const handleResultadoFisico = useCallback((id, valor, faces) => {
+   const handleResultadoFisico = useCallback(async (id, valor, faces) => {
       const label = faces === 2 ? "Moeda" : `d${faces}`;
       
       setResultadosMesa(prev => ({
@@ -72,6 +65,16 @@ export default function Jogo() {
             valorAtributo: false
          }
       ]);
+
+      try {
+         await api.post('/jogadas/rolar', { dado: label, resultado: valor });
+      } catch (err) {
+         console.error("Erro ao salvar jogada:", err);
+      }
+
+      setTimeout(() => {
+         setDadosAtivosNaMesa(prev => prev.filter(d => d.id !== id));
+      }, 5000);
    }, []);
 
    const limparMesa = useCallback(() => {
@@ -86,8 +89,9 @@ export default function Jogo() {
    const valorContextoMesa = useMemo(() => ({
       dadosAtivosNaMesa, setDadosAtivosNaMesa,
       resultadosMesa, tipoRolamento, setTipoRolamento,
-      limparMesa
-   }), [dadosAtivosNaMesa, resultadosMesa, tipoRolamento, limparMesa]);
+      limparMesa, possuiDadosInterativos,
+      onDadoParou: handleResultadoFisico,
+   }), [dadosAtivosNaMesa, resultadosMesa, tipoRolamento, limparMesa, possuiDadosInterativos, handleResultadoFisico]);
 
    return (
       <>
@@ -98,31 +102,9 @@ export default function Jogo() {
                   <div className={styles.jogo}>
                      <LateralPersonagem />
                      
-                     <div style={{ flex: 1, position: 'relative', height: '100%' }}>
+                     {/* FIX: Ajustado overflow e posicionamento para não quebrar o layout da Navbar */}
+                     <div style={{ flex: 1, position: 'relative', height: '100%', overflow: 'hidden' }}>
                         <Mapa />
-                        
-                        {/* Fix 3: Dynamic Pointer Events Layer */}
-                        <div style={{ position: 'absolute', top: 0, left: 0, width: '100%', height: '100%', pointerEvents: 'none', zIndex: 5 }}>
-                           <div style={{ pointerEvents: possuiDadosInterativos ? 'auto' : 'none', width: '100%', height: '100%' }}>
-                              <Canvas
-                                 shadows
-                                 gl={{ shadowMapType: THREE.PCFShadowMap, antialias: true }}
-                                 camera={{ position: [0, 6.5, 4.5], fov: 45 }}
-                                 style={{ pointerEvents: possuiDadosInterativos ? 'auto' : 'none' }}
-                              >
-                                 <ambientLight intensity={0.5} />
-                                 <directionalLight position={[4, 8, 4]} intensity={1.3} castShadow />
-                                 <Physics gravity={[0, -9.81, 0]} tolerance={0.002}>
-                                    <ChaoMesa />
-                                    {dadosAtivosNaMesa.map((dado) => dado.lados === 2 ? (
-                                       <MoedaFisica key={dado.id} id={dado.id} position={dado.posicao} onStopped={handleResultadoFisico} />
-                                    ) : (
-                                       <DadoFisicoPoliedro key={dado.id} id={dado.id} lados={dado.lados} position={dado.posicao} onStopped={handleResultadoFisico} />
-                                    ))}
-                                 </Physics>
-                              </Canvas>
-                           </div>
-                        </div>
                      </div>
 
                      <LateralHistorico roleAtiva={roleNaSessao} />

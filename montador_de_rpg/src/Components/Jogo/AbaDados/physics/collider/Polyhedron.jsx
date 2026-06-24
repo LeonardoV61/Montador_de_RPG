@@ -8,8 +8,12 @@ import * as THREE from 'three';
 function extrairDadosPolyhedron(geometry) {
    if (!geometry) return { vertices: [], faces: [] };
 
-   // Clona ou converte para não-indexado de forma limpa
-   const geo = geometry.index ? geometry.toNonIndexed() : geometry.clone();
+   // FIX DE CONCURRÊNCIA FÍSICA: Se a geometria carregar uma malha física limpa indexada 
+   // no seu userData (criada por nós no D10 e D12), usamos essa malha direta e imutável para o Cannon.
+   const targetGeo = geometry.userData?.geometriaFisicaLimpa || geometry;
+
+   // Clona ou converte para não-indexado de forma limpa a partir do alvo correto
+   const geo = targetGeo.index ? targetGeo.toNonIndexed() : targetGeo.clone();
    const posAttr = geo.attributes.position;
 
    const PREC = 4;
@@ -38,21 +42,20 @@ function extrairDadosPolyhedron(geometry) {
    const _normal = new THREE.Vector3();
    const _toFace = new THREE.Vector3();
 
-   // Processamento das faces triangulares
+   const getOrAdd = (v) => {
+      const key = `${snap(v.x)}_${snap(v.y)}_${snap(v.z)}`;
+      if (vertexMap[key] === undefined) {
+         vertexMap[key] = vCounter;
+         vertices.push([snap(v.x), snap(v.y), snap(v.z)]);
+         vCounter++;
+      }
+      return vertexMap[key];
+   };
+
    for (let i = 0; i < posAttr.count; i += 3) {
       _vA.fromBufferAttribute(posAttr, i);
       _vB.fromBufferAttribute(posAttr, i + 1);
       _vC.fromBufferAttribute(posAttr, i + 2);
-
-      const getOrAdd = (v) => {
-         const key = `${snap(v.x)}_${snap(v.y)}_${snap(v.z)}`;
-         if (vertexMap[key] === undefined) {
-            vertexMap[key] = vCounter;
-            vertices.push([snap(v.x), snap(v.y), snap(v.z)]);
-            vCounter++;
-         }
-         return vertexMap[key];
-      };
 
       const ia = getOrAdd(_vA);
       const ib = getOrAdd(_vB);
@@ -83,12 +86,11 @@ function extrairDadosPolyhedron(geometry) {
 /**
  * Custom Hook React (usePolyhedronData)
  * Ideal para reter dados pesados de colisores complexos no @react-three/cannon.
- * * @param {THREE.BufferGeometry} geometry - Instância da geometria do dado
- * @returns {Object} { vertices, faces } formatados para o colisor físico do Cannon
+ * @param {THREE.BufferGeometry} geometry - Instância da geometria do dado
+ * @returns {Object} { vertices, faces } formatados para o useConvexPolyhedron
  */
 export function usePolyhedronData(geometry) {
    return useMemo(() => extrairDadosPolyhedron(geometry), [geometry]);
 }
 
-// Export default focado na integração idiomática com componentes modernos
 export default usePolyhedronData;
