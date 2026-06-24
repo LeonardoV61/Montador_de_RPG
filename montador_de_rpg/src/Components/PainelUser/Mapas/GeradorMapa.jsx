@@ -456,27 +456,7 @@ export default function GeradorMapa() {
       </div>
 
       <div className={styles.painelConfig}>
-<<<<<<< HEAD
-        {/* <h2 className={styles.tituloSecao}>MYTHS & RUMORS</h2> */}
         <h2 className={styles.tituloSecao}>MITOS & RUMORES</h2>
-        <div className={styles.containerListaMitos}>
-          {listaMitos.map((mito) => (
-            <div key={mito.id} className={styles.linhaMitoEditavel}>
-              <span className={styles.numeroMito}>#{mito.id}</span>
-              <input 
-                type="text" 
-                className={styles.inputNomeMito} 
-                value={mito.nome}
-                onChange={(e) => {
-                  setListaMitos(prev => prev.map(m => m.id === mito.id ? {...m, nome: e.target.value} : m));
-                }}
-              />
-              <span className={styles.coordenadaAlvo}>{mito.r + 1}, {mito.c + 1}</span>
-            </div>
-          ))}
-        </div>
-=======
-        <h2 className={styles.tituloSecao}>MYTHS & RUMORS</h2>
           <div className={styles.containerListaMitos}>
             {listaMitos.map((mito) => (
               <div 
@@ -499,7 +479,6 @@ export default function GeradorMapa() {
               </div>
             ))}
           </div>
->>>>>>> 68fd4449985c4fbfebebeee3089c7682133262ff
 
         <div className={styles.headerConfig}>
           <h3 className={styles.subTitulo}>CONFIGURAÇÃO</h3>
