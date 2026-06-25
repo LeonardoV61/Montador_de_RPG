@@ -143,7 +143,7 @@ export default function Jogo() {
   const valorContextoMesa = useMemo(() => ({
     dadosAtivosNaMesa, setDadosAtivosNaMesa,
     resultadosMesa, tipoRolamento, setTipoRolamento, limparMesa, possuiDadosInterativos,
-      onDadoParou: handleResultadoFisico,,
+      onDadoParou: handleResultadoFisico,
   }), [dadosAtivosNaMesa, resultadosMesa, tipoRolamento, limparMesa, possuiDadosInterativos, handleResultadoFisico]);
 
    return (

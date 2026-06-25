@@ -147,12 +147,12 @@ export default function BarraL({
               Inventário
             </a>
 
-            <p className={styles.menuTitle}>CRIAÇÃO</p>
+            {/* <p className={styles.menuTitle}>CRIAÇÃO</p> */}
 
-            <a href="#" onClick={(e) => { e.preventDefault(); setMenuAtivo('criarPersonagem') }}>
+            {/* <a href="#" onClick={(e) => { e.preventDefault(); setMenuAtivo('criarPersonagem') }}>
               <Swords size={18} />
               Criar Personagem
-            </a>
+            </a> */}
           </div>
         )}
       </div>

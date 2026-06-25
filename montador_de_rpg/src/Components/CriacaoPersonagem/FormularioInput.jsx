@@ -3,7 +3,12 @@ import styles from './FormularioInput.module.css';
 
 // ─── helper para extrair faces de "d12", "d6" etc. ───
 function parseDado(str) {
-  const match = str.match(/^d(\d+)$/);
+  // 1. .trim() remove espaços extras
+  // 2. O regex /d(\d+)/i busca por 'd' seguido de números
+  // 3. A flag 'i' torna a busca case-insensitive (aceita D ou d)
+  const match = str.toString().trim().match(/d(\d+)/i);
+  
+  // match[1] pegará o valor numérico após o 'd'
   return match ? parseInt(match[1], 10) : 0;
 }
 
@@ -25,7 +30,7 @@ function RolagemDados({ config, onConfirmar }) {
     setRolou(true);
   }
 
-  const total = (resultados || []).reduce((s, r) => s + r.valor, 0) + modificador;
+  const total = (resultados || []).reduce((s, r) => s + (r?.valor ?? 0), 0) + modificador;
 
   return (
     <div className={styles.rolagemContainer}>
@@ -34,7 +39,7 @@ function RolagemDados({ config, onConfirmar }) {
           <div key={i} className={styles.dadoVisual}>
             <span className={styles.dadoTipo}>{d}</span>
             <span className={styles.dadoValor}>
-              {resultados ? resultados[i].valor : '?'}
+              {resultados && resultados[i] ? resultados[i].valor : '?'}
             </span>
           </div>
         ))}
@@ -54,7 +59,6 @@ function RolagemDados({ config, onConfirmar }) {
         <button
           className={styles.botaoRolar}
           onClick={rolar}
-          disabled={false}
         >
           {rolou ? 'Rolar novamente' : 'Rolar dados'}
         </button>
@@ -79,7 +83,7 @@ export default function FormularioInput({ etapa, onResponder, carregando }) {
   const opcoesEstatico = params.opcoes_estatico || null;
   const titulo = params.campoPedido || etapa?.nome || 'Responda';
   const podePular = params.pode_passar === true;
-  const rolagemConfig = params.rolagem;          // ← injetado pelo SOLICITAR_ROLAGEM
+  const rolagemConfig = params.rolagem;
 
   const campoLower = (titulo || '').toLowerCase();
   const isNumero = ['vig', 'cla', 'spi', 'gd', 'guard', 'vigor', 'clarity', 'spirit', 'número', 'numero', 'valor']
@@ -145,7 +149,7 @@ export default function FormularioInput({ etapa, onResponder, carregando }) {
     );
   }
 
-  // 2. Rolagem de dados (novo!)
+  // 2. Rolagem de dados
   if (rolagemConfig) {
     return (
       <div className={styles.container}>
@@ -166,7 +170,7 @@ export default function FormularioInput({ etapa, onResponder, carregando }) {
     );
   }
 
-  // 3. Input numérico ou textual (fallback)
+  // 3. Input numérico ou textual
   return (
     <div className={styles.container}>
       <p className={styles.pergunta}>{titulo}</p>

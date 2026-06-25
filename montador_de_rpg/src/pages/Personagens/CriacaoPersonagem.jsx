@@ -1,44 +1,33 @@
 import { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { usuarioService } from '../../services/usuarioService.js';
+import { personagemService } from '../../services/personagemService.js';
 import SelecaoSistema from '../../Components/CriacaoPersonagem/SelecaoSistema.jsx';
 import ExecucaoProcedimento from '../../Components/CriacaoPersonagem/ExecucaoProcedimento.jsx';
 import styles from './CriacaoPersonagem.module.css';
+
+const TIPO_ENTIDADE_JOGADOR = 'jogador';
 
 export default function CriacaoPersonagem() {
   const navigate = useNavigate();
 
   const [usuarioId, setUsuarioId] = useState(null);
-  const [campanhaAtivaId, setCampanhaAtivaId] = useState(null);
   const [carregandoUsuario, setCarregandoUsuario] = useState(true);
-  const [fase, setFase] = useState('selecao');
-  const [selecao, setSelecao] = useState(null);
+  const [fase, setFase] = useState('selecao'); // selecao | buscandoEntidade | procedimento | concluido
+  const [selecao, setSelecao] = useState(null);       // { sistema, nomePersonagem }
+  const [entidadeJogador, setEntidadeJogador] = useState(null);
   const [personagemFinal, setPersonagemFinal] = useState(null);
   const [erroGlobal, setErroGlobal] = useState(null);
 
-
-  console.log('FASE:', fase, '| usuarioId:', usuarioId, '| selecao:', selecao);
-
+  // ── carrega usuário ──────────────────────────────────────────────
   useEffect(() => {
     (async () => {
       try {
         const res = await usuarioService.perfil();
-        
-        // 👇 Loga a resposta bruta para ver a estrutura real
-        console.log('RESPOSTA PERFIL BRUTA:', JSON.stringify(res, null, 2));
-        
-        // Tenta todas as variações possíveis da estrutura
         const perfil = res?.data?.data || res?.data || res;
         const id = perfil?.id ?? perfil?.usuarioId ?? null;
-        
-        console.log('PERFIL EXTRAÍDO:', perfil);
-        console.log('ID EXTRAÍDO:', id);
-        
         setUsuarioId(id);
-
-        if (!id) {
-          setErroGlobal('Não foi possível identificar o usuário. Faça login novamente.');
-        }
+        if (!id) setErroGlobal('Não foi possível identificar o usuário. Faça login novamente.');
       } catch {
         setErroGlobal('Sessão inválida. Faça login novamente.');
       } finally {
@@ -47,14 +36,39 @@ export default function CriacaoPersonagem() {
     })();
   }, []);
 
-  function handleSelecaoConfirmada(dados) {
+  // ── ao confirmar sistema + nome, busca entidade jogador ─────────
+  async function handleSelecaoConfirmada({ sistema, nomePersonagem }) {
     if (!usuarioId) {
       setErroGlobal('Usuário não identificado. Recarregue a página.');
       return;
     }
-    setSelecao(dados);
-    setFase('procedimento');
+
     setErroGlobal(null);
+    setFase('buscandoEntidade');
+
+    try {
+      // 1. Tenta montar a entidade a partir do schemaEntidades local (sem request extra)
+      let entidade = buscarEntidadeJogadorNoSchema(sistema);
+
+      // 2. Se o schema local não tem ID (não é uma entidade real da API), busca via API
+      if (!entidade || entidade._fromSchema) {
+        const entidades = await personagemService.listarEntidadesPorSistema(sistema.id);
+        const entidadeApi = entidades.find(e => e.tipo === TIPO_ENTIDADE_JOGADOR) ?? null;
+        // Entidade da API tem precedência (tem ID real)
+        if (entidadeApi) entidade = entidadeApi;
+      }
+
+      if (!entidade) {
+        throw new Error(`Nenhuma entidade do tipo "${TIPO_ENTIDADE_JOGADOR}" encontrada no sistema.`);
+      }
+
+      setSelecao({ sistema, nomePersonagem });
+      setEntidadeJogador(entidade);
+      setFase('procedimento');
+    } catch (e) {
+      setErroGlobal(e.message);
+      setFase('selecao');
+    }
   }
 
   function handleConcluido(personagem) {
@@ -68,9 +82,12 @@ export default function CriacaoPersonagem() {
 
   function voltarParaSelecao() {
     setFase('selecao');
+    setSelecao(null);
+    setEntidadeJogador(null);
     setErroGlobal(null);
   }
 
+  // ── loading inicial ──────────────────────────────────────────────
   if (carregandoUsuario) {
     return (
       <div className={styles.centradoFull}>
@@ -81,7 +98,7 @@ export default function CriacaoPersonagem() {
 
   return (
     <div className={styles.pagina}>
-      {fase === 'procedimento' && (
+      {(fase === 'procedimento' || fase === 'buscandoEntidade') && (
         <button className={styles.botaoVoltar} onClick={voltarParaSelecao}>
           ← Voltar
         </button>
@@ -98,13 +115,20 @@ export default function CriacaoPersonagem() {
         <SelecaoSistema onConfirmar={handleSelecaoConfirmada} />
       )}
 
-      {fase === 'procedimento' && selecao && usuarioId && (
+      {fase === 'buscandoEntidade' && (
+        <div className={styles.centradoFull}>
+          <div className={styles.spinner} />
+          <p>Preparando ficha...</p>
+        </div>
+      )}
+
+      {fase === 'procedimento' && selecao && entidadeJogador && usuarioId && (
         <ExecucaoProcedimento
           sistema={selecao.sistema}
-          entidade={selecao.entidade}
+          entidade={entidadeJogador}
           nomePersonagem={selecao.nomePersonagem}
           usuarioId={usuarioId}
-          campanhaAtivaId={campanhaAtivaId}  // ← adicionado (por enquanto null)
+          campanhaAtivaId={null}
           onConcluido={handleConcluido}
           onErro={handleErro}
         />
@@ -129,4 +153,29 @@ export default function CriacaoPersonagem() {
       )}
     </div>
   );
+}
+
+// ── helper: tenta extrair entidade jogador do schemaEntidades local ──
+// Evita um round-trip à API quando o sistema já foi carregado com schemaEntidades.
+// Retorna null se o schema não existir ou não tiver entrada de jogador.
+// A flag _fromSchema sinaliza que o id pode estar ausente; ExecucaoProcedimento
+// deve sempre preferir a entidade retornada pela API (que tem ID real).
+function buscarEntidadeJogadorNoSchema(sistema) {
+  const schema = sistema?.schemaEntidades;
+  if (!schema || typeof schema !== 'object') return null;
+
+  const entry = Object.entries(schema).find(
+    ([chave, def]) => chave === TIPO_ENTIDADE_JOGADOR || def?.tipo === TIPO_ENTIDADE_JOGADOR
+  );
+  if (!entry) return null;
+
+  const [chave, def] = entry;
+  return {
+    id: null,
+    tipo: TIPO_ENTIDADE_JOGADOR,
+    nome: def?.label ?? chave,
+    atributos: def?.atributos ?? [],
+    obrigatorios: def?.obrigatorios ?? [],
+    _fromSchema: true,
+  };
 }

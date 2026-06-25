@@ -1,8 +1,8 @@
 import { useState, useEffect, useRef, useContext, createContext } from 'react';
+import { useParams } from 'react-router-dom'; // 1. Adicionado para pegar o ID da campanha da URL
 import { Canvas } from '@react-three/fiber';
 import { Physics } from '@react-three/cannon';
 import styles from './styles.Mapa.module.css';
-import { ContextoAbasPersonagem } from '../../../pages/Jogo/Jogo.jsx';
 import MapaFerramentas from '../MapaFerramentas/MapaFerramentas.jsx';
 import AvatarPersonagem from '../AvatarPersonagem/AvatarPersonagem.jsx';
 import MenuContexto from '../MenuContexto/MenuContexto';
@@ -10,6 +10,10 @@ import { ContextoAbasPersonagem, ContextoMesaFisica } from '../../../pages/Jogo/
 import { ChaoMesa, ParedesMesa } from '../AbaDados/MesaFisica.jsx';
 import { DadoFisico } from '../AbaDados/physics/objects/DadoFisico.jsx';
 import { MoedaFisica } from '../AbaDados/physics/objects/MoedaFisica.jsx';
+
+// 2. Importação do seu novo serviço (Ajuste o caminho se necessário)
+import { entidadeInstanciaService } from '../../../services/entidadeInstanciaService';
+
 export const ContextoAvatar = createContext(null);
 
 // Constantes do Gerador de Mapa
@@ -60,12 +64,16 @@ function obterVizinhosHex(r, c, w, h) {
 }
 
 export default function Mapa() {
+   const { campanhaId } = useParams(); // Captura o ID da campanha vindo da rota / URL
    const { abasAbertas } = useContext(ContextoAbasPersonagem);
    const dadosAberta = !!abasAbertas?.Dados;
    const anotacoesAberta = !!abasAbertas?.Anotacoes;
 
    const [contextoAberto, setContextoAberto] = useState(false);
    const [avatarSelecionado, setAvatarSelecionado] = useState("Aldric");
+
+   // 3. Estado criado para armazenar os avatares/tokens vindos do Back-end
+   const [avatares, setAvatares] = useState([]);
 
    // Estados do Gerador de Mapa incorporados
    const [gridHex, setGridHex] = useState([]);
@@ -196,7 +204,24 @@ export default function Mapa() {
       setListaMitos(mitos);
    };
 
-   useEffect(() => { handleGerarNovoMapa(); }, []);
+   // 4. useEffect para carregar as instâncias de entidades do banco de dados
+   useEffect(() => {
+      handleGerarNovoMapa();
+
+      async function carregarEntidades() {
+         if (!campanhaId) return;
+         try {
+            const resposta = await entidadeInstanciaService.listarPorCampanha(campanhaId);
+            // Garante a extração correta dos dados dependendo da estrutura do Axios (resp.data)
+            const lista = resposta?.data?.data || resposta?.data || resposta || [];
+            setAvatares(Array.isArray(lista) ? lista : []);
+         } catch (erro) {
+            console.error("Erro ao carregar avatares da campanha:", erro);
+         }
+      }
+      
+      carregarEntidades();
+   }, [campanhaId]);
 
    const handleMouseDown = (e) => {
       if (e.button !== 0) return; 
@@ -273,7 +298,6 @@ export default function Mapa() {
               const srcLandmark = tile.landmark ? `/src/assets/svgMap/modifiers/${tile.landmark.svg}` : null;
               const srcBlankMark = tile.landmark ? `/src/assets/svgMap/modifiers/blank marks/${tile.landmark.svg}` : null;
 
-              // Identifica se este bloco específico contém barreiras vermelhas nativas
               const temAlgumaBarreira = Object.values(tile.barriers).some(b => b === true);
 
               return (
@@ -295,7 +319,6 @@ export default function Mapa() {
                   </div>
 
                   <svg viewBox="0 0 100 86.6" className={styles.camadaBarreira}>
-                    {/* Exibe dinamicamente as barreiras vermelhas sorteadas */}
                     {tile.barriers[1] && <line x1="25" y1="0"    x2="75" y2="0"    stroke="#ba1a1a" strokeWidth="6" strokeLinecap="round" />}
                     {tile.barriers[2] && <line x1="75" y1="0"    x2="100" y2="43.3" stroke="#ba1a1a" strokeWidth="6" strokeLinecap="round" />}
                     {tile.barriers[3] && <line x1="100" y1="43.3" x2="75" y2="86.6" stroke="#ba1a1a" strokeWidth="6" strokeLinecap="round" />}
@@ -324,7 +347,7 @@ export default function Mapa() {
                            <MoedaFisica key={dado.id} id={dado.id} position={dado.posicao} onStopped={onDadoParou} />
                         ) : (
                            <DadoFisico key={dado.id} id={dado.id} lados={dado.lados} position={dado.posicao} onStopped={onDadoParou} />
-                       )
+                        )
                      ))}
                   </Physics>
                </Canvas>
@@ -333,15 +356,16 @@ export default function Mapa() {
 
       <MapaFerramentas />
 
-      <ContextoAvatar.Provider value={{ avatarSelecionado: null, setAvatarSelecionado: () => {} }}>
+      {/* 5. CORREÇÃO CRÍTICA: Passando os estados reais ao Provider ao invés de 'null' */}
+      <ContextoAvatar.Provider value={{ avatarSelecionado, setAvatarSelecionado }}>
         {avatares.map(av => (
           <AvatarPersonagem
-            key={av.idInstancia}
-            nome={av.nome}
-            icone={av.icone}
-            porcentagemHP={av.porcentagemHP}
-            tipo={av.tipo}
-            posicao={av.pos}
+            key={av.id || av.idInstancia}
+            nome={av.instanciaNome || av.nome || "Sem Nome"}
+            icone={av.icone || "🔮"} 
+            porcentagemHP={av.porcentagemHP !== undefined ? av.porcentagemHP : 100}
+            tipo={av.tipo || "jogador"}
+            posicao={av.pos || av.posicao || { x: 0, y: 0 }}
           />
         ))}
       </ContextoAvatar.Provider>
