@@ -203,7 +203,7 @@ export default function UserMenu() {
         setPersonagemSelecionadoId={setPersonagemSelecionadoId}
       />
     );
-      case 'criarPersonagem': return <CriacaoPersonagem />;
+      case 'criarPersonagem': return <CriacaoPersonagem setMenuAtivo={setMenuAtivo}/>;
       case 'perfil':          return (
         <Perfil
           nome={nome} setNome={setNome}

@@ -8,8 +8,7 @@ import styles from './CriacaoPersonagem.module.css';
 
 const TIPO_ENTIDADE_JOGADOR = 'jogador';
 
-export default function CriacaoPersonagem() {
-  const navigate = useNavigate();
+export default function CriacaoPersonagem({ setMenuAtivo }) {
 
   const [usuarioId, setUsuarioId] = useState(null);
   const [carregandoUsuario, setCarregandoUsuario] = useState(true);
@@ -87,6 +86,11 @@ export default function CriacaoPersonagem() {
     setErroGlobal(null);
   }
 
+  const voltarParaPersonagens = (e) => {
+    e.preventdefault();
+    setMenuAtivo('personagens')
+  }
+
   // ── loading inicial ──────────────────────────────────────────────
   if (carregandoUsuario) {
     return (
@@ -142,7 +146,7 @@ export default function CriacaoPersonagem() {
           </h1>
           <p className={styles.subtitulo}>O cavaleiro está forjado</p>
           <div className={styles.acoes}>
-            <button className={styles.botaoPrimario} onClick={() => navigate('/menu')}>
+            <button className={styles.botaoPrimario} onClick={voltarParaPersonagens}>
               Ir para o Menu
             </button>
             <button className={styles.botaoSecundario} onClick={voltarParaSelecao}>

@@ -30,14 +30,41 @@ export default function ExecucaoProcedimento({
   }, [fase]);
 
   useEffect(() => {
+    const orphan = sessionStorage.getItem('tmpCampanhaId');
+    if (orphan) {
+      campanhaService.deletar(orphan).catch(console.error);
+      sessionStorage.removeItem('tmpCampanhaId');
+    }
+  }, []);
+
+  useEffect(() => {
     return () => {
       mountedRef.current = false;
-      if (faseRef.current === 'concluido' || faseRef.current === 'erro') {
-        if (tempIdsRef.current.campanha) {
-          campanhaService.deletar(tempIdsRef.current.campanha).catch(console.error);
+    
+      if (faseRef.current !== 'concluido') {
+        const id = tempIdsRef.current.campanha;
+        if (id) {
+          campanhaService.deletar(id).catch(console.error);
+          sessionStorage.removeItem('tmpCampanhaId');
         }
       }
     };
+  }, []);
+
+  useEffect(() => {
+    function handleUnload() {
+      const id = tempIdsRef.current.campanha;
+      if (!id) return;
+      
+      fetch(`/api/campanhas/${id}`, {
+        method: 'DELETE',
+        keepalive: true,
+      });
+      sessionStorage.removeItem('tmpCampanhaId');
+    }
+
+    window.addEventListener('beforeunload', handleUnload);
+    return () => window.removeEventListener('beforeunload', handleUnload);
   }, []);
 
   useEffect(() => {
@@ -54,6 +81,8 @@ export default function ExecucaoProcedimento({
       setFase('iniciando');
 
       let idCampanha, idSessao;
+
+      sessionStorage.setItem('tmpCampanhaId', idCampanha);
       if (campanhaAtivaId) {
         idCampanha = campanhaAtivaId;
         const r = await sessaoService.iniciar(idCampanha);
@@ -103,6 +132,7 @@ export default function ExecucaoProcedimento({
 
   async function limparTemporarios({ campanha }) {
     tempIdsRef.current = { campanha: null, sessao: null };
+    sessionStorage.removeItem('tmpCampanhaId');
     if (campanha) {
       try { await campanhaService.deletar(campanha); } catch (e) {  console.error('Erro:', e);}
     }
