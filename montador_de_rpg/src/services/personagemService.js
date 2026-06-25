@@ -16,4 +16,12 @@ export const personagemService = {
   // Busca personagens do usuário
   listarPorUsuario: (usuarioId) =>
     api.get(`/api/personagens/usuario/${usuarioId}`),
+
+  // Busca a ficha detalhada de um personagem específico por ID
+  buscarPorId: (id) => 
+    api.get(`/api/personagens/${id}`),
+
+  // [ADICIONADO] Busca o personagem ativo do próprio jogador logado na campanha
+  buscarMeuPersonagem: (campanhaId) =>
+    api.get(`/api/personagens/meu-personagem/${campanhaId}`),
 };
