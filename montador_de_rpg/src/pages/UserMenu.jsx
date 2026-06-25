@@ -218,6 +218,7 @@ export default function UserMenu() {
           <FichaPersonagem 
             idPersonagem={personagemSelecionadoId} 
             onVoltar={() => setMenuAtivo('personagens')} 
+            nome={nome}
           />
         );
       case 'regras':      return <Regras />;
