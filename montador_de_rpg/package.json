@@ -15,7 +15,7 @@
     "@react-three/fiber": "^9.6.1",
     "@stomp/stompjs": "^7.3.0",
     "axios": "^1.16.0",
-    "lucide-react": "^1.16.0",
+    "lucide-react": "^1.21.0",
     "react": "^19.2.5",
     "react-dom": "^19.2.5",
     "react-hook-form": "^7.75.0",

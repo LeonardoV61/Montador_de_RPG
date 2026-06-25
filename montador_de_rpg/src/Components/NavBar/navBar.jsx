@@ -42,8 +42,8 @@ export default function NavBar({fluxoRef, sisRef}) {
           <button className={`${styles.btnDouradoCheio} ${styles.link}`} onClick={() => navigate('/menu')}>Perfil</button>
         ):(
           <div className={styles.links}>
-              <li><Link to="/login" onClick={() => Location.reload()}>Entrar</Link></li>
-              <button className={`${styles.btnDouradoCheio} ${styles.link}`} onClick={() => navigate('/login')}>Jogar Agora</button>
+              <Link to="/login"><li>Entrar</li></Link>
+              <Link to="/login"><button className={`${styles.btnDouradoCheio} ${styles.link}`}>Jogar Agora</button></Link>
           </div>
         )}
     </nav>

@@ -93,6 +93,13 @@
     background: var(--fundo3);
 }
 
+.cabecalho {
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+    gap: 2rem;
+}
+
 .icone {
     width: 40px; height: 40px;
     background: rgba(201,162,39,0.1);

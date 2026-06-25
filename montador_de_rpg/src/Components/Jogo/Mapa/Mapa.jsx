@@ -210,8 +210,21 @@ export default function Mapa() {
    };
    const handleMouseUpOrLeave = () => setIsDragging(false);
    const handleWheel = (e) => {
-      const delta = e.deltaY < 0 ? 0.1 : -0.1;
-      setZoom((prev) => Math.max(0.4, Math.min(2.5, prev + delta)));
+      let delta = 0, dX = 0, dY = 0;
+      if (e.deltaY < 0 && zoom < 2.5) {
+         delta = 0.1;
+      } else if (e.deltaY > 0 && zoom > 0.4) {
+         delta = -0.1;
+      } else { 
+         delta = 0;
+      }
+      delta == 0 || setZoom((prev) => Math.max(0.4, Math.min(2.5, prev + delta)));
+      if (zoom < 2.4 && zoom > 0.4) {
+         dX = (e.clientX - posicao.x) * -(delta/zoom);
+         dY = (e.clientY - posicao.y) * -(delta/zoom);
+         console.log(zoom)
+         setPosicao({ x: posicao.x + dX, y: posicao.y + dY });
+      }
    };
 
    const [ctxMenuX, setCtxMenuX] = useState(0);
@@ -332,7 +345,7 @@ export default function Mapa() {
 
       <MapaFerramentas />
 
-      <ContextoAvatar.Provider value={{ avatarSelecionado: null, setAvatarSelecionado: () => {} }}>
+      {/* <ContextoAvatar.Provider value={{ avatarSelecionado: null, setAvatarSelecionado: () => {} }}>
         {avatares.map(av => (
           <AvatarPersonagem
             key={av.idInstancia}
@@ -343,7 +356,7 @@ export default function Mapa() {
             posicao={av.pos}
           />
         ))}
-      </ContextoAvatar.Provider>
+      </ContextoAvatar.Provider> */}
 
          <div className={`${styles.iniciativa} ${anotacoesAberta ? styles.iniciativaDeslocada : ""}`}>
             <div className={styles.iniciativaTitulo}>Iniciativa</div>
