@@ -5,8 +5,7 @@ import { personagemService } from "../../../services/personagemService";
 import { usuarioService } from "../../../services/usuarioService";
 import styles from "./styles.Personagens.module.css";
 
-export default function Personagens() {
-  const navigate = useNavigate();
+export default function Personagens( { menuAtivo, setMenuAtivo }) {
   const [abaAtiva, setAbaAtiva] = useState("meus");
   const [busca, setBusca] = useState("");
   const [personagens, setPersonagens] = useState([]);
@@ -56,8 +55,9 @@ export default function Personagens() {
     carregar();
   }, []);
 
-  function handleCriarPersonagem() {
-    navigate("/criacao-personagem");
+  function handleCriarPersonagem(e) {
+    e.preventDefault(); 
+    setMenuAtivo('criarPersonagem')
   }
 
   function handleVerFicha(personagem) {

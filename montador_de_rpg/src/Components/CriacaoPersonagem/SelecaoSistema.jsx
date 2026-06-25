@@ -1,20 +1,13 @@
-import { useState, useEffect, useRef } from 'react';
+import { useState, useEffect } from 'react';
 import { sistemaService } from '../../services/sistemaService.js';
-import {personagemService} from '../../services/personagemService.js';
 import styles from './SelecaoSistema.module.css';
 
 export default function SelecaoSistema({ onConfirmar }) {
   const [sistemas, setSistemas] = useState([]);
   const [sistemaSelecionado, setSistemaSelecionado] = useState(null);
-  const [entidades, setEntidades] = useState([]);
-  const [entidadeSelecionada, setEntidadeSelecionada] = useState(null);
   const [nomePersonagem, setNomePersonagem] = useState('');
   const [carregandoSistemas, setCarregandoSistemas] = useState(true);
-  const [carregandoEntidades, setCarregandoEntidades] = useState(false);
   const [erro, setErro] = useState(null);
-
-  // Ref para abortar fetch anterior ao trocar sistema
-  const abortRef = useRef(null);
 
   useEffect(() => {
     sistemaService.listarTodos()
@@ -23,33 +16,13 @@ export default function SelecaoSistema({ onConfirmar }) {
       .finally(() => setCarregandoSistemas(false));
   }, []);
 
-  // Corrigido: estados de loading controlados dentro da promise, não sincronamente no body
-  function handleSelecionarSistema(sistema) {
-    // Cancela fetch anterior se ainda estiver em andamento
-    if (abortRef.current) abortRef.current();
-
-    setSistemaSelecionado(sistema);
-    setEntidadeSelecionada(null);
-    setEntidades([]);
-
-    let cancelado = false;
-    abortRef.current = () => { cancelado = true; };
-
-    setCarregandoEntidades(true);
-
-    personagemService.listarEntidadesPorSistema(sistema.id)
-      .then(data => { if (!cancelado) setEntidades(data); })
-      .catch(() => { if (!cancelado) setErro('Não foi possível carregar as entidades.'); })
-      .finally(() => { if (!cancelado) setCarregandoEntidades(false); });
-  }
-
-  const podeContinuar = sistemaSelecionado && entidadeSelecionada && nomePersonagem.trim().length >= 2;
+  const podeContinuar =
+    sistemaSelecionado !== null && nomePersonagem.trim().length >= 2;
 
   function handleConfirmar() {
     if (!podeContinuar) return;
     onConfirmar({
       sistema: sistemaSelecionado,
-      entidade: entidadeSelecionada,
       nomePersonagem: nomePersonagem.trim(),
     });
   }
@@ -68,7 +41,7 @@ export default function SelecaoSistema({ onConfirmar }) {
       <header className={styles.header}>
         <div className={styles.brasao}>⚔</div>
         <h1 className={styles.titulo}>Forja do Cavaleiro</h1>
-        <p className={styles.subtitulo}>Escolha seu sistema e sua linhagem</p>
+        <p className={styles.subtitulo}>Escolha seu sistema e dê um nome ao cavaleiro</p>
       </header>
 
       {erro && <p className={styles.erro}>{erro}</p>}
@@ -86,7 +59,7 @@ export default function SelecaoSistema({ onConfirmar }) {
               <button
                 key={s.id}
                 className={`${styles.card} ${sistemaSelecionado?.id === s.id ? styles.cardAtivo : ''}`}
-                onClick={() => handleSelecionarSistema(s)}
+                onClick={() => setSistemaSelecionado(s)}
               >
                 {s.urlImagem && (
                   <img src={s.urlImagem} alt={s.nome} className={styles.cardImagem} />
@@ -102,45 +75,11 @@ export default function SelecaoSistema({ onConfirmar }) {
         )}
       </section>
 
-      {/* Entidades */}
+      {/* Nome do personagem — só aparece após escolher sistema */}
       {sistemaSelecionado && (
         <section className={styles.secao}>
           <h2 className={styles.secaoTitulo}>
-            <span className={styles.secaoNum}>II</span> Linhagem
-          </h2>
-          {carregandoEntidades ? (
-            <div className={styles.centrado}>
-              <div className={styles.spinner} />
-            </div>
-          ) : entidades.length === 0 ? (
-            <p className={styles.textoAux}>Nenhuma linhagem disponível neste sistema.</p>
-          ) : (
-            <div className={styles.grade}>
-              {entidades.map((e) => (
-                <button
-                  key={e.id}
-                  className={`${styles.card} ${entidadeSelecionada?.id === e.id ? styles.cardAtivo : ''}`}
-                  onClick={() => setEntidadeSelecionada(e)}
-                >
-                  {e.urlImagem && (
-                    <img src={e.urlImagem} alt={e.nome} className={styles.cardImagem} />
-                  )}
-                  <span className={styles.cardNome}>{e.nome}</span>
-                  {e.descricao && (
-                    <span className={styles.cardDesc}>{e.descricao}</span>
-                  )}
-                </button>
-              ))}
-            </div>
-          )}
-        </section>
-      )}
-
-      {/* Nome do personagem */}
-      {entidadeSelecionada && (
-        <section className={styles.secao}>
-          <h2 className={styles.secaoTitulo}>
-            <span className={styles.secaoNum}>III</span> Seu Nome
+            <span className={styles.secaoNum}>II</span> Seu Nome
           </h2>
           <div className={styles.inputWrapper}>
             <input
@@ -149,6 +88,7 @@ export default function SelecaoSistema({ onConfirmar }) {
               placeholder="Como será chamado, cavaleiro?"
               value={nomePersonagem}
               onChange={(e) => setNomePersonagem(e.target.value)}
+              onKeyDown={(e) => e.key === 'Enter' && handleConfirmar()}
               maxLength={60}
               autoFocus
             />
@@ -157,7 +97,6 @@ export default function SelecaoSistema({ onConfirmar }) {
         </section>
       )}
 
-      {/* Botão */}
       <div className={styles.rodape}>
         <button
           className={styles.botaoCriar}

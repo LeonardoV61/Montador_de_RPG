@@ -1,4 +1,4 @@
-import { useState, useEffect, useRef } from "react";
+import { useState, useEffect} from "react";
 import styles from "../Components/PainelUser/Css/styles.UserMenu.module.css";
 import NavBarU from "../Components/NavBar/navBarU.jsx";
 import Recepcao from "../Components/PainelUser/Recepcao/Recepcao.jsx";
@@ -25,9 +25,10 @@ import Anotacao from "../Components/PainelUser/Anotacao/Anotacao.jsx";
 import Loots from "../Components/PainelUser/Loot/Loots.jsx";
 import Inventario from "../Components/PainelUser/Inventário/inventario.jsx";
 import HeronPadrao from "../assets/perfil/Heron.png";
-import SelecaoSistema from "../Components/CriacaoPersonagem/SelecaoSistema.jsx";
-import SelecaoCampanha from "../Components/CriacaoPersonagem/SelecaoCampanha.jsx";
-import FichaCriacaoPersonagem from "../Components/CriacaoPersonagem/FichaCriacaoPersonagem.jsx";
+
+// Criação de personagem — único ponto de entrada
+import CriacaoPersonagem from "../pages/Personagens/CriacaoPersonagem.jsx";
+
 import ModalNovaCampanha from "../Components/PainelUser/Campanhas/ModalNovaCampanha.jsx";
 import ModalNovaSessao from "../Components/PainelUser/Campanhas/ModalNovaSessao.jsx";
 import ModalNovaCena from "../Components/PainelUser/Campanhas/ModalNovaCena.jsx";
@@ -39,16 +40,14 @@ export default function UserMenu() {
   const [roleAtiva, setRoleAtiva] = useState("mestre");
   const [menuAtivo, setMenuAtivo] = useState("dashboard");
   const [usuarioId, setUsuarioId] = useState(null);
-  const [sistemaCriacao, setSistemaCriacao] = useState(null);
-  const [campanhaId, setCampanhaId] = useState(null);
   const [modalNovaCampanha, setModalNovaCampanha] = useState(false);
   const [modalNovaSessao, setModalNovaSessao] = useState(null);
   const [modalNovaCena, setModalNovaCena] = useState(null);
 
   const [campanhas, setCampanhas] = useState([
-    { id: 1, titulo: "O REINO ARRUINADO", detalhes: "Mythic Bastionland • 4 jogadores", status: "ATIVA" },
-    { id: 2, titulo: "CINZAS DA VELHA CIDADE", detalhes: "Rune 2e • 3 jogadores", status: "PAUSADA" },
-    { id: 3, titulo: "O TEMPLO SUBMERSO", detalhes: "OSE • 2 jogadores", status: "FINALIZADA" },
+    { id: 1, nome: "O REINO ARRUINADO", descricao: "Mythic Bastionland • 4 jogadores", Status: "ATIVA" },
+    { id: 2, nome: "CINZAS DA VELHA CIDADE", descricao: "Rune 2e • 3 jogadores", Status: "PAUSADA" },
+    { id: 3, nome: "O TEMPLO SUBMERSO", descricao: "OSE • 2 jogadores", Status: "FINALIZADA" },
   ]);
 
   const [amigos, setAmigos] = useState([]);
@@ -57,7 +56,6 @@ export default function UserMenu() {
     { id: 2, descricao: "Erik Guilherme criou personagem", momento: "13:10:35" },
     { id: 3, descricao: "Sessão VII finalizada", momento: "11:14:24" },
   ]);
-
   const [tarefas] = useState([
     { id: 1, descricao: "Escrever resumo da sessão anterior", feito: true },
     { id: 2, descricao: "Preparar mapa do templo", feito: true },
@@ -101,7 +99,7 @@ export default function UserMenu() {
     })();
   }, []);
 
-  // Indicadores com fallback mock
+  // Indicadores
   useEffect(() => {
     async function carregarIndicadores() {
       try {
@@ -126,7 +124,7 @@ export default function UserMenu() {
     carregarIndicadores();
   }, []);
 
-  // Amigos com fallback mock
+  // Amigos
   useEffect(() => {
     if (!usuarioId) return;
     async function carregarAmigos() {
@@ -175,14 +173,79 @@ export default function UserMenu() {
     carregarCampanhas();
   }, []);
 
-  const prevMenuAtivo = useRef(menuAtivo);
-  useEffect(() => {
-    if (prevMenuAtivo.current === 'criarPersonagem' && menuAtivo !== 'criarPersonagem') {
-      setSistemaCriacao(null);
-      setCampanhaId(null);
+  // ── renderização de conteúdo por aba ────────────────────────────
+  function renderConteudo() {
+    // ── Mestre ──
+    if (roleAtiva === 'mestre') {
+      switch (menuAtivo) {
+        case 'dashboard': return renderDashboard();
+        case 'wiki':      return <Wiki />;
+        case 'mapas':     return <GeradorMapa />;
+        case 'compendio': return <Compendio />;
+        case 'codexArcano': return <CodexArcano />;
+        case 'bestiario': return <Bestiario />;
+        case 'eventos':   return <GerenciadorNarrativo />;
+        case 'anotacoes': return <Anotacao />;
+        case 'itens':     return <Loots />;
+        default:          return null;
+      }
     }
-    prevMenuAtivo.current = menuAtivo;
-  }, [menuAtivo]);
+
+    // ── Jogador ──
+    switch (menuAtivo) {
+      case 'dashboard':       return renderDashboard();
+      case 'personagens':     return <Personagens menuAtivo={menuAtivo} setMenuAtivo={setMenuAtivo}/>;
+      case 'criarPersonagem': return <CriacaoPersonagem />;
+      case 'perfil':          return (
+        <Perfil
+          nome={nome} setNome={setNome}
+          imagem={imagem} setImagem={setImagem}
+          zoom={zoom} setZoom={setZoom}
+          posX={posX} setPosX={setPosX}
+          posY={posY} setPosY={setPosY}
+        />
+      );
+      case 'regras':      return <Regras />;
+      case 'habilidades': return <Habilidades />;
+      case 'diario':      return <Diario />;
+      case 'eventos':     return <Eventos />;
+      case 'inventario':  return <Inventario />;
+      default:            return null;
+    }
+  }
+
+  function renderDashboard() {
+    return (
+      <>
+        <Recepcao nome={nome} />
+        <IndicadorC dados={indicadores} />
+        <section className={styles.grid}>
+          <PanelDashboard
+            titulo="MINHAS CAMPANHAS"
+            canto="btn"
+            botao={
+              roleAtiva === 'mestre'
+                ? <button onClick={() => setModalNovaCampanha(true)}>+ Nova</button>
+                : undefined
+            }
+          >
+            {campanhas.map((c) => (
+              <CampanhasP key={c.id} campanha={c} roleAtiva={roleAtiva} />
+            ))}
+          </PanelDashboard>
+          <PanelDashboard titulo="JOGADORES ONLINE" canto={amigos.filter((a) => a.online).length}>
+            {amigos.map((a) => <AmigoP key={a.id} amigo={a} />)}
+          </PanelDashboard>
+          <PanelDashboard titulo="PREPARAÇÃO PARA PRÓXIMA SESSÃO">
+            {tarefas.map((t) => <TarefaP key={t.id} tarefa={t} />)}
+          </PanelDashboard>
+          <PanelDashboard titulo="ATIVIDADE RECENTE">
+            {atividades.map((a) => <AtividadeP key={a.id} atividade={a} />)}
+          </PanelDashboard>
+        </section>
+      </>
+    );
+  }
 
   return (
     <div className={styles.app}>
@@ -202,127 +265,30 @@ export default function UserMenu() {
       />
       <main className={styles.main}>
         <NavBarU />
-        {roleAtiva === "mestre" ? (
-          menuAtivo === "dashboard" ? (
-            <>
-              <Recepcao nome={nome} />
-              <IndicadorC dados={indicadores} />
-              <section className={styles.grid}>
-                <PanelDashboard
-                  titulo={"MINHAS CAMPANHAS"}
-                  canto={"btn"}
-                  botao={<button onClick={() => setModalNovaCampanha(true)}>+ Nova</button>}
-                >
-                  {campanhas.map((campanha) => (
-                    <CampanhasP key={campanha.id} campanha={campanha} roleAtiva={roleAtiva} />
-                  ))}
-                </PanelDashboard>
-                <PanelDashboard titulo={"JOGADORES ONLINE"} canto={amigos.filter((a) => a.online).length}>
-                  {amigos.map((amigo) => (
-                    <AmigoP key={amigo.id} amigo={amigo} />
-                  ))}
-                </PanelDashboard>
-                <PanelDashboard titulo={"PREPARAÇÃO PARA PRÓXIMA SESSÃO"}>
-                  {tarefas.map((tarefa) => (
-                    <TarefaP key={tarefa.id} tarefa={tarefa} />
-                  ))}
-                </PanelDashboard>
-                <PanelDashboard titulo={"ATIVIDADE RECENTE"}>
-                  {atividades.map((atividade) => (
-                    <AtividadeP key={atividade.id} atividade={atividade} />
-                  ))}
-                </PanelDashboard>
-              </section>
-            </>
-          ) : menuAtivo === "wiki" ? <Wiki /> :
-            menuAtivo === "mapas" ? <GeradorMapa /> :
-            menuAtivo === "compendio" ? <Compendio /> :
-            menuAtivo === "codexArcano" ? <CodexArcano /> :
-            menuAtivo === "bestiario" ? <Bestiario /> :
-            menuAtivo === "eventos" ? <GerenciadorNarrativo /> :
-            menuAtivo === "anotacoes" ? <Anotacao /> :
-            menuAtivo === "itens" ? <Loots /> : null
-        ) : (
-          menuAtivo === "dashboard" ? (
-            <>
-              <Recepcao nome={nome} />
-              <IndicadorC dados={indicadores} />
-              <section className={styles.grid}>
-                <PanelDashboard titulo={"MINHAS CAMPANHAS"} canto={"btn"}>
-                  {campanhas.map((campanha) => (
-                    <CampanhasP key={campanha.id} campanha={campanha} roleAtiva={roleAtiva} />
-                  ))}
-                </PanelDashboard>
-                <PanelDashboard titulo={"JOGADORES ONLINE"} canto={amigos.filter((a) => a.online).length}>
-                  {amigos.map((amigo) => (
-                    <AmigoP key={amigo.id} amigo={amigo} />
-                  ))}
-                </PanelDashboard>
-                <PanelDashboard titulo={"PREPARAÇÃO PARA PRÓXIMA SESSÃO"}>
-                  {tarefas.map((tarefa) => (
-                    <TarefaP key={tarefa.id} tarefa={tarefa} />
-                  ))}
-                </PanelDashboard>
-                <PanelDashboard titulo={"ATIVIDADE RECENTE"}>
-                  {atividades.map((atividade) => (
-                    <AtividadeP key={atividade.id} atividade={atividade} />
-                  ))}
-                </PanelDashboard>
-              </section>
-            </>
-          ) : menuAtivo === "personagens" ? <Personagens /> :
-            menuAtivo === "perfil" ? (
-              <Perfil
-                nome={nome} setNome={setNome}
-                imagem={imagem} setImagem={setImagem}
-                zoom={zoom} setZoom={setZoom}
-                posX={posX} setPosX={setPosX}
-                posY={posY} setPosY={setPosY}
-              />
-            ) :
-            menuAtivo === "regras" ? <Regras /> :
-            menuAtivo === "habilidades" ? <Habilidades /> :
-            menuAtivo === "diario" ? <Diario /> :
-            menuAtivo === "eventos" ? <Eventos /> :
-            menuAtivo === "inventario" ? <Inventario /> :
-            menuAtivo === 'criarPersonagem' && !sistemaCriacao ? (
-              <SelecaoSistema onConfirmar={(dados) => setSistemaCriacao(dados.sistema)} />
-            ) : menuAtivo === 'criarPersonagem' && !campanhaId ? (
-              <SelecaoCampanha usuarioId={usuarioId} onConfirmar={(idCamp) => setCampanhaId(idCamp)} />
-            ) : menuAtivo === 'criarPersonagem' ? (
-              <FichaCriacaoPersonagem
-                sistema={sistemaCriacao}
-                usuarioId={usuarioId}
-                campanhaId={campanhaId}
-                onConcluido={() => { setMenuAtivo('personagens'); setSistemaCriacao(null); setCampanhaId(null); }}
-                onErro={(msg) => console.error(msg)}
-              />
-            ) : null
-        )}
-
-        {/* Modais */}
-        {modalNovaCampanha && (
-          <ModalNovaCampanha
-            usuarioId={usuarioId}
-            onClose={() => setModalNovaCampanha(false)}
-            onCriada={(nova) => setCampanhas(prev => [...prev, nova])}
-          />
-        )}
-        {modalNovaSessao && (
-          <ModalNovaSessao
-            campanhaId={modalNovaSessao}
-            onClose={() => setModalNovaSessao(null)}
-            onCriada={(sessao) => console.log('Sessão iniciada', sessao)}
-          />
-        )}
-        {modalNovaCena && (
-          <ModalNovaCena
-            sessaoId={modalNovaCena}
-            onClose={() => setModalNovaCena(null)}
-            onCriada={(cena) => console.log('Cena criada', cena)}
-          />
-        )}
+        {renderConteudo()}
       </main>
+
+      {modalNovaCampanha && (
+        <ModalNovaCampanha
+          usuarioId={usuarioId}
+          onClose={() => setModalNovaCampanha(false)}
+          onCriada={(nova) => setCampanhas((prev) => [...prev, nova])}
+        />
+      )}
+      {modalNovaSessao && (
+        <ModalNovaSessao
+          campanhaId={modalNovaSessao}
+          onClose={() => setModalNovaSessao(null)}
+          onCriada={(sessao) => console.log('Sessão iniciada', sessao)}
+        />
+      )}
+      {modalNovaCena && (
+        <ModalNovaCena
+          sessaoId={modalNovaCena}
+          onClose={() => setModalNovaCena(null)}
+          onCriada={(cena) => console.log('Cena criada', cena)}
+        />
+      )}
     </div>
   );
 }
