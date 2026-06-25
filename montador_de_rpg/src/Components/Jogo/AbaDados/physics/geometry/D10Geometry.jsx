@@ -1,5 +1,5 @@
 import * as THREE from 'three';
-
+import { applyD10UVs } from './SharedUVHelpers';
 /**
  * buildD10Geometry — Trapezoedro Pentagonal matematicamente perfeito
  *
@@ -115,6 +115,7 @@ export function buildD10Geometry() {
    geoFisicaLimpa.setIndex(indicesFisicos);
 
    geometry.userData = { geometriaFisicaLimpa: geoFisicaLimpa };
+   applyD10UVs(geometry);
 
    return geometry;
 }
