@@ -220,8 +220,10 @@ export default function FichaPersonagem({ idPersonagem, onVoltar, nome }) {
               </h2>
               <ul className={styles.listaRelacoes}>
                 {itens.map((rel) => {
-                  // Resgata os detalhes completos desta entidade filha específica
                   const detalhe = detalhesFilhos[rel.idEntidadeFilha];
+
+                  // Entidades de sistema (classe) não mostram detalhes internos
+                  const ehClasse = origem === "classe";
 
                   return (
                     <li key={rel.idEntidadeFilha} className={styles.itemRelacaoCard}>
@@ -230,32 +232,47 @@ export default function FichaPersonagem({ idPersonagem, onVoltar, nome }) {
                         {rel.quantidade > 1 && (
                           <span className={styles.qtdRelacao}>×{rel.quantidade}</span>
                         )}
-                        {detalhe?.tipo && (
+                        {!ehClasse && detalhe?.tipo && (
                           <span className={styles.badgeTipoFilho}>{detalhe.tipo}</span>
                         )}
                       </div>
 
-                      {/* Se o detalhe já foi carregado, renderiza dinamicamente as informações extras */}
-                      {detalhe ? (
-                        <div className={styles.itemRelacaoConteudo}>
-                          {detalhe.descricao && (
-                            <p className={styles.descricaoFilho}>{detalhe.descricao}</p>
-                          )}
-                          
-                          {/* Renderiza dinamicamente qualquer atributo específico que o item/habilidade possuir */}
-                          {detalhe.atributosAtuais && Object.keys(detalhe.atributosAtuais).length > 0 && (
-                            <div className={styles.gradeAtributosFilho}>
-                              {Object.entries(detalhe.atributosAtuais).map(([attrChave, attrValor]) => (
-                                <div key={attrChave} className={styles.tagAtributoFilho}>
-                                  <span className={styles.subAtributoLabel}>{attrChave}:</span>
-                                  <span className={styles.subAtributoValor}>{String(attrValor)}</span>
-                                </div>
-                              ))}
-                            </div>
-                          )}
-                        </div>
-                      ) : (
-                        <div className={styles.carregandoMini}>Buscando propriedades...</div>
+                      {!ehClasse && (
+                        detalhe ? (
+                          <div className={styles.itemRelacaoConteudo}>
+                            {detalhe.descricao && (
+                              <p className={styles.descricaoFilho}>{detalhe.descricao}</p>
+                            )}
+
+                            {detalhe.atributosAtuais && Object.keys(detalhe.atributosAtuais).length > 0 && (
+                              <div className={styles.gradeAtributosFilho}>
+                                {Object.entries(detalhe.atributosAtuais)
+                                  .filter(([, val]) => {
+                                    // Booleanos falsos não aparecem
+                                    if (typeof val === "boolean") return val === true;
+                                    return true;
+                                  })
+                                  .map(([attrChave, attrValor]) => (
+                                    <div key={attrChave} className={styles.tagAtributoFilho}>
+                                      {typeof attrValor === "boolean" ? (
+                                        // Booleano true: só mostra o nome
+                                        <span className={styles.subAtributoLabel}>
+                                          {attrChave.replace(/_/g, " ")}
+                                        </span>
+                                      ) : (
+                                        <>
+                                          <span className={styles.subAtributoLabel}>{attrChave}:</span>
+                                          <span className={styles.subAtributoValor}>{String(attrValor)}</span>
+                                        </>
+                                      )}
+                                    </div>
+                                  ))}
+                              </div>
+                            )}
+                          </div>
+                        ) : (
+                          <div className={styles.carregandoMini}>Buscando propriedades...</div>
+                        )
                       )}
                     </li>
                   );
