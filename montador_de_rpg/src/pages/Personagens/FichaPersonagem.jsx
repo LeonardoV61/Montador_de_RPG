@@ -20,7 +20,7 @@ const ICONE_ORIGEM = {
   habilidade: <Sparkles size={16} />,
 };
 
-export default function FichaPersonagem({ idPersonagem, onVoltar }) {
+export default function FichaPersonagem({ idPersonagem, onVoltar, nome }) {
   const { id: idDaUrl } = useParams();
   const navigate = useNavigate();
 
@@ -163,7 +163,7 @@ export default function FichaPersonagem({ idPersonagem, onVoltar }) {
             <h2 className={styles.tituloSecao}>Informações</h2>
             <div className={styles.linhasAtributo}>
               {[
-                { label: "Jogador",  valor: personagem.usuarioEmail || personagem.usuario?.email },
+                { label: "Jogador",  valor: nome },
                 { label: "Campanha", valor: personagem.campanhaNome || "Nenhuma" },
                 { label: "Status",   valor: personagem.ativo ? "Ativo" : "Inativo" },
               ].map(({ label, valor }) => (
