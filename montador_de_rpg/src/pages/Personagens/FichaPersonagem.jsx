@@ -31,6 +31,7 @@ export default function FichaPersonagem({ idPersonagem, onVoltar }) {
   if (!personagem) return <div className={styles.erro}>Personagem não encontrado.</div>;
 
   const atributos = personagem.atributos || personagem.instancia?.atributosAtuais || {};
+  console.log(atributos);
 
   return (
     <div className={styles.container}>
