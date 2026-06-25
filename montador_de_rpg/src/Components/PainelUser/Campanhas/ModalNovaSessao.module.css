@@ -9,14 +9,14 @@
 }
 .modal {
   background: #1a1a1a;
-  border: 1px solid #b3924e;
+  border: 1px solid var(--dourado);
   padding: 2rem;
   border-radius: 8px;
   min-width: 360px;
   color: #eee;
 }
 .modal h2 {
-  color: #b3924e;
+  color: var(--dourado);
   font-family: 'Cinzel', serif;
   margin-top: 0;
 }
@@ -42,9 +42,9 @@
 }
 .acoes button {
   padding: 0.4rem 1rem;
-  border: 1px solid #b3924e;
+  border: 1px solid var(--dourado);
   background: transparent;
-  color: #b3924e;
+  color: var(--dourado);
   cursor: pointer;
   border-radius: 4px;
 }

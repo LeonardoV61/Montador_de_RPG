@@ -118,16 +118,16 @@ export default function ContainerU(){
     
     return (
         <>
-          <FormNav />
+            <FormNav />
             <div className={style.cont}>
-                 <Form 
+                <Form 
                     title="Login" 
                     btn="Logar" 
                     aContent={errorMessage}
                     values={formValues}
                     onInputChange={handleInputChange}
                     click={handleSubmit} // Mantenha 'click' ou mude para 'onSubmit' dependendo do seu FormLogin.jsx
-                 >
+                >
                 <div className={style.dividerContainer}>
                     <hr className={style.dividerLine} />
                     <span className={style.dividerText}>ou entre com</span>
@@ -151,13 +151,13 @@ export default function ContainerU(){
                         Discord
                     </button>
                     <p style={{ 
-                        marginTop: '20px', 
+                        /* marginTop: '10px',  */
                         color: 'var(--cinza)', 
                         fontFamily: 'Cinzel, serif',
                         fontSize: '0.8rem',
                         letterSpacing: '0.1em'
                     }}>
-                        Não tem conta?{' '}
+                        Não tem conta?<br/>
                         <span 
                             onClick={() => navigate("/registro")}
                             style={{ color: 'var(--dourado)', cursor: 'pointer', fontWeight: 600 }}
