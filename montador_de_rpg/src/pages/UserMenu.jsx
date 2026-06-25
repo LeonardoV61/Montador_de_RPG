@@ -25,6 +25,7 @@ import Anotacao from "../Components/PainelUser/Anotacao/Anotacao.jsx";
 import Loots from "../Components/PainelUser/Loot/Loots.jsx";
 import Inventario from "../Components/PainelUser/Inventário/inventario.jsx";
 import HeronPadrao from "../assets/perfil/Heron.png";
+import FichaPersonagem from "./Personagens/FichaPersonagem.jsx";
 
 // Criação de personagem — único ponto de entrada
 import CriacaoPersonagem from "../pages/Personagens/CriacaoPersonagem.jsx";
@@ -43,6 +44,7 @@ export default function UserMenu() {
   const [modalNovaCampanha, setModalNovaCampanha] = useState(false);
   const [modalNovaSessao, setModalNovaSessao] = useState(null);
   const [modalNovaCena, setModalNovaCena] = useState(null);
+  const [personagemSelecionadoId, setPersonagemSelecionadoId] = useState(null);
 
   const [campanhas, setCampanhas] = useState([
     { id: 1, nome: "O REINO ARRUINADO", descricao: "Mythic Bastionland • 4 jogadores", Status: "ATIVA" },
@@ -194,7 +196,13 @@ export default function UserMenu() {
     // ── Jogador ──
     switch (menuAtivo) {
       case 'dashboard':       return renderDashboard();
-      case 'personagens':     return <Personagens menuAtivo={menuAtivo} setMenuAtivo={setMenuAtivo}/>;
+      case 'personagens':     return (
+      <Personagens 
+        menuAtivo={menuAtivo} 
+        setMenuAtivo={setMenuAtivo}
+        setPersonagemSelecionadoId={setPersonagemSelecionadoId}
+      />
+    );
       case 'criarPersonagem': return <CriacaoPersonagem />;
       case 'perfil':          return (
         <Perfil
@@ -205,6 +213,13 @@ export default function UserMenu() {
           posY={posY} setPosY={setPosY}
         />
       );
+      case 'verFicha':        
+        return (
+          <FichaPersonagem 
+            idPersonagem={personagemSelecionadoId} 
+            onVoltar={() => setMenuAtivo('personagens')} 
+          />
+        );
       case 'regras':      return <Regras />;
       case 'habilidades': return <Habilidades />;
       case 'diario':      return <Diario />;

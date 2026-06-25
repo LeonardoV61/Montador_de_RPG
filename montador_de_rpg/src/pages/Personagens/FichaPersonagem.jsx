@@ -4,16 +4,18 @@ import { personagemService } from "../../services/personagemService";
 import { Shield, Sword, Heart, Brain, Zap, ChevronLeft } from "lucide-react";
 import styles from "./styles.FichaPersonagem.module.css";
 
-export default function FichaPersonagem() {
-  const { id } = useParams();
+export default function FichaPersonagem({ idPersonagem, onVoltar }) {
+  const { id: idDaUrl } = useParams();
   const navigate = useNavigate();
   const [personagem, setPersonagem] = useState(null);
   const [carregando, setCarregando] = useState(true);
 
+  const id = idPersonagem || idDaUrl;
+
   useEffect(() => {
+    if (!id) return; // Segurança caso o ID venha nulo
     async function carregar() {
       try {
-        // Supondo que exista um endpoint para buscar personagem por ID
         const resp = await personagemService.buscarPorId(id);
         setPersonagem(resp?.data || resp);
       } catch (err) {
@@ -25,16 +27,18 @@ export default function FichaPersonagem() {
     carregar();
   }, [id]);
 
-  if (carregando) return <div className={styles.carregando}>Carregando ficha...</div>;
+ if (carregando) return <div className={styles.carregando}>Carregando ficha...</div>;
   if (!personagem) return <div className={styles.erro}>Personagem não encontrado.</div>;
 
   const atributos = personagem.atributos || personagem.instancia?.atributosAtuais || {};
 
   return (
     <div className={styles.container}>
-      <button className={styles.btnVoltar} onClick={() => navigate(-1)}>
+      {/* Altere o botão voltar para usar a função onVoltar se ela existir, senão usa o histórico */}
+      <button className={styles.btnVoltar} onClick={onVoltar || (() => navigate(-1))}>
         <ChevronLeft size={20} /> Voltar
       </button>
+      
       <div className={styles.cabecalho}>
         <h1>{personagem.instanciaNome || personagem.nome}</h1>
         <span className={styles.classe}>{personagem.tipo || personagem.classe}</span>

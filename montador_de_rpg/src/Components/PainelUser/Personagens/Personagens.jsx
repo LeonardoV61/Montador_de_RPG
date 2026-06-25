@@ -5,7 +5,7 @@ import { personagemService } from "../../../services/personagemService";
 import { usuarioService } from "../../../services/usuarioService";
 import styles from "./styles.Personagens.module.css";
 
-export default function Personagens( { menuAtivo, setMenuAtivo }) {
+export default function Personagens( { menuAtivo, setMenuAtivo, setPersonagemSelecionadoId } ) {
   const [abaAtiva, setAbaAtiva] = useState("meus");
   const [busca, setBusca] = useState("");
   const [personagens, setPersonagens] = useState([]);
@@ -61,7 +61,8 @@ export default function Personagens( { menuAtivo, setMenuAtivo }) {
   }
 
   function handleVerFicha(personagem) {
-    navigate(`/personagens/${personagem.id}`);
+    setPersonagemSelecionadoId(personagem.id);
+    setMenuAtivo('verFicha');
   }
 
   // --- SE TIVER UM NPC SELECIONADO, RENDERIZA A TELA COMPLETA DA WIKI ---
