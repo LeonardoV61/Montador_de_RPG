@@ -150,7 +150,7 @@ h1 em {
   gap: 0.5rem;
   background: none;   
   border: none;
-  color: var(--branco);
+  color: var(--dourado);
   font-size: 0.7rem;
   letter-spacing: 0.2em;
   font-family: 'Cinzel', serif;
@@ -167,7 +167,10 @@ h1 em {
     background: linear-gradient(to bottom, var(--dourado2), transparent);
 }
 .explorar:hover {
-  color: var(--dourado); 
+  color: var(--branco); 
+}
+.explorar:hover::after {
+  background: linear-gradient(to bottom, var(--branco), transparent); 
 }
 @keyframes balancar {
     0%,100% {
