@@ -159,17 +159,18 @@ export default function UserMenu() {
     carregarAmigos();
   }, [usuarioId]);
 
-  // Campanhas
+  // Campanhas — Alterado para listar apenas as campanhas vinculadas ao usuário ativo
   useEffect(() => {
     async function carregarCampanhas() {
       try {
-        const resCamp = await campanhaService.listarTodas();
-        const campanhasData = resCamp?.data?.data || resCamp?.data || resCamp;
-        if (Array.isArray(campanhasData) && campanhasData.length > 0) {
+        const resCamp = await campanhaService.listarMinhas();
+        const campanhasData = resCamp?.data || resCamp;
+        
+        if (Array.isArray(campanhasData)) {
           setCampanhas(campanhasData);
         }
-      } catch {
-        // mantém mock
+      } catch (err) {
+        console.error("Erro ao carregar campanhas vinculadas:", err);
       }
     }
     carregarCampanhas();

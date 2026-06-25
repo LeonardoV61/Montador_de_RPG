@@ -332,6 +332,74 @@
   letter-spacing: 0.1em;
 }
 
+
+.itemRelacaoCard {
+  background: rgba(255, 255, 255, 0.05);
+  border-left: 3px solid #d4af37; /* Borda dourada estilosa */
+  padding: 10px;
+  margin-bottom: 10px;
+  border-radius: 4px;
+  list-style: none;
+}
+
+.itemRelacaoTopo {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  font-weight: bold;
+}
+
+.badgeTipoFilho {
+  background: #2a2a2a;
+  color: #aaa;
+  font-size: 0.75rem;
+  padding: 2px 6px;
+  border-radius: 4px;
+  margin-left: auto;
+  text-transform: uppercase;
+}
+
+.itemRelacaoConteudo {
+  margin-top: 6px;
+  font-size: 0.9rem;
+}
+
+.descricaoFilho {
+  color: #ccc;
+  font-style: italic;
+  margin-bottom: 6px;
+}
+
+.gradeAtributosFilho {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 6px;
+}
+
+.tagAtributoFilho {
+  background: rgba(212, 175, 55, 0.15);
+  border: 1px solid rgba(212, 175, 55, 0.3);
+  padding: 2px 6px;
+  border-radius: 4px;
+  font-size: 0.8rem;
+}
+
+.subAtributoLabel {
+  font-weight: bold;
+  color: #d4af37;
+  margin-right: 4px;
+}
+
+.subAtributoValor {
+  color: #fff;
+}
+
+.carregandoMini {
+  font-size: 0.8rem;
+  color: #777;
+  font-style: italic;
+}
+
 /* ── Responsivo ── */
 @media (max-width: 880px) {
   .folha {

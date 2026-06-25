@@ -2,7 +2,7 @@ import { useParams, useNavigate } from "react-router-dom";
 import { useEffect, useState } from "react";
 import { personagemService } from "../../services/personagemService";
 import { entidadeInstanciaService } from "../../services/entidadeInstanciaService";
-import { Shield, Sword, Heart, Brain, Zap, ChevronLeft, Package, Sparkles, HelpCircle } from "lucide-react";
+import { Shield, Sword, Heart, Brain, Zap, ChevronLeft, Package, Sparkles, HelpCircle, Info } from "lucide-react";
 import styles from "./styles.FichaPersonagem.module.css";
 
 // Agrupa relações pelo campo `origem`
@@ -18,6 +18,7 @@ function agruparPorOrigem(relacoes) {
 const ICONE_ORIGEM = {
   item_inicial: <Package size={16} />,
   habilidade: <Sparkles size={16} />,
+  classe: <Sword size={16} />,
 };
 
 export default function FichaPersonagem({ idPersonagem, onVoltar, nome }) {
@@ -27,6 +28,8 @@ export default function FichaPersonagem({ idPersonagem, onVoltar, nome }) {
   const [personagem, setPersonagem] = useState(null);
   const [atributos, setAtributos] = useState({});
   const [relacoes, setRelacoes] = useState([]);
+
+  const [detalhesFilhos, setDetalhesFilhos] = useState({});
   const [carregando, setCarregando] = useState(true);
 
   const id = idPersonagem || idDaUrl;
@@ -36,6 +39,7 @@ export default function FichaPersonagem({ idPersonagem, onVoltar, nome }) {
 
     async function carregarFichaCompleta() {
       try {
+        // 1. Busca o Personagem principal
         const respPersonagem = await personagemService.buscarPorId(id);
         const dadosPersonagem = respPersonagem?.data || respPersonagem;
         setPersonagem(dadosPersonagem);
@@ -43,6 +47,7 @@ export default function FichaPersonagem({ idPersonagem, onVoltar, nome }) {
         if (dadosPersonagem?.instanciaId) {
           const instanciaId = dadosPersonagem.instanciaId;
 
+          // 2. Busca a Instância do personagem e a lista inicial de Relações
           const [respInstancia, respRelacoes] = await Promise.all([
             entidadeInstanciaService.buscarPorId(instanciaId),
             entidadeInstanciaService.listarRelacoes(instanciaId),
@@ -57,7 +62,34 @@ export default function FichaPersonagem({ idPersonagem, onVoltar, nome }) {
           setAtributos(listaAtributos);
 
           const listaRelacoes = respRelacoes?.data || respRelacoes || [];
-          setRelacoes(Array.isArray(listaRelacoes) ? listaRelacoes : []);
+          const arrayRelacoes = Array.isArray(listaRelacoes) ? listaRelacoes : [];
+          setRelacoes(arrayRelacoes);
+
+          // 3. [CASCATA DE BUSCAS] Se existirem relações, busca a instância detalhada de cada uma em paralelo
+          if (arrayRelacoes.length > 0) {
+            const promessasDetalhes = arrayRelacoes.map((rel) =>
+              entidadeInstanciaService
+                .buscarPorId(rel.idEntidadeFilha)
+                .then((res) => ({
+                  id: rel.idEntidadeFilha,
+                  dados: res?.data || res,
+                }))
+                .catch((err) => {
+                  console.error(`Erro ao buscar detalhe do filho ${rel.idEntidadeFilha}:`, err);
+                  return null;
+                })
+            );
+
+            const resultados = await Promise.all(promessasDetalhes);
+            
+            // Transforma o array de resultados em um objeto/mapa de consulta rápida: { id: dados }
+            const mapaDetalhes = resultados.reduce((acc, item) => {
+              if (item) acc[item.id] = item.dados;
+              return acc;
+            }, {});
+
+            setDetalhesFilhos(mapaDetalhes);
+          }
         }
       } catch (err) {
         console.error("Erro ao carregar ficha completa:", err);
@@ -98,7 +130,6 @@ export default function FichaPersonagem({ idPersonagem, onVoltar, nome }) {
 
         {/* COLUNA ESQUERDA */}
         <div className={styles.colunaEsquerda}>
-
           {/* Virtudes */}
           <section className={styles.secao}>
             <h2 className={styles.tituloSecao}>Virtudes</h2>
@@ -157,7 +188,6 @@ export default function FichaPersonagem({ idPersonagem, onVoltar, nome }) {
 
         {/* COLUNA DIREITA */}
         <div className={styles.colunaDireita}>
-
           {/* Informações */}
           <section className={styles.secao}>
             <h2 className={styles.tituloSecao}>Informações</h2>
@@ -181,7 +211,7 @@ export default function FichaPersonagem({ idPersonagem, onVoltar, nome }) {
             )}
           </section>
 
-          {/* Relações agrupadas por origem */}
+          {/* Relações detalhadas dinamicamente agrupadas por origem */}
           {relacoes.length > 0 && Object.entries(gruposRelacoes).map(([origem, itens]) => (
             <section key={origem} className={styles.secao}>
               <h2 className={styles.tituloSecao}>
@@ -189,14 +219,47 @@ export default function FichaPersonagem({ idPersonagem, onVoltar, nome }) {
                 &nbsp;{origem.replace(/_/g, " ")}
               </h2>
               <ul className={styles.listaRelacoes}>
-                {itens.map((rel) => (
-                  <li key={rel.idEntidadeFilha} className={styles.itemRelacao}>
-                    <span className={styles.nomeRelacao}>{rel.nomeEntidadeFilha}</span>
-                    {rel.quantidade > 1 && (
-                      <span className={styles.qtdRelacao}>×{rel.quantidade}</span>
-                    )}
-                  </li>
-                ))}
+                {itens.map((rel) => {
+                  // Resgata os detalhes completos desta entidade filha específica
+                  const detalhe = detalhesFilhos[rel.idEntidadeFilha];
+
+                  return (
+                    <li key={rel.idEntidadeFilha} className={styles.itemRelacaoCard}>
+                      <div className={styles.itemRelacaoTopo}>
+                        <span className={styles.nomeRelacao}>{rel.nomeEntidadeFilha}</span>
+                        {rel.quantidade > 1 && (
+                          <span className={styles.qtdRelacao}>×{rel.quantidade}</span>
+                        )}
+                        {detalhe?.tipo && (
+                          <span className={styles.badgeTipoFilho}>{detalhe.tipo}</span>
+                        )}
+                      </div>
+
+                      {/* Se o detalhe já foi carregado, renderiza dinamicamente as informações extras */}
+                      {detalhe ? (
+                        <div className={styles.itemRelacaoConteudo}>
+                          {detalhe.descricao && (
+                            <p className={styles.descricaoFilho}>{detalhe.descricao}</p>
+                          )}
+                          
+                          {/* Renderiza dinamicamente qualquer atributo específico que o item/habilidade possuir */}
+                          {detalhe.atributosAtuais && Object.keys(detalhe.atributosAtuais).length > 0 && (
+                            <div className={styles.gradeAtributosFilho}>
+                              {Object.entries(detalhe.atributosAtuais).map(([attrChave, attrValor]) => (
+                                <div key={attrChave} className={styles.tagAtributoFilho}>
+                                  <span className={styles.subAtributoLabel}>{attrChave}:</span>
+                                  <span className={styles.subAtributoValor}>{String(attrValor)}</span>
+                                </div>
+                              ))}
+                            </div>
+                          )}
+                        </div>
+                      ) : (
+                        <div className={styles.carregandoMini}>Buscando propriedades...</div>
+                      )}
+                    </li>
+                  );
+                })}
               </ul>
             </section>
           ))}

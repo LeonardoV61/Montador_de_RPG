@@ -12,11 +12,53 @@ export default function CriacaoPersonagem({ setMenuAtivo }) {
 
   const [usuarioId, setUsuarioId] = useState(null);
   const [carregandoUsuario, setCarregandoUsuario] = useState(true);
-  const [fase, setFase] = useState('selecao'); // selecao | buscandoEntidade | procedimento | concluido
-  const [selecao, setSelecao] = useState(null);       // { sistema, nomePersonagem }
-  const [entidadeJogador, setEntidadeJogador] = useState(null);
-  const [personagemFinal, setPersonagemFinal] = useState(null);
   const [erroGlobal, setErroGlobal] = useState(null);
+
+  // ── [MODIFICADO] Inicialização Lazy buscando do localStorage ──────
+  const [fase, setFase] = useState(() => localStorage.getItem('rpg_fase') || 'selecao');
+  
+  const [selecao, setSelecao] = useState(() => {
+    const salvo = localStorage.getItem('rpg_selecao');
+    return salvo ? JSON.parse(salvo) : null;
+  });
+  
+  const [entidadeJogador, setEntidadeJogador] = useState(() => {
+    const salvo = localStorage.getItem('rpg_entidade_jogador');
+    return salvo ? JSON.parse(salvo) : null;
+  });
+  
+  const [personagemFinal, setPersonagemFinal] = useState(() => {
+    const salvo = localStorage.getItem('rpg_personagem_final');
+    return salvo ? JSON.parse(salvo) : null;
+  });
+
+  // ── [NOVO] Efeitos para sincronizar os estados com o localStorage ──
+  useEffect(() => {
+    localStorage.setItem('rpg_fase', fase);
+  }, [fase]);
+
+  useEffect(() => {
+    if (selecao) localStorage.setItem('rpg_selecao', JSON.stringify(selecao));
+    else localStorage.removeItem('rpg_selecao');
+  }, [selecao]);
+
+  useEffect(() => {
+    if (entidadeJogador) localStorage.setItem('rpg_entidade_jogador', JSON.stringify(entidadeJogador));
+    else localStorage.removeItem('rpg_entidade_jogador');
+  }, [entidadeJogador]);
+
+  useEffect(() => {
+    if (personagemFinal) localStorage.setItem('rpg_personagem_final', JSON.stringify(personagemFinal));
+    else localStorage.removeItem('rpg_personagem_final');
+  }, [personagemFinal]);
+
+  // Limpa o rascunho local do navegador
+  function limparRascunhoLocal() {
+    localStorage.removeItem('rpg_fase');
+    localStorage.removeItem('rpg_selecao');
+    localStorage.removeItem('rpg_entidade_jogador');
+    localStorage.removeItem('rpg_personagem_final');
+  }
 
   // ── carrega usuário ──────────────────────────────────────────────
   useEffect(() => {
@@ -46,14 +88,11 @@ export default function CriacaoPersonagem({ setMenuAtivo }) {
     setFase('buscandoEntidade');
 
     try {
-      // 1. Tenta montar a entidade a partir do schemaEntidades local (sem request extra)
       let entidade = buscarEntidadeJogadorNoSchema(sistema);
 
-      // 2. Se o schema local não tem ID (não é uma entidade real da API), busca via API
       if (!entidade || entidade._fromSchema) {
         const entidades = await personagemService.listarEntidadesPorSistema(sistema.id);
         const entidadeApi = entidades.find(e => e.tipo === TIPO_ENTIDADE_JOGADOR) ?? null;
-        // Entidade da API tem precedência (tem ID real)
         if (entidadeApi) entidade = entidadeApi;
       }
 
@@ -84,10 +123,13 @@ export default function CriacaoPersonagem({ setMenuAtivo }) {
     setSelecao(null);
     setEntidadeJogador(null);
     setErroGlobal(null);
+    limparRascunhoLocal(); // Reseta se o usuário desistir voluntariamente
   }
 
-  function voltarParaPersonagens(e) {
-    e.preventdefault();
+  // Sair da tela limpando o rascunho
+  function irParaMenuPersonagens(e) {
+    if (e) e.preventDefault();
+    limparRascunhoLocal();
     setMenuAtivo('personagens');
   }
 
@@ -135,6 +177,8 @@ export default function CriacaoPersonagem({ setMenuAtivo }) {
           campanhaAtivaId={null}
           onConcluido={handleConcluido}
           onErro={handleErro}
+          // Se o ExecucaoProcedimento tiver estados internos que precisam salvar rascunho,
+          // eles devem ser tratados lá dentro da mesma forma!
         />
       )}
 
@@ -146,7 +190,7 @@ export default function CriacaoPersonagem({ setMenuAtivo }) {
           </h1>
           <p className={styles.subtitulo}>O cavaleiro está forjado</p>
           <div className={styles.acoes}>
-            <button className={styles.botaoPrimario} onClick={(e) => { e.preventDefault(); setMenuAtivo('personagens');}}>
+            <button className={styles.botaoPrimario} onClick={irParaMenuPersonagens}>
               Ir para o Menu
             </button>
             <button className={styles.botaoSecundario} onClick={voltarParaSelecao}>
@@ -159,11 +203,6 @@ export default function CriacaoPersonagem({ setMenuAtivo }) {
   );
 }
 
-// ── helper: tenta extrair entidade jogador do schemaEntidades local ──
-// Evita um round-trip à API quando o sistema já foi carregado com schemaEntidades.
-// Retorna null se o schema não existir ou não tiver entrada de jogador.
-// A flag _fromSchema sinaliza que o id pode estar ausente; ExecucaoProcedimento
-// deve sempre preferir a entidade retornada pela API (que tem ID real).
 function buscarEntidadeJogadorNoSchema(sistema) {
   const schema = sistema?.schemaEntidades;
   if (!schema || typeof schema !== 'object') return null;
