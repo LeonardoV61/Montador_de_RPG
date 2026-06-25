@@ -223,7 +223,7 @@ export default function FichaPersonagem({ idPersonagem, onVoltar, nome }) {
                   const detalhe = detalhesFilhos[rel.idEntidadeFilha];
 
                   // Entidades de sistema (classe) não mostram detalhes internos
-                  const ehClasse = origem === "classe";
+                  const ehClasse = origem.toLowerCase() === "classe";
 
                   return (
                     <li key={rel.idEntidadeFilha} className={styles.itemRelacaoCard}>
