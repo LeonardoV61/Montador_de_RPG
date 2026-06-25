@@ -57,7 +57,7 @@ export default function LateralHistorico({ roleAtiva }) {
             </div>
          ) : (
             <div className={styles.historicoConteudo}>
-               <Historico aba={abaAtiva} />
+               <Historico aba={abaAtiva} titulo={tituloAba}/>
             </div>
          )}
       </aside>

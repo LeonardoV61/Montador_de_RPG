@@ -69,7 +69,7 @@ export default function Mapa() {
    const dadosAberta = !!abasAbertas?.Dados;
    const anotacoesAberta = !!abasAbertas?.Anotacoes;
 
-   const [contextoAberto, setContextoAberto] = useState(false);
+   /* const [contextoAberto, setContextoAberto] = useState(false); */
    const [avatarSelecionado, setAvatarSelecionado] = useState("Aldric");
 
    // 3. Estado criado para armazenar os avatares/tokens vindos do Back-end
@@ -252,7 +252,7 @@ export default function Mapa() {
       }
    };
 
-   const [ctxMenuX, setCtxMenuX] = useState(0);
+   /* const [ctxMenuX, setCtxMenuX] = useState(0);
    const [ctxMenuY, setCtxMenuY] = useState(0);
 
    function canvasCtxMenu(e) {
@@ -260,7 +260,7 @@ export default function Mapa() {
       setCtxMenuX(e.clientX > window.innerWidth / 2 ? e.clientX - 172 : e.clientX);
       setCtxMenuY(e.clientY > window.innerHeight / 2 ? e.clientY - 165 : e.clientY);
       setContextoAberto(true);
-   }
+   } */
 
    const { dadosAtivosNaMesa, possuiDadosInterativos, onDadoParou } = useContext(ContextoMesaFisica);
 
@@ -268,13 +268,13 @@ export default function Mapa() {
        <main 
          className={`${styles.mapa} ${isDragging ? styles.dragging : ""}`} 
          id="map" 
-         onClick={() => setContextoAberto(false)} 
-         onContextMenu={canvasCtxMenu}
-         onMouseDown={handleMouseDown}
-         onMouseMove={handleMouseMove}
-         onMouseUp={handleMouseUpOrLeave}
-         onMouseLeave={handleMouseUpOrLeave}
-         onWheel={handleWheel}
+         /* onClick={() => setContextoAberto(false)} 
+         onContextMenu={(e) => canvasCtxMenu(e)} */
+         onMouseDown={(e) => handleMouseDown(e)}
+         onMouseMove={(e) => handleMouseMove(e)}
+         onMouseUp={() => handleMouseUpOrLeave()}
+         onMouseLeave={(e) => handleMouseUpOrLeave(e)}
+         onWheel={(e) => handleWheel(e)}
          style={{ position: 'fixed', top: 'var(--navbar-height, 42px)', left: 0, width: '100vw', height: 'calc(100vh - var(--navbar-height, 42px))', overflow: 'hidden', zIndex: 1 }}
        >
          
