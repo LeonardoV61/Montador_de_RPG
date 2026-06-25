@@ -36,65 +36,80 @@ function criarMateriaisDados(lados) {
 
       // ======================================================================
       // CORREÇÃO DEFINITIVA D4: Distribuição Concêntrica Dinâmica
-      // ======================================================================
+      // ========================================================================
       if (lados === 4) {
-         ctx.font = 'bold 70px Georgia, serif';
-         
+         ctx.font = 'bold 65px Georgia, serif';
          ctx.shadowColor = 'rgba(0, 0, 0, 0.9)';
-         ctx.shadowBlur = 4;
+         ctx.shadowBlur = 6;
 
-         // Move o ponto de origem (0,0) do desenho para o centro exato da área verde
-         // Isso neutraliza o efeito de espelhamento que sumia com a quarta face
-         ctx.save();
-         ctx.translate(256, 290); 
+         const mapaQuinasD4 = {
+            1: { topo: "1", direita: "4", esquerda: "3" },
+            2: { topo: "3", direita: "2", esquerda: "1" },
+            3: { topo: "1", direita: "4", esquerda: "2" },
+            4: { topo: "3", direita: "4", esquerda: "2" }
+         };
 
-         // 1. NÚMERO APONTANDO PARA A PONTA DO TOPO (0 graus)
+         const quinasAtuais = mapaQuinasD4[i];
+
          ctx.save();
-         ctx.translate(0, -115); // Afasta do centro em direção ao topo
-         ctx.fillText(i.toString(), 0, 0);
+         // Centro exato de massa (Baricentro) do novo triângulo equilátero UV
+         ctx.translate(257, 353); 
+         ctx.rotate(Math.PI);
+
+         // Distância pura e idêntica para centralizar os números nas 3 pontas
+         const distQuina = 210; 
+
+         // 1. NÚMERO APONTANDO PARA O VÉRTICE DO TOPO
+         ctx.save();
+         ctx.translate(0, distQuina);
+         ctx.rotate(Math.PI); 
+         ctx.fillText(quinasAtuais.topo, 0, 0);
          ctx.restore();
 
-         // 2. NÚMERO APONTANDO PARA A PONTA DIREITA (120 graus)
+         // 2. NÚMERO APONTANDO PARA O VÉRTICE INFERIOR DIREITO (120 graus)
          ctx.save();
          ctx.rotate((120 * Math.PI) / 180);
-         ctx.translate(0, -115); // Afasta do centro em direção à quina direita
-         ctx.fillText(i.toString(), 0, 0);
+         ctx.translate(0, distQuina);
+         ctx.rotate(Math.PI);
+         ctx.fillText(quinasAtuais.direita, 0, 0);
          ctx.restore();
 
-         // 3. NÚMERO APONTANDO PARA A PONTA ESQUERDA (-120 graus)
+         // 3. NÚMERO APONTANDO PARA O VÉRTICE INFERIOR ESQUERDO (-120 graus)
          ctx.save();
          ctx.rotate((-120 * Math.PI) / 180);
-         ctx.translate(0, -115); // Afasta do centro em direção à quina esquerda
-         ctx.fillText(i.toString(), 0, 0);
+         ctx.translate(0, distQuina);
+         ctx.rotate(Math.PI);
+         ctx.fillText(quinasAtuais.esquerda, 0, 0);
          ctx.restore();
 
-         ctx.restore(); // Restaura o contexto para a próxima face
-
+         ctx.restore();
       // ======================================================================
       // CORREÇÃO CRÍTICA D12: Um único número centralizado por face pentagonal
       // ======================================================================
       } else if (lados === 12) {
-         // D12: número no centroide UV real do pentágono → posição canvas (256, 252)
          ctx.font = 'bold 180px Georgia, serif';
          ctx.shadowColor = 'rgba(0, 0, 0, 0.9)';
          ctx.shadowBlur = 14;
          ctx.shadowOffsetX = 4;
          ctx.shadowOffsetY = 6;
-         ctx.fillText(i.toString(), 256, 252);
+         ctx.fillText(i.toString(), 256, 270);
+
+         ctx.restore();
       } else if (lados === 10) {
-         // D10: número centralizado no centroide UV da face-pipa (U=0.5, V=0.425)
-         // V=0.425 → posição Y no canvas = (1 - 0.425) * 512 = 294
-         ctx.font = 'bold 200px Georgia, serif';
+         ctx.font = 'bold 190px Georgia, serif'; // Ajustado levemente o tamanho para caber perfeitamente
          ctx.shadowColor = 'rgba(0, 0, 0, 0.85)';
          ctx.shadowBlur = 12;
          ctx.shadowOffsetX = 4;
          ctx.shadowOffsetY = 6;
-         ctx.fillText(i.toString(), 256, 294);
-         // Sublinhado para 6 e 9 no d10
+         
+         // Descemos o número de 294 para 275 para centralizar perfeitamente no triângulo estável
+         ctx.fillText(i.toString(), 256, 275);
+         
          if (i === 6 || i === 9) {
             ctx.shadowBlur = 0; ctx.shadowOffsetX = 0; ctx.shadowOffsetY = 0;
             ctx.fillStyle = '#c9a227';
-            ctx.fillRect(186, 380, 140, 12);
+            // Linha única reposicionada proporcionalmente logo abaixo do número (Y = 360)
+            ctx.fillRect(186, 370, 140, 12);
             ctx.fillStyle = '#eae5d8';
          }
       } else {
@@ -112,9 +127,9 @@ function criarMateriaisDados(lados) {
       ctx.shadowOffsetY = 0;
 
       // Sublinhado para identificar 6 e 9
-      if ((lados === 12 || lados === 20 || lados === 6) && (i === 6 || i === 9)) {
+      if ((lados === 12 || lados === 20 || lados === 8 || lados === 6) && (i === 6 || i === 9)) {
          ctx.fillStyle = '#c9a227';
-         ctx.fillRect(186, 310, 140, 12);
+         ctx.fillRect(186, 370, 140, 12);
       }
 
       const tex = new THREE.CanvasTexture(canvas);
