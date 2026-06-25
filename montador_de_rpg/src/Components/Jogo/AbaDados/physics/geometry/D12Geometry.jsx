@@ -1,5 +1,5 @@
 import * as THREE from 'three';
-import { applyPentagonUVs } from './SharedUVHelpers.jsx';
+import { applyD12UVs } from './SharedUVHelpers.jsx';
 
 /**
  * buildD12Geometry
@@ -25,7 +25,7 @@ export function buildD12Geometry() {
    }
    pos.needsUpdate = true;
    geo.computeVertexNormals();
-   applyPentagonUVs(geo);
+   applyD12UVs(geo);
 
    geo.clearGroups();
    for (let i = 0; i < 12; i++) {

@@ -57,7 +57,7 @@ export function DadoFisico({ id, lados = 6, position = [0, 3, 0], onStopped }) {
       tempoEsperaMs: 1000,
       gerarImpulso: gerarImpulsoDado,
       gerarTorque: gerarTorqueDado,
-      calcularResultado: (mesh) => determinarFaceSuperior(mesh, lados),
+      calcularResultado: (mesh) => determinarFaceSuperior(meshRef.current, lados),
       onStopped: (resultado) => onStopped && onStopped(id, resultado, lados),
    });
 
