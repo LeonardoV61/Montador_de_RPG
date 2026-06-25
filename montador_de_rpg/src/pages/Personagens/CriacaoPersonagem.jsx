@@ -86,9 +86,9 @@ export default function CriacaoPersonagem({ setMenuAtivo }) {
     setErroGlobal(null);
   }
 
-  const voltarParaPersonagens = (e) => {
+  function voltarParaPersonagens(e) {
     e.preventdefault();
-    setMenuAtivo('personagens')
+    setMenuAtivo('personagens');
   }
 
   // ── loading inicial ──────────────────────────────────────────────
@@ -146,7 +146,7 @@ export default function CriacaoPersonagem({ setMenuAtivo }) {
           </h1>
           <p className={styles.subtitulo}>O cavaleiro está forjado</p>
           <div className={styles.acoes}>
-            <button className={styles.botaoPrimario} onClick={voltarParaPersonagens}>
+            <button className={styles.botaoPrimario} onClick={(e) => { e.preventDefault(); setMenuAtivo('personagens');}}>
               Ir para o Menu
             </button>
             <button className={styles.botaoSecundario} onClick={voltarParaSelecao}>
