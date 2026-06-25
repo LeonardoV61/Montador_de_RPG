@@ -370,7 +370,7 @@ export default function Mapa() {
       <MapaFerramentas />
 
       {/* 5. CORREÇÃO CRÍTICA: Passando os estados reais ao Provider ao invés de 'null' */}
-      <ContextoAvatar.Provider value={{ avatarSelecionado, setAvatarSelecionado }}>
+      {/* <ContextoAvatar.Provider value={{ avatarSelecionado, setAvatarSelecionado }}>
         {avatares.map(av => (
           <AvatarPersonagem
             key={av.id || av.idInstancia}
