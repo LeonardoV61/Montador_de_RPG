@@ -88,6 +88,7 @@ export default function ContainerU(){
 
         try {
             await login(formValues.email, formValues.senha);
+            localStorage.setItem("authenticated", true)
             navigate("/menu");
         } catch (error) {
             setErrorMessage("Usuário ou senha inválidos.\nERRO: ", error);

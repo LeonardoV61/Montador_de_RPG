@@ -42,7 +42,7 @@ export default function NavBar() {
             <li><Link to="/" onClick={() => Location.reload()}>Mesa</Link></li>
           </div>
         </div>
-          <button className={styles.btnDouradoCheio} onClick={handleLogout}> Sair </button>
+        <button className={styles.btnDouradoCheio} onClick={handleLogout}> Sair </button>
     </nav>
     </>
   )
