@@ -45,14 +45,12 @@ export default function AbaDados() {
 
    return (
       <div className={styles.dados}>
-         {/* FILEIRA 1: Moeda, d4 e d6 restaurados com classes originais */}
          <div className={styles.dadosLista}>
             <button className={styles.dadoBotao} onClick={() => injetarDadoNaMesa(2)}>Moeda</button>
             <button className={styles.dadoBotao} onClick={() => injetarDadoNaMesa(4)}>d4</button>
             <button className={styles.dadoBotao} onClick={() => injetarDadoNaMesa(6)}>d6</button>
          </div>
          
-         {/* FILEIRA 2: Dados poliedros clássicos */}
          <div className={styles.dadosLista}>
             <button className={styles.dadoBotao} onClick={() => injetarDadoNaMesa(8)}>d8</button>
             <button className={styles.dadoBotao} onClick={() => injetarDadoNaMesa(10)}>d10</button>
@@ -60,7 +58,6 @@ export default function AbaDados() {
             <button className={styles.dadoBotao} onClick={() => injetarDadoNaMesa(20)}>d20</button>
          </div>
          
-         {/* FILEIRA 3: Controle global */}
          <div className={styles.dadosLista}>
             <button className={styles.dadoBotao} onClick={() => limparMesa?.()} style={{ background: '#381616', color: '#ffadad' }}>
                Limpar Mesa

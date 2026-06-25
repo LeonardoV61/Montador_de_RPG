@@ -1,6 +1,6 @@
-import { useState } from 'react'
-import Recurso from './Recurso'
-import styles from './styles.Recursos.module.css'
+import { useState } from 'react';
+import Recurso from './Recurso';
+import styles from './styles.Recursos.module.css';
 import { FileText, Map, Dices, NotebookPen, Library, Castle } from 'lucide-react';
 
 export default function Recursos() {

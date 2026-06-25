@@ -8,6 +8,7 @@ import Mapa from '../../Components/Jogo/Mapa/Mapa.jsx';
 import LateralHistorico from '../../Components/Jogo/LateralHistorico/LateralHistorico.jsx';
 import AbaDados from '../../Components/Jogo/AbaDados/AbaDados.jsx';
 import api from '../../utils/api';
+import { Dices, CircleDollarSign } from 'lucide-react';
 
 export const ContextoRegistros = createContext(null);
 export const ContextoAbasPersonagem = createContext(null);
@@ -23,7 +24,7 @@ export default function Jogo() {
   // ── Registros (chat, rolagens) ──
   const [registros, setRegistros] = useState([
     { id: 1, aba: 'Chat', autor: 'Mestre', horario: '20:03', texto: 'A estrada de terra leva por colinas cobertas de névoa...' },
-    { id: 3, aba: 'Roll', icone: '🎲', autor: 'Aldric', tipo: 'Força', valor: 17, dado: 'd20', valorAtributo: 14 },
+    { id: 3, aba: 'Roll', icone: <Dices />, autor: 'Aldric', tipo: 'Força', valor: 17, dado: 'd20', valorAtributo: 14 },
   ]);
 
   // ── Abas da lateral ──
@@ -47,7 +48,7 @@ export default function Jogo() {
       
       setResultadosMesa(prev => ({
          ...prev,
-         [id]: { valor, label, icone: faces === 2 ? "🪙" : "🎲" }
+         [id]: { valor, label, icone: faces === 2 ? <CircleDollarSign /> : <Dices /> }
       }));
 
       setDadosAtivosNaMesa(prev => 
