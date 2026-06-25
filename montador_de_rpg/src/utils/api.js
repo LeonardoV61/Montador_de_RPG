@@ -18,7 +18,7 @@
 
 // export default api;
 
-const API_BASE_URL = import.meta.env.VITE_API_BASE_URL || 'montadorderpgbackend-production.up.railway.app';
+const API_BASE_URL = import.meta.env.VITE_API_URL || 'https://montadorderpgbackend-production.up.railway.app';
 
 function getAuthHeaders() {
   const token = localStorage.getItem('token');
