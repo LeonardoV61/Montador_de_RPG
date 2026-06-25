@@ -5,7 +5,7 @@ import styles from "./styles.CampanhaP.module.css";
 export default function CampanhaP({ campanha, roleAtiva }) { 
   const navigate = useNavigate();
 
-  console.log(campanha)
+  // console.log(campanha)
   // 2. Crie uma função para gerenciar o clique e a persistência
   const handleEntrarNoJogo = () => {
     localStorage.setItem("role_sessao_ativa", roleAtiva); // Salva se é mestre ou jogador
