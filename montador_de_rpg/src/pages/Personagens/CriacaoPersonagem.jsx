@@ -1,5 +1,4 @@
 import { useState, useEffect } from 'react';
-import { useNavigate } from 'react-router-dom';
 import { usuarioService } from '../../services/usuarioService.js';
 import { personagemService } from '../../services/personagemService.js';
 import SelecaoSistema from '../../Components/CriacaoPersonagem/SelecaoSistema.jsx';

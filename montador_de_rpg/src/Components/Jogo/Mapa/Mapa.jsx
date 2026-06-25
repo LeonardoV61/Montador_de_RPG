@@ -368,8 +368,7 @@ export default function Mapa() {
 
       <MapaFerramentas />
 
-      {/* 5. CORREÇÃO CRÍTICA: Passando os estados reais ao Provider ao invés de 'null' */}
-      {/* <ContextoAvatar.Provider value={{ avatarSelecionado, setAvatarSelecionado }}>
+      <ContextoAvatar.Provider value={{ avatarSelecionado, setAvatarSelecionado }}>
         {avatares.map(av => (
           <AvatarPersonagem
             key={av.id || av.idInstancia}
@@ -380,7 +379,7 @@ export default function Mapa() {
             posicao={av.pos || av.posicao || { x: 0, y: 0 }}
           />
         ))}
-      </ContextoAvatar.Provider> */}
+      </ContextoAvatar.Provider>
 
          <div className={`${styles.iniciativa} ${anotacoesAberta ? styles.iniciativaDeslocada : ""}`}>
             <div className={styles.iniciativaTitulo}>Iniciativa</div>
@@ -395,7 +394,7 @@ export default function Mapa() {
             <button className={styles.zoomBotao} onClick={() => { setPosicao({x:0, y:0}); setZoom(1); }}>⌖</button>
          </div>
          <div className={styles.nomeCena}>Região de Bastionland · Mapa Hexagonal</div>
-         {contextoAberto && <MenuContexto x={ctxMenuX} y={ctxMenuY} />}
+         {/* {contextoAberto && <MenuContexto x={ctxMenuX} y={ctxMenuY} />} */}
       </main>
    );
 }

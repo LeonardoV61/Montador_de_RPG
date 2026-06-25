@@ -9,7 +9,9 @@ export default function CampanhaP({ campanha, roleAtiva }) {
   // 2. Crie uma função para gerenciar o clique e a persistência
   const handleEntrarNoJogo = () => {
     localStorage.setItem("role_sessao_ativa", roleAtiva); // Salva se é mestre ou jogador
-    navigate('/jogo'); // Redireciona
+    navigate('/jogo');
+    localStorage.setItem('instanciaAtiva', personagem.instanciaId);
+    localStorage.setItem('idSessaoAtiva', idSessao);
   };
 
   return (
