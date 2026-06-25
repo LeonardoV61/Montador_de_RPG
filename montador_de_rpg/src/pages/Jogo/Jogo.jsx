@@ -52,7 +52,7 @@ export default function Jogo() {
          prev.map(dado => dado.id === id ? { ...dado, lancado: true } : dado)
       );
 
-      /* setRegistros(prev => [
+       setRegistros(prev => [
          ...prev,
          {
             id: Date.now() + Math.random(),
@@ -64,13 +64,13 @@ export default function Jogo() {
             dado: label,
             valorAtributo: false
          }
-      ]); */
+      ]); 
 
-      try {
-         await api.post('/jogadas/rolar', { dado: label, resultado: valor });
-      } catch (err) {
-         console.error("Erro ao salvar jogada:", err);
-      }
+      // try {
+      //    await api.post('/jogadas/rolar', { dado: label, resultado: valor });
+      // } catch (err) {
+      //    console.error("Erro ao salvar jogada:", err);
+      // }
 
       setTimeout(() => {
          setDadosAtivosNaMesa(prev => prev.filter(d => d.id !== id));
