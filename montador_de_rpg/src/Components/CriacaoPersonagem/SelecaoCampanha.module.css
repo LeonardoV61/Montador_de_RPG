@@ -85,7 +85,7 @@
   border-color: #c9a227;
 }
 
-button {
+.btnIniciar {
   background: rgba(201, 162, 39, 0.15);
   border: 1px solid #c9a227;
   color: #c9a227;
@@ -97,12 +97,12 @@ button {
   transition: all 0.2s;
 }
 
-button:hover:not(:disabled) {
+.btnIniciar:hover:not(:disabled) {
   background: #c9a227;
   color: #000;
 }
 
-button:disabled {
+.btnIniciar:disabled {
   opacity: 0.4;
   cursor: not-allowed;
 }

@@ -3,10 +3,10 @@ import { useParams } from 'react-router-dom'; // 1. Adicionado para pegar o ID d
 import { Canvas } from '@react-three/fiber';
 import { Physics } from '@react-three/cannon';
 import styles from './styles.Mapa.module.css';
+import { ContextoAbasPersonagem, ContextoMesaFisica } from '../../../pages/Jogo/Jogo.jsx';
 import MapaFerramentas from '../MapaFerramentas/MapaFerramentas.jsx';
 import AvatarPersonagem from '../AvatarPersonagem/AvatarPersonagem.jsx';
 import MenuContexto from '../MenuContexto/MenuContexto';
-import { ContextoAbasPersonagem, ContextoMesaFisica } from '../../../pages/Jogo/Jogo.jsx';
 import { ChaoMesa, ParedesMesa } from '../AbaDados/MesaFisica.jsx';
 import { DadoFisico } from '../AbaDados/physics/objects/DadoFisico.jsx';
 import { MoedaFisica } from '../AbaDados/physics/objects/MoedaFisica.jsx';

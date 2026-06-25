@@ -54,7 +54,7 @@ export default function SelecaoCampanha({ usuarioId, onConfirmar }) {
           />
         )}
       </div>
-      <button onClick={confirmar} disabled={!criarNova && !selecionada}>
+      <button className={styles.btnIniciar} onClick={confirmar} disabled={!criarNova && !selecionada}>
         Iniciar Criação
       </button>
     </div>
