@@ -1,0 +1,101 @@
+.container {
+  max-width: 800px;
+  margin: 2rem auto;
+  padding: 2rem;
+  background: rgba(20, 18, 15, 0.95);
+  border: 1px solid rgba(179, 146, 78, 0.3);
+  border-radius: 8px;
+  color: #ddd;
+  font-family: 'Georgia', serif;
+}
+
+.btnVoltar {
+  background: transparent;
+  border: 1px solid #b3924e;
+  color: #b3924e;
+  font-family: 'Cinzel', serif;
+  font-size: 0.85rem;
+  padding: 0.4rem 1rem;
+  border-radius: 4px;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  margin-bottom: 1.5rem;
+  transition: background 0.2s;
+}
+
+.btnVoltar:hover {
+  background: rgba(179, 146, 78, 0.1);
+}
+
+.cabecalho {
+  text-align: center;
+  margin-bottom: 2rem;
+}
+
+.cabecalho h1 {
+  font-family: 'Cinzel', serif;
+  font-size: 2.2rem;
+  color: #b3924e;
+  margin: 0 0 0.3rem;
+  letter-spacing: 1px;
+}
+
+.classe {
+  font-size: 1rem;
+  color: #aaa;
+  font-style: italic;
+}
+
+.atributos {
+  display: flex;
+  justify-content: center;
+  flex-wrap: wrap;
+  gap: 1.5rem;
+  margin-bottom: 2rem;
+}
+
+.atributo {
+  background: rgba(179, 146, 78, 0.08);
+  border: 1px solid rgba(179, 146, 78, 0.2);
+  border-radius: 8px;
+  padding: 0.8rem 1.2rem;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  font-size: 1.1rem;
+  min-width: 100px;
+  justify-content: center;
+}
+
+.atributo strong {
+  color: #b3924e;
+  font-family: 'Cinzel', serif;
+  margin-right: 4px;
+}
+
+.detalhes {
+  background: rgba(0, 0, 0, 0.2);
+  border: 1px solid rgba(179, 146, 78, 0.1);
+  border-radius: 6px;
+  padding: 1.5rem;
+}
+
+.detalhes p {
+  margin: 0.5rem 0;
+  line-height: 1.6;
+}
+
+.detalhes strong {
+  color: #b3924e;
+  font-weight: bold;
+}
+
+.carregando, .erro {
+  text-align: center;
+  padding: 4rem;
+  color: #aaa;
+  font-family: 'Cinzel', serif;
+  font-size: 1.2rem;
+}

@@ -1,0 +1,260 @@
+.container {
+  max-width: 860px;
+  margin: 0 auto;
+  padding: 2rem 1.5rem 4rem;
+  position: relative;
+  z-index: 1;
+}
+
+/* ── Header ── */
+.header {
+  text-align: center;
+  padding: 2.5rem 0 2rem;
+  border-bottom: 1px solid rgba(var(--douradoRGB), 0.2);
+  margin-bottom: 2.5rem;
+}
+
+.brasao {
+  font-size: 2.5rem;
+  color: var(--dourado);
+  display: block;
+  margin-bottom: 0.75rem;
+  filter: drop-shadow(0 0 12px rgba(var(--douradoRGB), 0.4));
+}
+
+.titulo {
+  font-size: 2.2rem;
+  font-weight: 700;
+  color: var(--dourado);
+  letter-spacing: 0.04em;
+  font-family: 'Crimson Pro', Georgia, serif;
+  margin-bottom: 0.4rem;
+}
+
+.subtitulo {
+  font-size: 1rem;
+  color: var(--cinza);
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  font-size: 0.8rem;
+}
+
+/* ── Seções ── */
+.secao {
+  margin-bottom: 2.5rem;
+}
+
+.secaoTitulo {
+  font-size: 0.75rem;
+  text-transform: uppercase;
+  letter-spacing: 0.14em;
+  color: var(--cinza);
+  margin-bottom: 1rem;
+  display: flex;
+  align-items: center;
+  gap: 0.6rem;
+}
+
+.secaoNum {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 1.5rem;
+  height: 1.5rem;
+  border: 1px solid rgba(var(--douradoRGB), 0.35);
+  color: var(--dourado);
+  font-size: 0.7rem;
+  font-style: italic;
+  border-radius: 2px;
+}
+
+/* ── Grade de cards ── */
+.grade {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
+  gap: 0.85rem;
+}
+
+.card {
+  position: relative;
+  background: var(--fundo2);
+  border: 1px solid var(--fundo3);
+  border-radius: 4px;
+  padding: 1.2rem 1rem;
+  cursor: pointer;
+  text-align: left;
+  display: flex;
+  flex-direction: column;
+  gap: 0.35rem;
+  transition: border-color 0.18s, background 0.18s, box-shadow 0.18s;
+  color: var(--branco);
+  font-family: inherit;
+}
+
+.card:hover {
+  border-color: rgba(var(--douradoRGB), 0.45);
+  background: var(--fundo3);
+}
+
+.cardAtivo {
+  border-color: var(--dourado) !important;
+  background: var(--fundo3) !important;
+  box-shadow: 0 0 0 1px var(--dourado), inset 0 0 24px rgba(var(--douradoRGB), 0.06);
+}
+
+.cardAtivo::after {
+  content: '✓';
+  position: absolute;
+  top: 0.6rem;
+  right: 0.75rem;
+  color: var(--dourado);
+  font-size: 0.85rem;
+}
+
+.cardImagem {
+  width: 100%;
+  height: 90px;
+  object-fit: cover;
+  border-radius: 2px;
+  margin-bottom: 0.4rem;
+  opacity: 0.85;
+}
+
+.cardNome {
+  font-size: 1rem;
+  font-weight: 600;
+  color: var(--branco);
+}
+
+.cardDesc {
+  font-size: 0.8rem;
+  color: var(--cinza);
+  line-height: 1.4;
+  display: -webkit-box;
+  -webkit-line-clamp: 2;
+  -webkit-box-orient: vertical;
+  overflow: hidden;
+}
+
+.badge {
+  display: inline-block;
+  margin-top: 0.25rem;
+  font-size: 0.65rem;
+  text-transform: uppercase;
+  letter-spacing: 0.1em;
+  color: var(--dourado);
+  border: 1px solid rgba(var(--douradoRGB), 0.4);
+  padding: 0.1rem 0.4rem;
+  border-radius: 2px;
+  width: fit-content;
+}
+
+/* ── Input de nome ── */
+.inputWrapper {
+  position: relative;
+  display: flex;
+  flex-direction: column;
+}
+
+.input {
+  background: var(--fundo2);
+  border: none;
+  border-bottom: 2px solid var(--fundo3);
+  color: var(--branco);
+  font-family: 'Crimson Pro', Georgia, serif;
+  font-size: 1.3rem;
+  padding: 0.75rem 0.25rem;
+  width: 100%;
+  transition: border-color 0.2s;
+}
+
+.input::placeholder {
+  color: var(--fundo3);
+  font-style: italic;
+}
+
+.input:focus {
+  border-bottom-color: var(--dourado);
+}
+
+/* ── Rodapé e botão ── */
+.rodape {
+  display: flex;
+  justify-content: flex-end;
+  padding-top: 1.5rem;
+  border-top: 1px solid var(--fundo3);
+}
+
+.botaoCriar {
+  display: flex;
+  align-items: center;
+  gap: 0.6rem;
+  background: transparent;
+  border: 1px solid var(--dourado);
+  color: var(--dourado);
+  font-family: 'Crimson Pro', Georgia, serif;
+  font-size: 1rem;
+  letter-spacing: 0.06em;
+  padding: 0.7rem 1.6rem;
+  cursor: pointer;
+  border-radius: 3px;
+  transition: background 0.18s, color 0.18s, box-shadow 0.18s;
+}
+
+.botaoCriar:hover:not(:disabled) {
+  background: var(--dourado);
+  color: var(--preto);
+  box-shadow: 0 0 18px rgba(var(--douradoRGB), 0.3);
+}
+
+.botaoCriar:disabled {
+  opacity: 0.3;
+  cursor: not-allowed;
+}
+
+.setaBotao {
+  font-size: 1.1rem;
+  transition: transform 0.15s;
+}
+
+.botaoCriar:hover:not(:disabled) .setaBotao {
+  transform: translateX(4px);
+}
+
+/* ── Utilitários ── */
+.centrado {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  padding: 2rem;
+  gap: 0.75rem;
+}
+
+.spinner {
+  width: 28px;
+  height: 28px;
+  border: 2px solid var(--fundo3);
+  border-top-color: var(--dourado);
+  border-radius: 50%;
+  animation: girar 0.7s linear infinite;
+}
+
+@keyframes girar {
+  to { transform: rotate(360deg); }
+}
+
+.textoAux {
+  color: var(--cinza);
+  font-style: italic;
+  font-size: 0.9rem;
+}
+
+.erro {
+  color: var(--vermelho);
+  background: rgba(217, 0, 0, 0.08);
+  border: 1px solid rgba(217, 0, 0, 0.25);
+  border-radius: 3px;
+  padding: 0.6rem 1rem;
+  margin-bottom: 1.5rem;
+  font-size: 0.9rem;
+}

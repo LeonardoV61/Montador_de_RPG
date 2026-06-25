@@ -1,5 +1,6 @@
 import { useState, createContext, useContext, useEffect } from "react";
-import api from "../utils/api";
+import { authService } from "../services/authService";
+
 const AuthContext = createContext();
 
 export function AuthProvider({ children }) {
@@ -9,71 +10,42 @@ export function AuthProvider({ children }) {
   });
 
   useEffect(() => {
-    const token = localStorage.getItem("token");
-    if (token) {
-      api.defaults.headers.common["Authorization"] = `Bearer ${token}`;
-    }
-  }, []);
-
-  // Monitora outras abas do navegador. Se o usuário deslogar em uma aba, desloga em todas.
-  useEffect(() => {
     const handleStorageChange = (e) => {
       if (e.key === "token") {
-        if (!e.newValue) {
-          // Token foi removido
-          setAuthenticated(false);
-          delete api.defaults.headers.common["Authorization"];
-        } else {
-          // Token foi adicionado/atualizado
-          setAuthenticated(true);
-          api.defaults.headers.common["Authorization"] = `Bearer ${e.newValue}`;
-        }
+        setAuthenticated(!!e.newValue);
       }
     };
-
     window.addEventListener("storage", handleStorageChange);
     return () => window.removeEventListener("storage", handleStorageChange);
   }, []);
 
-  // Função para centralizar o login com sucesso
-  const login = (token) => {
-    localStorage.setItem("token", token);
-    api.defaults.headers.common["Authorization"] = `Bearer ${token}`;
-    setAuthenticated(true);
+  const login = async (email, senha) => {
+    try {
+      const data = await authService.login(email, senha);
+      if (data?.token) {
+        localStorage.setItem("token", data.token);
+        setAuthenticated(true);
+      }
+    } catch (error) {
+      console.error("Erro no login:", error);
+      setAuthenticated(false);
+    }
   };
 
-  // Função de logout limpa o estado, o storage e os headers do Axios
+  const handleOAuthRedirect = () => {
+    const token = authService.handleOAuthRedirect();
+    if (token) {
+      setAuthenticated(true);
+    }
+  };
+
   const logout = () => {
     localStorage.removeItem("token");
-    delete api.defaults.headers.common["Authorization"];
     setAuthenticated(false);
   };
 
-  // Opcional: Função para validar se o token atual ainda é válido no backend
-  // const validateTokenOnServer = async () => {
-  //   try {
-  //     // Supondo que você tenha uma rota no Spring que valide o token atual
-  //     await api.get("/auth/validate"); 
-  //   } catch (error) {
-  //     // Se o backend retornar 401 ou 403, desloga o usuário imediatamente
-  //     logout();
-  //   }
-  // };
-// === MODALIDADE BYPASS TEMPORÁRIO ===
-  const validateTokenOnServer = async () => {
-    try {
-      // Comentamos a chamada real temporariamente
-      // await api.get("/auth/validate"); 
-      
-      // Simulamos que o token fake sempre é válido
-      console.log("Bypass: Validando token fictício no front-end... OK!");
-      return true; 
-    } catch (error) {
-      logout();
-    }
-  };
   return (
-    <AuthContext.Provider value={{ authenticated, login, logout, validateTokenOnServer }}>
+    <AuthContext.Provider value={{ authenticated, login, logout, handleOAuthRedirect }}>
       {children}
     </AuthContext.Provider>
   );

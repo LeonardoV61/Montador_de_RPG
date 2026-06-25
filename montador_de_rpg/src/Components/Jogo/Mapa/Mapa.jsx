@@ -2,6 +2,7 @@ import { useState, useEffect, useRef, useContext, createContext } from 'react';
 import { Canvas } from '@react-three/fiber';
 import { Physics } from '@react-three/cannon';
 import styles from './styles.Mapa.module.css';
+import { ContextoAbasPersonagem } from '../../../pages/Jogo/Jogo.jsx';
 import MapaFerramentas from '../MapaFerramentas/MapaFerramentas.jsx';
 import AvatarPersonagem from '../AvatarPersonagem/AvatarPersonagem.jsx';
 import MenuContexto from '../MenuContexto/MenuContexto';
@@ -330,15 +331,20 @@ export default function Mapa() {
             </div>
          )}
 
-         <MapaFerramentas />
+      <MapaFerramentas />
 
-         <ContextoAvatar.Provider value={{avatarSelecionado, setAvatarSelecionado}}>
-            <AvatarPersonagem tipo="jogador" nome="Aldric" icone="⚔" porcentagemHP="67"/>
-            <AvatarPersonagem tipo="jogador" nome="Sena" icone="🏹" porcentagemHP="100"/>
-            <AvatarPersonagem tipo="inimigo" nome="Guarda 1" icone="💀" porcentagemHP="30"/>
-            <AvatarPersonagem tipo="inimigo" nome="Guarda 2" icone="💀" porcentagemHP="80"/>
-            <AvatarPersonagem tipo="npc" nome="Ancião" icone="🧙" porcentagemHP="100"/>
-         </ContextoAvatar.Provider>
+      <ContextoAvatar.Provider value={{ avatarSelecionado: null, setAvatarSelecionado: () => {} }}>
+        {avatares.map(av => (
+          <AvatarPersonagem
+            key={av.idInstancia}
+            nome={av.nome}
+            icone={av.icone}
+            porcentagemHP={av.porcentagemHP}
+            tipo={av.tipo}
+            posicao={av.pos}
+          />
+        ))}
+      </ContextoAvatar.Provider>
 
          <div className={`${styles.iniciativa} ${anotacoesAberta ? styles.iniciativaDeslocada : ""}`}>
             <div className={styles.iniciativaTitulo}>Iniciativa</div>

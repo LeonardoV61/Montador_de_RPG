@@ -3,14 +3,14 @@ import Home from "../pages/Home.jsx";
 import LoginUser from "../pages/LoginUser.jsx";
 import UserMenu from "../pages/UserMenu.jsx";
 import PlayerPanel from "../pages/PlayerPanel.jsx";
-import Jogo from "../pages/Jogo/Jogo.jsx"
+import Jogo from "../pages/Jogo/Jogo.jsx";
 import ErrorPage from "../pages/ErrorPage.jsx";
 import OAuth2Redirect from "../pages/OAuth2Redirect.jsx";
 import { ProtectedRoute } from "./ProtecaoManeira.jsx";
-/* import MasterPanel from "../pages/MasterPanel.jsx";
-import LoginAdm from "../pages/LoginAdm.jsx";
-import AdmMenu from "../pages/AdmMenu.jsx";
-import AdmPanel from "../pages/AdmPanel.jsx"; */
+import TesteResolucao from "../pages/TesteResolucao.jsx";
+import Registro from "../pages/Registro.jsx";
+import CriacaoPersonagem from "../pages/Personagens/CriacaoPersonagem.jsx";
+import FichaPersonagem from "../pages/Personagens/FichaPersonagem.jsx";
 
 const Router = () =>
   createBrowserRouter([
@@ -20,21 +20,26 @@ const Router = () =>
       errorElement: <ErrorPage />,
     },
     {
+      path: "/registro",
+      element: <Registro />,
+      errorElement: <ErrorPage />,
+    },
+    {
       path: "/login",
       element: <LoginUser />,
       errorElement: <ErrorPage />,
     },
     {
-      path: "/oauth2/redirect", 
+      path: "/oauth2/redirect",
       element: <OAuth2Redirect />,
       errorElement: <ErrorPage />,
     },
     {
       path: "/menu",
       element: (
-      <ProtectedRoute>
-        <UserMenu />
-      </ProtectedRoute>
+        <ProtectedRoute>
+          <UserMenu />
+        </ProtectedRoute>
       ),
       errorElement: <ErrorPage />,
     },
@@ -43,39 +48,27 @@ const Router = () =>
       element: <PlayerPanel />,
       errorElement: <ErrorPage />,
     },
-    /* {
-      path: "/master",
-      element: <MasterPanel />,
-      errorElement: <ErrorPage />,
-    }, */
-    /* {
-      path: "/loginadm",
-      element: <LoginAdm />,
-      errorElement: <ErrorPage />,
-    }, */
-    /* {
-      path: "/adm",
+    {
+      path: "/criar-personagem",
       element: (
         <ProtectedRoute>
-          <AdmMenu />
+          <CriacaoPersonagem />
         </ProtectedRoute>
       ),
       errorElement: <ErrorPage />,
-    }, */
-    /* {
-      path: "/adm/painel",
+    },
+    {
+      path: "/personagens/:id",
       element: (
         <ProtectedRoute>
-          <AdmPanel />
+          <FichaPersonagem />
         </ProtectedRoute>
       ),
       errorElement: <ErrorPage />,
-    }, */
+    },
     {
       path: "/jogo",
-      element: (
-        <Jogo />
-      ),
+      element: <Jogo />,
       errorElement: <ErrorPage />,
     },
     {

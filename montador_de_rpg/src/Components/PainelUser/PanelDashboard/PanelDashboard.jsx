@@ -1,4 +1,5 @@
 import styles from "./styles.PanelDashboard.module.css"
+
 export default function PanelDashboard(props){
   return(
     <>
@@ -6,9 +7,7 @@ export default function PanelDashboard(props){
         <div className={styles.panelHeader}>
           <h3>{props.titulo}</h3>
           {
-            props.canto == "btn" && <button>+ Nova Campanha</button>
-            ||
-            props.canto && <span>{props.canto} online</span>
+            props.canto == "btn"? props.botao : props.canto && <span>{props.canto} online</span>
           }
         </div>
         <ul className={styles.list}>

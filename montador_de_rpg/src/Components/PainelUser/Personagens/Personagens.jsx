@@ -1,19 +1,20 @@
-import { useState } from "react";
+import { useState, useEffect } from "react";
+import { useNavigate } from "react-router-dom";
 import { Shield, Plus, Compass, Search, Eye, Sparkles, BookOpen, ChevronLeft, Scroll } from "lucide-react";
+import { personagemService } from "../../../services/personagemService";
+import { usuarioService } from "../../../services/usuarioService";
 import styles from "./styles.Personagens.module.css";
 
 export default function Personagens() {
+  const navigate = useNavigate();
   const [abaAtiva, setAbaAtiva] = useState("meus");
   const [busca, setBusca] = useState("");
-  
-  // ESTADO DE NAVEGAÇÃO: Controla se estamos lendo uma lore expandida
+  const [personagens, setPersonagens] = useState([]);
+  const [carregando, setCarregando] = useState(true);
+  const [usuarioId, setUsuarioId] = useState(null);
   const [npcSelecionado, setNpcSelecionado] = useState(null);
 
-  const [meusPersonagens, setMeusPersonagens] = useState([
-    { id: "mp-1", nome: "THORIN ESCUDO-DE-CARVALHO", classe: "Guerreiro / Anão", campanha: "A Maldição de Strahd", status: "Vivo" },
-    { id: "mp-2", nome: "ELÉONORA VANCE", classe: "Maga / Elfa", campanha: "Os Sussurros de Cthulhu", status: "Vivo" }
-  ]);
-
+  // Dados mockados de NPCs (mantidos como exemplo)
   const [npcsAvistados] = useState([
     { 
       id: "npc-1", 
@@ -21,7 +22,7 @@ export default function Personagens() {
       papel: "Mentor / Mago", 
       campanha: "A Maldição de Strahd", 
       descricao: "Um antigo mago que guarda os segredos do grimório...",
-      loreCompleta: "Heron nasceu nas eras de prata, antes mesmo da névoa engolir o vale de Barovia. Ele serviu à dinastia dos Elfos da Lua como arquivista-chefe antes de se isolar na Torre Argêntea.\n\nHoje, com mais de trezentos anos de vivência, seus olhos carregam o brilho da magia arcana ancestral. Boatos na taverna dizem que ele possui o único mapa restante capaz de guiar viajantes através dos pântanos sussurrantes sem alertar as bruxas da noite. Ele não confia em estranhos, mas um presente em ouro ou relíquias esquecidas pode abrir seus lábios."
+      loreCompleta: "Heron nasceu nas eras de prata..."
     },
     { 
       id: "npc-2", 
@@ -29,19 +30,38 @@ export default function Personagens() {
       papel: "Líder Político", 
       campanha: "A Maldição de Strahd", 
       descricao: "Governante paranoico da cidade de Vallaki.",
-      loreCompleta: "O Barão Vargas Vallakovich é o atual governante de Vallaki. Sua sanidade é questionável: ele acredita piamente que, se conseguir manter a população em um estado constante de festividade e felicidade forçada através de festivais semanais, o Lorde das Trevas (Strahd) não terá poder sobre os muros da cidade.\n\nQualquer cidadão pego demonstrando tristeza ou descontentamento é severamente punido por insubordinação. Suas mãos tremem constantemente e ele nunca é visto sem seus guardas pessoais."
+      loreCompleta: "O Barão Vargas Vallakovich é o atual governante..."
     }
   ]);
 
+  // Busca o usuário logado e carrega os personagens
+  useEffect(() => {
+    async function carregar() {
+      try {
+        const perfil = await usuarioService.perfil();
+        const id = perfil?.data?.id || perfil?.id;
+        setUsuarioId(id);
+        if (id) {
+          const resp = await personagemService.listarPorUsuario(id);
+          console.log("RESPOSTA PERSONAGEM:", resp)
+          const lista = resp?.data || resp || [];
+          setPersonagens(Array.isArray(lista) ? lista : []);
+        }
+      } catch (err) {
+        console.error("Erro ao carregar personagens:", err);
+      } finally {
+        setCarregando(false);
+      }
+    }
+    carregar();
+  }, []);
+
   function handleCriarPersonagem() {
-    const novoHeroi = {
-      id: `mp-${Date.now()}`,
-      nome: "NOVO HERÓI SEM NOME",
-      classe: "Escolha uma Classe / Raça",
-      campanha: "Nenhuma Campanha Vinculada",
-      status: "Vivo"
-    };
-    setMeusPersonagens([novoHeroi, ...meusPersonagens]);
+    navigate("/criacao-personagem");
+  }
+
+  function handleVerFicha(personagem) {
+    navigate(`/personagens/${personagem.id}`);
   }
 
   // --- SE TIVER UM NPC SELECIONADO, RENDERIZA A TELA COMPLETA DA WIKI ---
@@ -49,7 +69,6 @@ export default function Personagens() {
     return (
       <div className={styles.containerGeral}>
         <div className={styles.telaLeituraWiki}>
-          {/* Header de Controle */}
           <div className={styles.headerLeitura}>
             <button className={styles.btnVoltar} onClick={() => setNpcSelecionado(null)}>
               <ChevronLeft size={16} /> Voltar para os Registros
@@ -59,8 +78,6 @@ export default function Personagens() {
               <span className={styles.tagPapelLeitura}>{npcSelecionado.papel}</span>
             </div>
           </div>
-
-          {/* Corpo do Artigo Expandido */}
           <div className={styles.corpoLeitura}>
             <div className={styles.tituloAlinhamento}>
               <Scroll size={28} className={styles.iconSelo} />
@@ -69,8 +86,6 @@ export default function Personagens() {
             <div className={styles.divisorEstilizado} />
             <p className={styles.textoLoreNpc}>{npcSelecionado.loreCompleta}</p>
           </div>
-
-          {/* Selo Protetor de Rodapé */}
           <div className={styles.rodapeProtegido}>
             <span>Manuscrito original guardado pelo Mestre da Campanha. Registro protegido contra alterações.</span>
           </div>
@@ -79,10 +94,9 @@ export default function Personagens() {
     );
   }
 
-  // --- CASO CONTRÁRIO, EXIBE A TELA NORMAL DE ABAS ---
+  // --- TELA PRINCIPAL ---
   return (
     <div className={styles.containerGeral}>
-      {/* HEADER SUPERIOR */}
       <div className={styles.headerMenu}>
         <div className={styles.abasPrincipais}>
           <button 
@@ -98,7 +112,6 @@ export default function Personagens() {
             <BookOpen size={16} /> NPCs Conhecidos
           </button>
         </div>
-
         <div className={styles.buscaWrapper}>
           <Search size={18} className={styles.buscaIcon} />
           <input 
@@ -110,9 +123,7 @@ export default function Personagens() {
         </div>
       </div>
 
-      {/* ÁREA DE CONTEÚDO ROLÁVEL */}
       <div className={styles.painelRolavel}> 
-        {/* ABA: MEUS PERSONAGENS */}
         {abaAtiva === "meus" && (
           <div className={styles.secaoLayout}>
             <div className={styles.subHeaderInterno}>
@@ -125,29 +136,36 @@ export default function Personagens() {
               </button>
             </div>
             
-            <div className={styles.gridCards}>
-              {meusPersonagens
-                .filter(p => p.nome.toLowerCase().includes(busca.toLowerCase()))
-                .map(p => (
-                  <div key={p.id} className={styles.cardHeroi}>
-                    <div className={styles.cardHeader}>
-                      <span className={styles.tagCampanha}><Compass size={12} /> {p.campanha}</span>
-                      <span className={styles.statusVivo}>{p.status}</span>
+            {carregando ? (
+              <p className={styles.textoCarregando}>Carregando seus personagens...</p>
+            ) : personagens.length === 0 ? (
+              <p className={styles.textoVazio}>Nenhum personagem criado ainda. Clique em "Criar Novo Personagem" para começar.</p>
+            ) : (
+              <div className={styles.gridCards}>
+                {personagens
+                  .filter(p => (p.instanciaNome || p.nome || "").toLowerCase().includes(busca.toLowerCase()))
+                  .map(p => (
+                    <div key={p.id} className={styles.cardHeroi}>
+                      <div className={styles.cardHeader}>
+                        <span className={styles.tagCampanha}><Compass size={12} /> {p.campanhaNome || "Sem campanha"}</span>
+                        <span className={p.ativo ? styles.statusVivo : styles.statusMorto}>
+                          {p.ativo ? "Vivo" : "Inativo"}
+                        </span>
+                      </div>
+                      <div className={styles.cardCorpo}>
+                        <h4>{p.instanciaNome || p.nome || "Sem nome"}</h4>
+                        <p><Shield size={13} /> {p.tipo || p.classe || "Aventureiro"}</p>
+                      </div>
+                      <button className={styles.btnAcaoCard} onClick={() => handleVerFicha(p)}>
+                        Ver Ficha & Atributos
+                      </button>
                     </div>
-                    <div className={styles.cardCorpo}>
-                      <h4>{p.nome}</h4>
-                      <p><Shield size={13} /> {p.classe}</p>
-                    </div>
-                    <button className={styles.btnAcaoCard} onClick={() => alert("Abrindo editor...")}>
-                      Editar Ficha & Atributos
-                    </button>
-                  </div>
-              ))}
-            </div>
+                  ))}
+              </div>
+            )}
           </div>
         )}
 
-        {/* ABA: NPCS */}
         {abaAtiva === "npcs" && (
           <div className={styles.secaoLayout}>
             <div className={styles.subHeaderInterno}>
@@ -156,7 +174,6 @@ export default function Personagens() {
                 <p>NPCs revelados pelo Mestre durante a sua jornada (Somente Leitura)</p>
               </div>
             </div>
-
             <div className={styles.gridCards}>
               {npcsAvistados
                 .filter(npc => npc.nome.toLowerCase().includes(busca.toLowerCase()) || npc.campanha.toLowerCase().includes(busca.toLowerCase()))

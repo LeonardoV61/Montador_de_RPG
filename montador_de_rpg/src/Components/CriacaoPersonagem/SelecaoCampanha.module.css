@@ -1,0 +1,108 @@
+/* SelecaoCampanha.module.css */
+
+.container {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 1.5rem;
+  padding: 2rem;
+  color: #e0d6c2;
+  background: rgba(20, 18, 15, 0.92);
+  border: 1px solid rgba(179, 146, 78, 0.2);
+  border-radius: 8px;
+  max-width: 500px;
+  margin: 0 auto;
+}
+
+.container h2 {
+  font-family: 'Cinzel', serif;
+  font-size: 1.8rem;
+  color: #c9a227;
+  margin: 0;
+  letter-spacing: 1px;
+}
+
+.lista {
+  display: flex;
+  flex-direction: column;
+  gap: 0.75rem;
+  width: 100%;
+}
+
+.card {
+  background: rgba(0, 0, 0, 0.3);
+  border: 1px solid #3d332d;
+  color: #ccc;
+  font-family: 'Georgia', serif;
+  font-size: 1rem;
+  padding: 0.75rem 1rem;
+  border-radius: 4px;
+  cursor: pointer;
+  transition: all 0.2s;
+  text-align: left;
+}
+
+.card:hover {
+  border-color: #c9a227;
+  background: rgba(201, 162, 39, 0.08);
+}
+
+.ativo {
+  border-color: #c9a227;
+  background: rgba(201, 162, 39, 0.15);
+  color: #fff;
+}
+
+.nova {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  gap: 0.5rem;
+  width: 100%;
+}
+
+.nova label {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  color: #aaa;
+  font-size: 0.9rem;
+  cursor: pointer;
+}
+
+.nova input[type="text"] {
+  width: 100%;
+  background: #1a1815;
+  border: 1px solid #3d332d;
+  color: #fff;
+  padding: 0.6rem;
+  border-radius: 4px;
+  font-size: 0.95rem;
+}
+
+.nova input[type="text"]:focus {
+  outline: none;
+  border-color: #c9a227;
+}
+
+button {
+  background: rgba(201, 162, 39, 0.15);
+  border: 1px solid #c9a227;
+  color: #c9a227;
+  font-family: 'Cinzel', serif;
+  font-size: 0.95rem;
+  padding: 0.7rem 1.5rem;
+  border-radius: 4px;
+  cursor: pointer;
+  transition: all 0.2s;
+}
+
+button:hover:not(:disabled) {
+  background: #c9a227;
+  color: #000;
+}
+
+button:disabled {
+  opacity: 0.4;
+  cursor: not-allowed;
+}

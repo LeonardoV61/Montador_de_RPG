@@ -1,0 +1,164 @@
+.pagina {
+  position: relative;
+  min-height: 100vh;
+  z-index: 1;
+}
+
+/* ── Botão voltar ── */
+.botaoVoltar {
+  position: fixed;
+  top: 1.25rem;
+  left: 1.25rem;
+  background: transparent;
+  border: none;
+  color: var(--cinza);
+  font-family: 'Crimson Pro', Georgia, serif;
+  font-size: 0.9rem;
+  cursor: pointer;
+  padding: 0.4rem 0.6rem;
+  border-radius: 3px;
+  transition: color 0.15s, background 0.15s;
+  z-index: 10;
+}
+
+.botaoVoltar:hover {
+  color: var(--branco);
+  background: var(--fundo2);
+}
+
+/* ── Erro global ── */
+.erroGlobal {
+  position: fixed;
+  top: 1rem;
+  left: 50%;
+  transform: translateX(-50%);
+  background: var(--fundo2);
+  border: 1px solid var(--vermelho);
+  color: var(--vermelho);
+  padding: 0.6rem 1rem;
+  border-radius: 4px;
+  display: flex;
+  align-items: center;
+  gap: 1rem;
+  font-size: 0.9rem;
+  z-index: 100;
+  max-width: 90vw;
+  box-shadow: 0 4px 20px rgba(0, 0, 0, 0.4);
+  animation: descer 0.2s ease;
+}
+
+@keyframes descer {
+  from { opacity: 0; transform: translateX(-50%) translateY(-8px); }
+  to   { opacity: 1; transform: translateX(-50%) translateY(0); }
+}
+
+.erroGlobal button {
+  background: none;
+  border: none;
+  color: var(--vermelho);
+  cursor: pointer;
+  font-size: 1rem;
+  padding: 0;
+  line-height: 1;
+}
+
+/* ── Página de conclusão (fallback) ── */
+.concluidoPagina {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  min-height: 100vh;
+  gap: 1rem;
+  padding: 2rem;
+  text-align: center;
+}
+
+.icone {
+  font-size: 3.5rem;
+  color: var(--dourado);
+  filter: drop-shadow(0 0 20px rgba(var(--douradoRGB), 0.5));
+  animation: pulsar 2s ease infinite;
+}
+
+@keyframes pulsar {
+  0%, 100% { opacity: 1; }
+  50%       { opacity: 0.6; }
+}
+
+.tituloConcluido {
+  font-size: 2.5rem;
+  color: var(--dourado);
+  font-family: 'Crimson Pro', Georgia, serif;
+  font-weight: 700;
+}
+
+.subtitulo {
+  color: var(--cinza);
+  font-style: italic;
+  font-size: 1rem;
+  margin-bottom: 0.5rem;
+}
+
+.acoes {
+  display: flex;
+  gap: 1rem;
+  flex-wrap: wrap;
+  justify-content: center;
+  margin-top: 0.5rem;
+}
+
+.botaoPrimario {
+  background: var(--dourado);
+  color: var(--preto);
+  border: none;
+  font-family: 'Crimson Pro', Georgia, serif;
+  font-size: 1rem;
+  padding: 0.75rem 2rem;
+  cursor: pointer;
+  border-radius: 3px;
+  transition: opacity 0.15s, box-shadow 0.15s;
+}
+
+.botaoPrimario:hover {
+  opacity: 0.9;
+  box-shadow: 0 0 20px rgba(var(--douradoRGB), 0.4);
+}
+
+.botaoSecundario {
+  background: transparent;
+  color: var(--cinza);
+  border: 1px solid var(--fundo3);
+  font-family: 'Crimson Pro', Georgia, serif;
+  font-size: 1rem;
+  padding: 0.75rem 2rem;
+  cursor: pointer;
+  border-radius: 3px;
+  transition: color 0.15s, border-color 0.15s;
+}
+
+.botaoSecundario:hover {
+  color: var(--branco);
+  border-color: var(--cinza);
+}
+
+/* ── Loading inicial ── */
+.centradoFull {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  min-height: 100vh;
+}
+
+.spinner {
+  width: 36px;
+  height: 36px;
+  border: 2px solid var(--fundo3);
+  border-top-color: var(--dourado);
+  border-radius: 50%;
+  animation: girar 0.7s linear infinite;
+}
+
+@keyframes girar {
+  to { transform: rotate(360deg); }
+}
