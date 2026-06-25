@@ -1,101 +1,369 @@
-.container {
-  max-width: 800px;
-  margin: 2rem auto;
-  padding: 2rem;
-  background: rgba(20, 18, 15, 0.95);
-  border: 1px solid rgba(179, 146, 78, 0.3);
-  border-radius: 8px;
-  color: #ddd;
-  font-family: 'Georgia', serif;
+/* ─────────────────────────────────────────────
+   Folha de Personagem — RPG VTT
+   Estética: pergaminho medieval escurecido,
+   tipografia Cinzel + EB Garamond
+───────────────────────────────────────────── */
+
+@import url('https://fonts.googleapis.com/css2?family=Cinzel:wght@400;600;700&family=EB+Garamond:ital,wght@0,400;0,500;1,400&display=swap');
+
+/* ── Variáveis ── */
+:root {
+  --ouro:        #b3924e;
+  --ouro-claro:  #d4af6a;
+  --ouro-sutil:  rgba(179, 146, 78, 0.18);
+  --ouro-borda:  rgba(179, 146, 78, 0.3);
+  --tinta:       #e8dfc8;        /* cor de texto principal */
+  --tinta-fraca: #9e9178;
+  --fundo:       #100f0c;
+  --fundo-card:  rgba(255, 255, 255, 0.035);
+  --fundo-secao: rgba(0, 0, 0, 0.25);
+  --vermelho:    #8b2c2c;
+  --cinzel: 'Cinzel', serif;
+  --garamond: 'EB Garamond', Georgia, serif;
 }
 
+/* ── Folha ── */
+.folha {
+  width: 820px;
+  min-height: 1080px;
+  margin: 2rem auto;
+  padding: 2.5rem 2.8rem;
+  background: var(--fundo);
+  border: 1px solid var(--ouro-borda);
+  border-top: 3px solid var(--ouro);
+  border-bottom: 3px solid var(--ouro);
+  box-shadow:
+    0 0 0 6px rgba(179, 146, 78, 0.06),
+    0 8px 40px rgba(0, 0, 0, 0.7);
+  color: var(--tinta);
+  font-family: var(--garamond);
+  font-size: 1rem;
+  line-height: 1.6;
+  position: relative;
+  box-sizing: border-box;
+}
+
+/* cantos decorativos */
+.folha::before,
+.folha::after {
+  content: '✦';
+  font-size: 1.1rem;
+  color: var(--ouro);
+  position: absolute;
+  top: 1rem;
+}
+.folha::before { left: 1rem; }
+.folha::after  { right: 1rem; }
+
+/* ── Botão voltar ── */
 .btnVoltar {
   background: transparent;
-  border: 1px solid #b3924e;
-  color: #b3924e;
-  font-family: 'Cinzel', serif;
-  font-size: 0.85rem;
-  padding: 0.4rem 1rem;
-  border-radius: 4px;
+  border: 1px solid var(--ouro-borda);
+  color: var(--ouro);
+  font-family: var(--cinzel);
+  font-size: 0.78rem;
+  letter-spacing: 0.06em;
+  padding: 0.35rem 0.9rem;
+  border-radius: 3px;
   cursor: pointer;
-  display: flex;
+  display: inline-flex;
   align-items: center;
-  gap: 6px;
-  margin-bottom: 1.5rem;
-  transition: background 0.2s;
+  gap: 5px;
+  margin-bottom: 1.8rem;
+  transition: background 0.18s, color 0.18s;
 }
-
 .btnVoltar:hover {
-  background: rgba(179, 146, 78, 0.1);
+  background: var(--ouro-sutil);
+  color: var(--ouro-claro);
 }
 
+/* ── Cabeçalho ── */
 .cabecalho {
   text-align: center;
   margin-bottom: 2rem;
 }
 
-.cabecalho h1 {
-  font-family: 'Cinzel', serif;
-  font-size: 2.2rem;
-  color: #b3924e;
-  margin: 0 0 0.3rem;
-  letter-spacing: 1px;
+.brasao {
+  font-size: 2rem;
+  color: var(--ouro);
+  line-height: 1;
+  margin-bottom: 0.4rem;
+  opacity: 0.85;
+}
+
+.nomePersonagem {
+  font-family: var(--cinzel);
+  font-size: 2.1rem;
+  font-weight: 700;
+  color: var(--ouro-claro);
+  letter-spacing: 2px;
+  margin: 0 0 0.2rem;
+  text-shadow: 0 0 24px rgba(179, 146, 78, 0.25);
 }
 
 .classe {
-  font-size: 1rem;
-  color: #aaa;
+  font-family: var(--garamond);
   font-style: italic;
+  font-size: 1rem;
+  color: var(--tinta-fraca);
+  display: block;
+  margin-bottom: 1.2rem;
 }
 
-.atributos {
-  display: flex;
-  justify-content: center;
-  flex-wrap: wrap;
-  gap: 1.5rem;
-  margin-bottom: 2rem;
+.divisorOuro {
+  height: 1px;
+  background: linear-gradient(
+    to right,
+    transparent,
+    var(--ouro) 20%,
+    var(--ouro-claro) 50%,
+    var(--ouro) 80%,
+    transparent
+  );
+  opacity: 0.6;
 }
 
-.atributo {
-  background: rgba(179, 146, 78, 0.08);
-  border: 1px solid rgba(179, 146, 78, 0.2);
-  border-radius: 8px;
-  padding: 0.8rem 1.2rem;
+/* ── Corpo em duas colunas ── */
+.corpo {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 1.8rem;
+  margin-top: 1.8rem;
+}
+
+/* ── Seção genérica ── */
+.secao {
+  background: var(--fundo-secao);
+  border: 1px solid var(--ouro-borda);
+  border-radius: 4px;
+  padding: 1.1rem 1.2rem;
+  margin-bottom: 1.2rem;
+}
+
+.tituloSecao {
+  font-family: var(--cinzel);
+  font-size: 0.72rem;
+  font-weight: 600;
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+  color: var(--ouro);
+  margin: 0 0 0.9rem;
   display: flex;
   align-items: center;
-  gap: 8px;
-  font-size: 1.1rem;
-  min-width: 100px;
-  justify-content: center;
+  gap: 6px;
+  padding-bottom: 0.5rem;
+  border-bottom: 1px solid var(--ouro-borda);
 }
 
-.atributo strong {
-  color: #b3924e;
-  font-family: 'Cinzel', serif;
-  margin-right: 4px;
+/* ── Grade de Virtudes ── */
+.gradeVirtudes {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 0.7rem;
 }
 
-.detalhes {
-  background: rgba(0, 0, 0, 0.2);
-  border: 1px solid rgba(179, 146, 78, 0.1);
-  border-radius: 6px;
-  padding: 1.5rem;
-}
-
-.detalhes p {
-  margin: 0.5rem 0;
-  line-height: 1.6;
-}
-
-.detalhes strong {
-  color: #b3924e;
-  font-weight: bold;
-}
-
-.carregando, .erro {
+.cartaoVirtude {
+  background: var(--fundo-card);
+  border: 1px solid var(--ouro-borda);
+  border-radius: 4px;
+  padding: 0.65rem 0.5rem 0.5rem;
   text-align: center;
-  padding: 4rem;
-  color: #aaa;
-  font-family: 'Cinzel', serif;
-  font-size: 1.2rem;
+}
+
+.virtudeTopo {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 5px;
+  color: var(--ouro);
+  margin-bottom: 0.35rem;
+}
+
+.virtueLabel {
+  font-family: var(--cinzel);
+  font-size: 0.7rem;
+  letter-spacing: 0.1em;
+  font-weight: 600;
+}
+
+.virtueValor {
+  font-family: var(--cinzel);
+  font-size: 1.7rem;
+  font-weight: 700;
+  color: var(--tinta);
+  line-height: 1;
+}
+
+/* ── Linhas de atributo ── */
+.linhasAtributo {
+  display: flex;
+  flex-direction: column;
+  gap: 0.45rem;
+}
+
+.linhaAtributo {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 0.3rem 0;
+  border-bottom: 1px dotted rgba(179, 146, 78, 0.12);
+}
+
+.linhaLabel {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  font-family: var(--garamond);
+  font-size: 0.95rem;
+  color: var(--tinta-fraca);
+}
+
+.linhaValor {
+  font-family: var(--cinzel);
+  font-size: 0.95rem;
+  font-weight: 600;
+  color: var(--tinta);
+}
+
+/* ── Grade de Estados ── */
+.gradeEstados {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.45rem;
+}
+
+.tagEstado {
+  font-family: var(--cinzel);
+  font-size: 0.62rem;
+  letter-spacing: 0.08em;
+  text-transform: capitalize;
+  padding: 0.25rem 0.65rem;
+  border-radius: 2px;
+  border: 1px solid rgba(179, 146, 78, 0.2);
+  color: var(--tinta-fraca);
+  background: transparent;
+  opacity: 0.6;
+  transition: opacity 0.15s;
+}
+
+.tagEstadoAtivo {
+  background: rgba(139, 44, 44, 0.25);
+  border-color: var(--vermelho);
+  color: #e07070;
+  opacity: 1;
+}
+
+/* ── Lista de Relações ── */
+.listaRelacoes {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+  display: flex;
+  flex-direction: column;
+  gap: 0.4rem;
+}
+
+.itemRelacao {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 0.35rem 0.6rem;
+  background: var(--fundo-card);
+  border-left: 2px solid var(--ouro-borda);
+  border-radius: 0 3px 3px 0;
+}
+
+.nomeRelacao {
+  font-family: var(--garamond);
+  font-size: 0.95rem;
+  color: var(--tinta);
+}
+
+.qtdRelacao {
+  font-family: var(--cinzel);
+  font-size: 0.75rem;
+  color: var(--ouro);
+  background: var(--ouro-sutil);
+  padding: 0.1rem 0.4rem;
+  border-radius: 2px;
+}
+
+/* ── Parágrafo e vazio ── */
+.paragrafo {
+  margin: 0.7rem 0 0;
+  font-size: 0.95rem;
+  line-height: 1.65;
+  color: var(--tinta);
+}
+
+.paragrafo strong {
+  color: var(--ouro);
+  font-weight: 500;
+}
+
+.vazio {
+  color: var(--tinta-fraca);
+  font-style: italic;
+  font-size: 0.9rem;
+  margin: 0;
+}
+
+/* ── Rodapé ── */
+.rodape {
+  margin-top: 2.5rem;
+  padding-top: 0.8rem;
+  border-top: 1px solid var(--ouro-borda);
+  text-align: center;
+  font-family: var(--cinzel);
+  font-size: 0.62rem;
+  letter-spacing: 0.14em;
+  color: var(--tinta-fraca);
+  opacity: 0.5;
+}
+
+/* ── Estados de carregamento / erro ── */
+.carregando,
+.erro {
+  text-align: center;
+  padding: 5rem 2rem;
+  color: var(--tinta-fraca);
+  font-family: var(--cinzel);
+  font-size: 1.1rem;
+  letter-spacing: 0.1em;
+}
+
+/* ── Responsivo ── */
+@media (max-width: 880px) {
+  .folha {
+    width: 100%;
+    margin: 0;
+    border-left: none;
+    border-right: none;
+    border-radius: 0;
+    padding: 1.5rem 1.2rem;
+  }
+
+  .corpo {
+    grid-template-columns: 1fr;
+    gap: 0;
+  }
+
+  .gradeVirtudes {
+    grid-template-columns: repeat(3, 1fr);
+  }
+}
+
+@media (max-width: 480px) {
+  .nomePersonagem {
+    font-size: 1.5rem;
+  }
+
+  .gradeVirtudes {
+    grid-template-columns: repeat(3, 1fr);
+    gap: 0.4rem;
+  }
+
+  .virtueValor {
+    font-size: 1.3rem;
+  }
 }

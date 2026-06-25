@@ -2,43 +2,62 @@ import { useParams, useNavigate } from "react-router-dom";
 import { useEffect, useState } from "react";
 import { personagemService } from "../../services/personagemService";
 import { entidadeInstanciaService } from "../../services/entidadeInstanciaService";
-import { Shield, Sword, Heart, Brain, Zap, ChevronLeft } from "lucide-react";
+import { Shield, Sword, Heart, Brain, Zap, ChevronLeft, Package, Sparkles, HelpCircle } from "lucide-react";
 import styles from "./styles.FichaPersonagem.module.css";
+
+// Agrupa relações pelo campo `origem`
+function agruparPorOrigem(relacoes) {
+  return relacoes.reduce((acc, rel) => {
+    const grupo = rel.origem || "outros";
+    if (!acc[grupo]) acc[grupo] = [];
+    acc[grupo].push(rel);
+    return acc;
+  }, {});
+}
+
+const ICONE_ORIGEM = {
+  item_inicial: <Package size={16} />,
+  habilidade: <Sparkles size={16} />,
+};
 
 export default function FichaPersonagem({ idPersonagem, onVoltar }) {
   const { id: idDaUrl } = useParams();
   const navigate = useNavigate();
+
   const [personagem, setPersonagem] = useState(null);
-  const [carregando, setCarregando] = useState(true);
   const [atributos, setAtributos] = useState({});
+  const [relacoes, setRelacoes] = useState([]);
+  const [carregando, setCarregando] = useState(true);
 
   const id = idPersonagem || idDaUrl;
 
   useEffect(() => {
     if (!id) return;
-    
+
     async function carregarFichaCompleta() {
       try {
-        // 1. Busca o Personagem para descobrir o instanciaId
         const respPersonagem = await personagemService.buscarPorId(id);
         const dadosPersonagem = respPersonagem?.data || respPersonagem;
         setPersonagem(dadosPersonagem);
 
-        // 2. Se achou o personagem e ele tem uma instância vinculada
         if (dadosPersonagem?.instanciaId) {
-          const respInstancia = await entidadeInstanciaService.buscarPorId(dadosPersonagem.instanciaId);
+          const instanciaId = dadosPersonagem.instanciaId;
+
+          const [respInstancia, respRelacoes] = await Promise.all([
+            entidadeInstanciaService.buscarPorId(instanciaId),
+            entidadeInstanciaService.listarRelacoes(instanciaId),
+          ]);
+
           const dadosInstancia = respInstancia?.data || respInstancia;
-          
-          console.log("DADOS DA INSTÂNCIA REVELADOS:", dadosInstancia);
-
-          // Identifica onde os atributos estão escondidos na Instância
-          const listaAtributos = 
-            dadosInstancia.atributosAtuais || 
-            dadosInstancia.valoresAtributos || 
-            dadosInstancia.atributos || 
-            dadosInstancia; // Fallback para o objeto raiz caso venha direto
-
+          const listaAtributos =
+            dadosInstancia.atributosAtuais ||
+            dadosInstancia.valoresAtributos ||
+            dadosInstancia.atributos ||
+            dadosInstancia;
           setAtributos(listaAtributos);
+
+          const listaRelacoes = respRelacoes?.data || respRelacoes || [];
+          setRelacoes(Array.isArray(listaRelacoes) ? listaRelacoes : []);
         }
       } catch (err) {
         console.error("Erro ao carregar ficha completa:", err);
@@ -50,46 +69,151 @@ export default function FichaPersonagem({ idPersonagem, onVoltar }) {
     carregarFichaCompleta();
   }, [id]);
 
- if (carregando) return <div className={styles.carregando}>Carregando ficha...</div>;
+  if (carregando) return <div className={styles.carregando}>Carregando ficha...</div>;
   if (!personagem) return <div className={styles.erro}>Personagem não encontrado.</div>;
 
-  console.log("ESTRUTURA COMPLETA DO PERSONAGEM:", personagem);
+  const gruposRelacoes = agruparPorOrigem(relacoes);
 
   return (
-    <div className={styles.container}>
-      {/* Altere o botão voltar para usar a função onVoltar se ela existir, senão usa o histórico */}
+    <div className={styles.folha}>
+      {/* ── Topo ── */}
       <button className={styles.btnVoltar} onClick={onVoltar || (() => navigate(-1))}>
-        <ChevronLeft size={20} /> Voltar
+        <ChevronLeft size={18} /> Voltar
       </button>
-      
-      <div className={styles.cabecalho}>
-        <h1>{personagem.instanciaNome || personagem.nome}</h1>
-        <span className={styles.classe}>{personagem.tipo || personagem.classe}</span>
+
+      {/* ── Cabeçalho ── */}
+      <header className={styles.cabecalho}>
+        <div className={styles.brasao}>⚔</div>
+        <h1 className={styles.nomePersonagem}>
+          {personagem.instanciaNome || personagem.nome}
+        </h1>
+        <span className={styles.classe}>
+          {personagem.tipo || personagem.classe || "Cavaleiro"}
+        </span>
+        <div className={styles.divisorOuro} />
+      </header>
+
+      {/* ── Corpo em duas colunas ── */}
+      <div className={styles.corpo}>
+
+        {/* COLUNA ESQUERDA */}
+        <div className={styles.colunaEsquerda}>
+
+          {/* Virtudes */}
+          <section className={styles.secao}>
+            <h2 className={styles.tituloSecao}>Virtudes</h2>
+            <div className={styles.gradeVirtudes}>
+              {[
+                { label: "VIG", icone: <Heart size={18} />, valor: atributos.VIG },
+                { label: "CLA", icone: <Brain size={18} />, valor: atributos.CLA },
+                { label: "SPI", icone: <Zap size={18} />, valor: atributos.SPI },
+              ].map(({ label, icone, valor }) => (
+                <div key={label} className={styles.cartaoVirtude}>
+                  <div className={styles.virtudeTopo}>{icone}<span className={styles.virtueLabel}>{label}</span></div>
+                  <div className={styles.virtueValor}>{valor ?? "—"}</div>
+                </div>
+              ))}
+            </div>
+          </section>
+
+          {/* Combate */}
+          <section className={styles.secao}>
+            <h2 className={styles.tituloSecao}>Combate</h2>
+            <div className={styles.linhasAtributo}>
+              {[
+                { label: "Guarda (GD)",  icone: <Shield size={16} />, valor: atributos.GD },
+                { label: "Armadura",     icone: <Shield size={16} />, valor: atributos.armadura },
+                { label: "Glória",       icone: <Sword  size={16} />, valor: atributos.gloria ?? 0 },
+              ].map(({ label, icone, valor }) => (
+                <div key={label} className={styles.linhaAtributo}>
+                  <span className={styles.linhaLabel}>{icone}{label}</span>
+                  <span className={styles.linhaValor}>{valor ?? "—"}</span>
+                </div>
+              ))}
+            </div>
+          </section>
+
+          {/* Estados */}
+          <section className={styles.secao}>
+            <h2 className={styles.tituloSecao}>Estado</h2>
+            <div className={styles.gradeEstados}>
+              {[
+                "fatigado", "exausto", "exposto", "comprometido",
+                "machucado", "mortalmente_machucado", "morto",
+              ].map((chave) => {
+                const ativo = !!atributos[chave];
+                return (
+                  <div
+                    key={chave}
+                    className={`${styles.tagEstado} ${ativo ? styles.tagEstadoAtivo : ""}`}
+                  >
+                    {chave.replace(/_/g, " ")}
+                  </div>
+                );
+              })}
+            </div>
+          </section>
+        </div>
+
+        {/* COLUNA DIREITA */}
+        <div className={styles.colunaDireita}>
+
+          {/* Informações */}
+          <section className={styles.secao}>
+            <h2 className={styles.tituloSecao}>Informações</h2>
+            <div className={styles.linhasAtributo}>
+              {[
+                { label: "Jogador",  valor: personagem.usuarioEmail || personagem.usuario?.email },
+                { label: "Campanha", valor: personagem.campanhaNome || "Nenhuma" },
+                { label: "Status",   valor: personagem.ativo ? "Ativo" : "Inativo" },
+              ].map(({ label, valor }) => (
+                <div key={label} className={styles.linhaAtributo}>
+                  <span className={styles.linhaLabel}>{label}</span>
+                  <span className={styles.linhaValor}>{valor}</span>
+                </div>
+              ))}
+            </div>
+            {personagem.historia && (
+              <p className={styles.paragrafo}><strong>História:</strong> {personagem.historia}</p>
+            )}
+            {personagem.aparencia && (
+              <p className={styles.paragrafo}><strong>Aparência:</strong> {personagem.aparencia}</p>
+            )}
+          </section>
+
+          {/* Relações agrupadas por origem */}
+          {relacoes.length > 0 && Object.entries(gruposRelacoes).map(([origem, itens]) => (
+            <section key={origem} className={styles.secao}>
+              <h2 className={styles.tituloSecao}>
+                {ICONE_ORIGEM[origem] ?? <HelpCircle size={16} />}
+                &nbsp;{origem.replace(/_/g, " ")}
+              </h2>
+              <ul className={styles.listaRelacoes}>
+                {itens.map((rel) => (
+                  <li key={rel.idEntidadeFilha} className={styles.itemRelacao}>
+                    <span className={styles.nomeRelacao}>{rel.nomeEntidadeFilha}</span>
+                    {rel.quantidade > 1 && (
+                      <span className={styles.qtdRelacao}>×{rel.quantidade}</span>
+                    )}
+                  </li>
+                ))}
+              </ul>
+            </section>
+          ))}
+
+          {relacoes.length === 0 && (
+            <section className={styles.secao}>
+              <h2 className={styles.tituloSecao}>Equipamentos &amp; Habilidades</h2>
+              <p className={styles.vazio}>Nenhum item ou habilidade concedido ainda.</p>
+            </section>
+          )}
+        </div>
       </div>
-      <div className={styles.atributos}>
-        <div className={styles.atributo}>
-          <Heart size={20} /> <strong>VIG:</strong> {atributos.VIG ?? "-"}
-        </div>
-        <div className={styles.atributo}>
-          <Brain size={20} /> <strong>CLA:</strong> {atributos.CLA ?? "-"}
-        </div>
-        <div className={styles.atributo}>
-          <Zap size={20} /> <strong>SPI:</strong> {atributos.SPI ?? "-"}
-        </div>
-        <div className={styles.atributo}>
-          <Shield size={20} /> <strong>GD:</strong> {atributos.GD ?? "-"}
-        </div>
-        <div className={styles.atributo}>
-          <Sword size={20} /> <strong>Glória:</strong> {atributos.gloria ?? 0}
-        </div>
-      </div>
-      <div className={styles.detalhes}>
-        <p><strong>Jogador:</strong> {personagem.usuarioEmail || personagem.usuario?.email}</p>
-        <p><strong>Campanha:</strong> {personagem.campanhaNome || "Nenhuma"}</p>
-        <p><strong>Status:</strong> {personagem.ativo ? "Ativo" : "Inativo"}</p>
-        {personagem.historia && <p><strong>História:</strong> {personagem.historia}</p>}
-        {personagem.aparencia && <p><strong>Aparência:</strong> {personagem.aparencia}</p>}
-      </div>
+
+      {/* ── Rodapé ── */}
+      <footer className={styles.rodape}>
+        <span>RPG VTT • Ficha gerada automaticamente</span>
+      </footer>
     </div>
   );
 }
