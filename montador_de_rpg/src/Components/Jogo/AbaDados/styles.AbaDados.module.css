@@ -1,11 +1,11 @@
 .dados {
   padding: 0.7rem 0.9rem;
-  background: rgba(10, 8, 7, 0.85);
-  border: 1px solid rgba(201, 162, 39, 0.2);
+  background: var(--preto);
+  /* border: 1px solid rgba(201, 162, 39, 0.2); */
   display: flex;
   flex-direction: column;
   gap: 0.5rem;
-  border-radius: 6px;
+  /* border-radius: 6px; */
   box-shadow: 0 4px 20px rgba(0,0,0,0.5);
 }
 
@@ -16,9 +16,9 @@
 
 .dadoBotao {
   flex: 1;
-  background: #1c1714;
-  border: 1px solid #3d332d;
-  color: #fff;
+  background: var(--fundo);
+  border: 1px solid var(--dourado);
+  color: var(--branco);
   font-family: 'Cinzel', serif;
   font-size: 0.65rem;
   letter-spacing: 0.1em;
@@ -30,8 +30,8 @@
 }
 
 .dadoBotao:hover {
-  border-color: #c9a227;
-  color: #c9a227;
+  border-color: var(--dourado);
+  color: var(--dourado);
   background: rgba(201, 162, 39, 0.1);
 }
 
@@ -44,7 +44,7 @@
   align-items: center;
   gap: 0.6rem;
   background: rgba(201, 162, 39, 0.1);
-  border: 1px solid #c9a227;
+  border: 1px solid var(--dourado);
   padding: 0.5rem;
   margin-top: 0.4rem;
   border-radius: 4px;
@@ -56,12 +56,12 @@
 
 .rolamentoTipo {
   font-size: 0.65rem;
-  color: #a89485;
+  color: var(--cinza);
   text-transform: uppercase;
 }
 
 .rolamentoValor {
   font-size: 1.2rem;
   font-weight: bold;
-  color: #fff;
+  color: var(--branco);
 }
