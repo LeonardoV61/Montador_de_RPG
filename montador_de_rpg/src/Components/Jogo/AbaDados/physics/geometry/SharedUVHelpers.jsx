@@ -89,15 +89,30 @@ export function applyD4UVs(geo) {
 
 export function applyPentagonUVs(geo) {
    const pos = geo.attributes.position;
-   // SAFETY ADJUSTMENT: Protegemos o alocador garantindo leitura isolada das coordenadas
-   const uvs = new Float32Array((pos.count / 3) * 6);
-   
-   for (let i = 0; i < pos.count; i += 9) {
-      const idx = (i / 9) * 6;
-      uvs[idx]     = 0.05; uvs[idx + 1] = 0.05;
-      uvs[idx + 2] = 0.95; uvs[idx + 3] = 0.05;
-      uvs[idx + 4] = 0.50; uvs[idx + 5] = 0.95;
+
+   // UVs derivados dos UVs reais do Three.js (DodecahedronGeometry.toNonIndexed)
+   // remapeados para centrar o pentágono em (0.5, 0.5) no canvas.
+   // Triangulação real do Three.js por face: tri0=[v0,v1,v2], tri1=[v1,v3,v2], tri2=[v3,v4,v2]
+   // Centroide UV resultante: (0.5, 0.508) → número no canvas em (256, 252)
+   const PENT_UVS = [
+      // tri0: v0,          v1,           v2
+      0.5,  0.275,   0.71, 0.4091,   0.29, 0.4091,
+      // tri1: v1,          v3,           v2
+      0.71, 0.4091,  0.92, 0.725,    0.29, 0.4091,
+      // tri2: v3,          v4,           v2
+      0.92, 0.725,   0.08, 0.725,    0.29, 0.4091,
+   ]; // 18 valores por face (9 vértices × 2 coordenadas UV)
+
+   const uvs = new Float32Array(pos.count * 2);
+   const facesCount = Math.floor(pos.count / 9);
+
+   for (let f = 0; f < facesCount; f++) {
+      const base = f * 18;
+      for (let k = 0; k < 18; k++) {
+         uvs[base + k] = PENT_UVS[k];
+      }
    }
+
    geo.setAttribute('uv', new THREE.BufferAttribute(uvs, 2));
    return geo;
 }

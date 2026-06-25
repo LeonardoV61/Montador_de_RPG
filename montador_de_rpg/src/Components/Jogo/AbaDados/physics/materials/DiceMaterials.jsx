@@ -74,18 +74,31 @@ function criarMateriaisDados(lados) {
       // CORREÇÃO CRÍTICA D12: Um único número centralizado por face pentagonal
       // ======================================================================
       } else if (lados === 12) {
-         ctx.font = 'bold 150px Georgia, serif'; // Fonte ligeiramente menor para não cortar nas quinas internas
-         
+         // D12: número no centroide UV real do pentágono → posição canvas (256, 252)
+         ctx.font = 'bold 180px Georgia, serif';
          ctx.shadowColor = 'rgba(0, 0, 0, 0.9)';
          ctx.shadowBlur = 14;
          ctx.shadowOffsetX = 4;
          ctx.shadowOffsetY = 6;
-         
-         // Translação sutil para cima (245) para compensar a distorção do UV 
-         // dos 3 triângulos do dodecaedro e centralizar no pentágono físico
-         ctx.fillText(i.toString(), 256, 245);
+         ctx.fillText(i.toString(), 256, 252);
+      } else if (lados === 10) {
+         // D10: número centralizado no centroide UV da face-pipa (U=0.5, V=0.425)
+         // V=0.425 → posição Y no canvas = (1 - 0.425) * 512 = 294
+         ctx.font = 'bold 200px Georgia, serif';
+         ctx.shadowColor = 'rgba(0, 0, 0, 0.85)';
+         ctx.shadowBlur = 12;
+         ctx.shadowOffsetX = 4;
+         ctx.shadowOffsetY = 6;
+         ctx.fillText(i.toString(), 256, 294);
+         // Sublinhado para 6 e 9 no d10
+         if (i === 6 || i === 9) {
+            ctx.shadowBlur = 0; ctx.shadowOffsetX = 0; ctx.shadowOffsetY = 0;
+            ctx.fillStyle = '#c9a227';
+            ctx.fillRect(186, 380, 140, 12);
+            ctx.fillStyle = '#eae5d8';
+         }
       } else {
-         // Padrão estável para D6, D8, D10 e D20
+         // Padrão estável para D6, D8 e D20
          ctx.font = 'bold 210px Georgia, serif';
          ctx.shadowColor = 'rgba(0, 0, 0, 0.85)';
          ctx.shadowBlur = 12;
@@ -99,9 +112,9 @@ function criarMateriaisDados(lados) {
       ctx.shadowOffsetY = 0;
 
       // Sublinhado para identificar 6 e 9
-      if ((lados === 10 || lados === 12 || lados === 20 || lados === 6) && (i === 6 || i === 9)) {
+      if ((lados === 12 || lados === 20 || lados === 6) && (i === 6 || i === 9)) {
          ctx.fillStyle = '#c9a227';
-         ctx.fillRect(186, 370, 140, 12);
+         ctx.fillRect(186, 310, 140, 12);
       }
 
       const tex = new THREE.CanvasTexture(canvas);
@@ -115,6 +128,8 @@ function criarMateriaisDados(lados) {
             roughness: 0.15,
             metalness: 0.08,
             envMapIntensity: 1.2,
+            // d10 e d12: flatShading mantém arestas marcadas e elimina sombra interna entre triângulos
+            flatShading: lados === 10 || lados === 12,
          })
       );
    }

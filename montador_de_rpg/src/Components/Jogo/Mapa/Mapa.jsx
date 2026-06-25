@@ -9,7 +9,6 @@ import { ContextoAbasPersonagem, ContextoMesaFisica } from '../../../pages/Jogo/
 import { ChaoMesa, ParedesMesa } from '../AbaDados/MesaFisica.jsx';
 import { DadoFisico } from '../AbaDados/physics/objects/DadoFisico.jsx';
 import { MoedaFisica } from '../AbaDados/physics/objects/MoedaFisica.jsx';
-
 export const ContextoAvatar = createContext(null);
 
 // Constantes do Gerador de Mapa

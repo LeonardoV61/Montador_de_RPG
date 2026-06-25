@@ -31,20 +31,23 @@ export function DadoFisico({ id, lados = 6, position = [0, 3, 0], onStopped }) {
    }, [lados]);
    const dadosCannon = usePolyhedronData(lados !== 6 ? geometriaBase : null);
 
-   const linearDamping = lados === 12 || lados === 10 ? 0.6 : 0.45;
-   const angularDamping = lados === 12 || lados === 10 ? 0.9 : 0.70;
+   // D10 (trapezoedro): damping suave, dorme rápido para evitar quiques nas arestas
+   // D12 (dodecaedro): damping médio
+   // Demais: padrão
+   const linearDamping   = lados === 10 ? 0.35 : lados === 12 ? 0.6  : 0.45;
+   const angularDamping  = lados === 10 ? 0.55 : lados === 12 ? 0.9  : 0.70;
+   const sleepSpeedLimit = lados === 10 ? 0.3  : 0.1;
+   const massa           = lados === 10 ? 5.0  : lados === 6  ? 3.5  : 4.2;
 
    const [ref, api] = lados === 6
       ? useBox(() => ({
-            mass: 3.5, position, args: [0.75, 0.75, 0.75],
-            linearDamping, angularDamping, allowSleep: true, sleepSpeedLimit: 0.1
+            mass: massa, position, args: [0.75, 0.75, 0.75],
+            linearDamping, angularDamping, allowSleep: true, sleepSpeedLimit
          }), meshRef)
       : useConvexPolyhedron(() => ({
-            mass: 4.2, position,
-            // FIX DE SEGURANÇA: Adicionado fallback seguro com ?. e operador lógico para evitar crash 
-            // de leitura de propriedades nulas no ciclo inicial de renderização
+            mass: massa, position,
             args: [dadosCannon?.vertices || [], dadosCannon?.faces || []],
-            linearDamping, angularDamping, allowSleep: true, sleepSpeedLimit: 0.1
+            linearDamping, angularDamping, allowSleep: true, sleepSpeedLimit
          }), meshRef);
 
    const stateFlags = useObjetoFisicoArrastavel({
