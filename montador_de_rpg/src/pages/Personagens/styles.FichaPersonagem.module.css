@@ -8,12 +8,12 @@
 
 /* ── Variáveis ── */
 :root {
-  --ouro:        #b3924e;
-  --ouro-claro:  #d4af6a;
+  --ouro:        var(--dourado);
+  --ouro-claro:  var(--dourado2);
   --ouro-sutil:  rgba(179, 146, 78, 0.18);
   --ouro-borda:  rgba(179, 146, 78, 0.3);
-  --tinta:       #e8dfc8;        /* cor de texto principal */
-  --tinta-fraca: #9e9178;
+  --tinta:       var(--branco);        /* cor de texto principal */
+  --tinta-fraca: var(--cinza);
   --fundo:       #100f0c;
   --fundo-card:  rgba(255, 255, 255, 0.035);
   --fundo-secao: rgba(0, 0, 0, 0.25);

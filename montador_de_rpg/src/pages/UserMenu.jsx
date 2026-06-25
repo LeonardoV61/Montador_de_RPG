@@ -197,12 +197,12 @@ export default function UserMenu() {
     switch (menuAtivo) {
       case 'dashboard':       return renderDashboard();
       case 'personagens':     return (
-      <Personagens 
-        menuAtivo={menuAtivo} 
-        setMenuAtivo={setMenuAtivo}
-        setPersonagemSelecionadoId={setPersonagemSelecionadoId}
-      />
-    );
+        <Personagens 
+          menuAtivo={menuAtivo} 
+          setMenuAtivo={setMenuAtivo}
+          setPersonagemSelecionadoId={setPersonagemSelecionadoId}
+        />
+      );
       case 'criarPersonagem': return <CriacaoPersonagem setMenuAtivo={setMenuAtivo}/>;
       case 'perfil':          return (
         <Perfil
