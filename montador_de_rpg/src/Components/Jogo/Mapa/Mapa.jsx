@@ -200,8 +200,10 @@ export default function Mapa() {
 
    const handleMouseDown = (e) => {
       if (e.button !== 0) return; 
-      setIsDragging(true);
-      dragStart.current = { x: e.clientX - posicao.x, y: e.clientY - posicao.y };
+      if (!possuiDadosInterativos) {
+         setIsDragging(true);
+         dragStart.current = { x: e.clientX - posicao.x, y: e.clientY - posicao.y };
+      }
    };
    const handleMouseMove = (e) => {
       if (!isDragging) return;

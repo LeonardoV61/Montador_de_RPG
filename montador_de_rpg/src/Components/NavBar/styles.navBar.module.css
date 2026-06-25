@@ -49,10 +49,8 @@
     gap: 2.5rem;
     align-items: center;
 }
-.links li {
+.links li, .links a {
     list-style: none;
-}
-.links a {
     font-family: 'Cinzel', serif;
     font-size: 0.82rem;
     letter-spacing: 0.15em;
@@ -60,8 +58,9 @@
     text-decoration: none;
     text-transform: uppercase;
     transition: color 0.2s;
+    cursor: pointer;
 }
-.links a:hover {
+.links li:hover, .links a:hover {
     color: var(--dourado2);
 }
 .button {

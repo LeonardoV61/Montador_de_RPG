@@ -3,7 +3,7 @@ import logo from '../../assets/Hydra.png';
 import { useState, useEffect } from 'react';
 import { Link } from 'react-router-dom';
 
-export default function NavB({setSearchModal, searchText, setSearchText}) {
+export default function NavB({ fluxoRef, sisRef }) {
 
   /* Exibibe botão painel se autenticado */
   /* const [link, setLink] = useState(null)
@@ -61,9 +61,9 @@ export default function NavB({setSearchModal, searchText, setSearchText}) {
                         <Link to="/" onClick={() => Location.reload()}><img  src={logo}/></Link>
                         </div>
                         <div className={styles.headerBtns}>
-                        <li><Link to="/" onClick={() => Location.reload()}>Como Funciona</Link></li>
-                        <li><Link to="/" onClick={() => Location.reload()}>Sistemas</Link></li>
-                        <li><Link to="/" onClick={() => Location.reload()}>Mesa</Link></li>
+                        <li onClick={() => fluxoRef.current.scrollIntoView({ behavior: "smooth" })}>Como Funciona</li>
+                        <li onClick={() => sisRef.current.scrollIntoView({ behavior: "smooth" })}>Sistemas</li>
+                        <li onClick={() => Location.reload()}>Mesa</li>
                         </div>
                     </div>
                     <div className={styles.headerBtns}>

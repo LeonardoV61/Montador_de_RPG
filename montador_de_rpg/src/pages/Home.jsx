@@ -10,6 +10,8 @@ import Footer from "../Components/Footer/Footer.jsx";
 
 export default function Home() {
   const recursosRef = useRef(null);
+  const fluxoRef = useRef(null);
+  const sisRef = useRef(null);
 
   function scrollToRecursos() {
     if (recursosRef.current) {
@@ -24,16 +26,16 @@ export default function Home() {
   
   return (
     <>
-      <NavBar />
+      <NavBar fluxoRef={fluxoRef} sisRef={sisRef}/>
       <main className='main'>
         <Inicio onExplorar={scrollToRecursos} />
         <Divisor />
         <div ref={recursosRef}>
           <Recursos />
         </div>
-        <Divisor />
+        <Divisor ref={fluxoRef}/>
         <Fluxo />
-        <Divisor />
+        <Divisor ref={sisRef}/>
         <Sistemas />
         <CTA /> 
       </main>

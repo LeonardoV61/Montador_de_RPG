@@ -9,8 +9,8 @@ export default function Sistemas() {
         <p className={styles.titulo}>Sistemas disponíveis</p>
         <div className={styles.listagem}>
             <span className={styles.sistema}>✦ Mythic Bastionland</span>
+            <span className={`${styles.sistema} ${styles.emBreve}`}>+ Tormenta 20 (em breve)</span>
             <span className={`${styles.sistema} ${styles.emBreve}`}>+ D&D 5e (em breve)</span>
-            <span className={`${styles.sistema} ${styles.emBreve}`}>+ Call of Cthulhu (em breve)</span>
             <span className={`${styles.sistema} ${styles.emBreve}`}>+ Seu sistema favorito…</span>
         </div>
     </div>

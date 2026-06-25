@@ -4,7 +4,7 @@ import logo from '../../assets/Hydra.png';
 import styles from './styles.navBar.module.css'
 
 
-export default function NavBar() {
+export default function NavBar({fluxoRef, sisRef}) {
   const navigate = useNavigate();
   const [scrolled, setScrolled] = useState(false);
 
@@ -31,13 +31,11 @@ export default function NavBar() {
     <>
     <nav className={`${styles.navContainer} ${scrolled ? styles.navScrolled : ''}`}>
         <div className={styles.navContents}>
-          <div className={styles.logo}>
-            <Link to="/" onClick={backToBegin}><img  src={logo} alt="Logo do Montador de RPG"/></Link>
-          </div>
+          <div className={styles.logo}><img onClick={backToBegin} src={logo} alt="Logo do Montador de RPG"/></div>
           <div className={styles.links}>
-            <li><Link to="/" onClick={() => Location.reload()}>Como Funciona</Link></li>
-            <li><Link to="/" onClick={() => Location.reload()}>Sistemas</Link></li>
-            <li><Link to="/" onClick={() => Location.reload()}>Mesa</Link></li>
+            <li onClick={() => fluxoRef.current.scrollIntoView({ behavior: "smooth" })}>Como Funciona</li>
+            <li onClick={() => sisRef.current.scrollIntoView({ behavior: "smooth" })}>Sistemas</li>
+            {/* <li onClick={() => Location.reload()}>Mesa</li> */}
           </div>
         </div>
         {localStorage.getItem("authenticated") === "true" ? (

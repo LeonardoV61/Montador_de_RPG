@@ -52,7 +52,7 @@ export default function Jogo() {
          prev.map(dado => dado.id === id ? { ...dado, lancado: true } : dado)
       );
 
-      setRegistros(prev => [
+      /* setRegistros(prev => [
          ...prev,
          {
             id: Date.now() + Math.random(),
@@ -64,7 +64,7 @@ export default function Jogo() {
             dado: label,
             valorAtributo: false
          }
-      ]);
+      ]); */
 
       try {
          await api.post('/jogadas/rolar', { dado: label, resultado: valor });
@@ -83,7 +83,7 @@ export default function Jogo() {
       setTipoRolamento("Selecione seus dados");
    }, []);
 
-   const valorContextoRegistros = useMemo(() => ({ registros, setRegistros }), [registros]);
+   /* const valorContextoRegistros = useMemo(() => ({ registros, setRegistros }), [registros]); */
    const valorContextoAbasPersonagem = useMemo(() => ({ abasAbertas, definirAbaAberta }), [abasAbertas, definirAbaAberta]);
    
    const valorContextoMesa = useMemo(() => ({
@@ -96,7 +96,7 @@ export default function Jogo() {
    return (
       <>
          <NavBarJogo roleAtiva={roleNaSessao}/>
-         <ContextoRegistros.Provider value={valorContextoRegistros}>
+         <ContextoRegistros.Provider value={{ registros, setRegistros }}>
             <ContextoAbasPersonagem.Provider value={valorContextoAbasPersonagem}>
                <ContextoMesaFisica.Provider value={valorContextoMesa}>
                   <div className={styles.jogo}>
