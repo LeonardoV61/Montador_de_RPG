@@ -248,7 +248,6 @@ export default function Mapa() {
       if (zoom < 2.4 && zoom > 0.4) {
          dX = (e.clientX - posicao.x) * -(delta/zoom);
          dY = (e.clientY - posicao.y) * -(delta/zoom);
-         console.log(zoom)
          setPosicao({ x: posicao.x + dX, y: posicao.y + dY });
       }
    };
