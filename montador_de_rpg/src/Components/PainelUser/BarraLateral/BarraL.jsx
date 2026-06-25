@@ -16,7 +16,7 @@ export default function BarraL({
 
   return (
     <aside className={styles.sidebar}>
-      <div className={styles.usuario}>
+      <div className={styles.usuario} onClick={(e) => { e.preventDefault(); setMenuAtivo("perfil"); }}>
         <div className={`${styles.avatar} ${styles.small}`} style={{ overflow: "hidden", position: "relative" }}>
           <img
             src={imagem}
