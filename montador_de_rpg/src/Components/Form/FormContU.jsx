@@ -103,9 +103,9 @@ export default function ContainerU(){
     //     navigate("/menu");
     // };
 
-    const handleOAuth2Login = (provider) => {
-        authService.redirectToOAuth(provider);
-    };
+    // const handleOAuth2Login = (provider) => {
+    //     authService.redirectToOAuth(provider);
+    // };
 
     // LOGICA DE OAUTH2 REAL (COMENTADA)
     // /*
@@ -113,6 +113,24 @@ export default function ContainerU(){
     //     window.location.href = `${import.meta.env.VITE_API_URL}/oauth2/authorize/${provider}`;
     // };
     // */
+
+    // ==========================================
+    // LOGICA DE OAUTH2 COM BYPASS PARA DESENVOLVIMENTO
+    // ==========================================
+    const handleOAuth2Login = async (provider) => {
+    if (provider === "discord") {
+        console.log("Bypass Ativo: Logando com usuário homologado de testes.");
+        try {
+            // Substitua pelos dados de um usuário existente no seu banco local
+            await login("Zeias@ugusto", "123"); 
+            navigate("/menu");
+        } catch (error) {
+            setErrorMessage("Erro no bypass: O usuário de testes não existe no banco.");
+        }
+    } else {
+        authService.redirectToOAuth(provider);
+    }
+};
 
     
     
