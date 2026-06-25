@@ -1,6 +1,7 @@
 import { useParams, useNavigate } from "react-router-dom";
 import { useEffect, useState } from "react";
 import { personagemService } from "../../services/personagemService";
+import { entidadeInstanciaService } from "../../services/entidadeInstanciaService";
 import { Shield, Sword, Heart, Brain, Zap, ChevronLeft } from "lucide-react";
 import styles from "./styles.FichaPersonagem.module.css";
 
@@ -9,33 +10,49 @@ export default function FichaPersonagem({ idPersonagem, onVoltar }) {
   const navigate = useNavigate();
   const [personagem, setPersonagem] = useState(null);
   const [carregando, setCarregando] = useState(true);
+  const [atributos, setAtributos] = useState({});
 
   const id = idPersonagem || idDaUrl;
 
   useEffect(() => {
-    if (!id) return; // Segurança caso o ID venha nulo
-    async function carregar() {
+    if (!id) return;
+    
+    async function carregarFichaCompleta() {
       try {
-        const resp = await personagemService.buscarPorId(id);
-        setPersonagem(resp?.data || resp);
+        // 1. Busca o Personagem para descobrir o instanciaId
+        const respPersonagem = await personagemService.buscarPorId(id);
+        const dadosPersonagem = respPersonagem?.data || respPersonagem;
+        setPersonagem(dadosPersonagem);
+
+        // 2. Se achou o personagem e ele tem uma instância vinculada
+        if (dadosPersonagem?.instanciaId) {
+          const respInstancia = await entidadeInstanciaService.buscarPorId(dadosPersonagem.instanciaId);
+          const dadosInstancia = respInstancia?.data || respInstancia;
+          
+          console.log("DADOS DA INSTÂNCIA REVELADOS:", dadosInstancia);
+
+          // Identifica onde os atributos estão escondidos na Instância
+          const listaAtributos = 
+            dadosInstancia.atributosAtuais || 
+            dadosInstancia.valoresAtributos || 
+            dadosInstancia.atributos || 
+            dadosInstancia; // Fallback para o objeto raiz caso venha direto
+
+          setAtributos(listaAtributos);
+        }
       } catch (err) {
-        console.error("Erro ao carregar ficha:", err);
+        console.error("Erro ao carregar ficha completa:", err);
       } finally {
         setCarregando(false);
       }
     }
-    carregar();
+
+    carregarFichaCompleta();
   }, [id]);
 
  if (carregando) return <div className={styles.carregando}>Carregando ficha...</div>;
   if (!personagem) return <div className={styles.erro}>Personagem não encontrado.</div>;
 
-  const atributos = 
-  personagem.atributos || 
-  personagem.instancia?.atributosAtuais || 
-  personagem.instancia?.atributos ||
-  personagem.valoresAtributos || 
-  {};
   console.log("ESTRUTURA COMPLETA DO PERSONAGEM:", personagem);
 
   return (
