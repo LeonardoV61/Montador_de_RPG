@@ -26,6 +26,7 @@ import Loots from "../Components/PainelUser/Loot/Loots.jsx";
 import Inventario from "../Components/PainelUser/Inventário/inventario.jsx";
 import HeronPadrao from "../assets/perfil/Heron.png";
 import FichaPersonagem from "./Personagens/FichaPersonagem.jsx";
+import api from "../utils/api.js";
 
 // Criação de personagem — único ponto de entrada
 import CriacaoPersonagem from "../pages/Personagens/CriacaoPersonagem.jsx";
@@ -105,15 +106,11 @@ export default function UserMenu() {
   useEffect(() => {
     async function carregarIndicadores() {
       try {
-        const token = localStorage.getItem("token");
-        if (!token) throw new Error("Sem token");
-        const res = await fetch("/api/dashboard", {
-          headers: { Authorization: `Bearer ${token}` },
-        });
-        if (!res.ok) throw new Error("Status " + res.status);
-        const data = await res.json();
+        // O seu wrapper 'api' já injeta a URL base, os Headers e faz o .json()
+        const data = await api.get("/api/dashboard");
         setIndicadores(data);
-      } catch {
+      } catch (err) {
+        console.error("Erro ao carregar indicadores:", err);
         setIndicadores({
           campanhasAtivas: 2,
           jogadores: 5,
@@ -131,13 +128,9 @@ export default function UserMenu() {
     if (!usuarioId) return;
     async function carregarAmigos() {
       try {
-        const token = localStorage.getItem("token");
-        if (!token) throw new Error("Sem token");
-        const res = await fetch("/api/amigos", {
-          headers: { Authorization: `Bearer ${token}` },
-        });
-        if (!res.ok) throw new Error("Status " + res.status);
-        const lista = await res.json();
+        // Substituído pelo seu wrapper customizado
+        const lista = await api.get("/api/amigos");
+
         const formatados = lista
           .map((a) => ({
             id: a.remetenteId === usuarioId ? a.destinatarioId : a.remetenteId,
@@ -146,7 +139,8 @@ export default function UserMenu() {
           }))
           .sort((a, b) => a.nome.localeCompare(b.nome));
         setAmigos(formatados);
-      } catch {
+      } catch (err) {
+        console.error("Erro ao carregar amigos:", err);
         setAmigos([
           { id: 1, nome: "Erik Guilherme", online: true },
           { id: 2, nome: "Leonardo ProPlayer", online: true },
