@@ -30,8 +30,13 @@ export default function FichaPersonagem({ idPersonagem, onVoltar }) {
  if (carregando) return <div className={styles.carregando}>Carregando ficha...</div>;
   if (!personagem) return <div className={styles.erro}>Personagem não encontrado.</div>;
 
-  const atributos = personagem.atributos || personagem.instancia?.atributosAtuais || {};
-  console.log(atributos);
+  const atributos = 
+  personagem.atributos || 
+  personagem.instancia?.atributosAtuais || 
+  personagem.instancia?.atributos ||
+  personagem.valoresAtributos || 
+  {};
+  console.log("ESTRUTURA COMPLETA DO PERSONAGEM:", personagem);
 
   return (
     <div className={styles.container}>
