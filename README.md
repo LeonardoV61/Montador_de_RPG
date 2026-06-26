@@ -73,18 +73,6 @@ Hoje, jogadores e mestres frequentemente utilizam várias abas e aplicativos par
 
 ---
 
-## Screenshots
-
-| Tela Inicial | HUD do Jogador | Visualização 3D |
-|-------------|----------------|-----------------|
-| ![](./public/Home.png) | ![](./public/PlayerHUD.png) | ![](./public/3DView.png) |
-
-| Login | Painel do Mestre | Criação de Personagem | Mundo |
-|------|----------------|----------------------|--------|
-| ![](./public/Login.png) | ![](./public/MasterPanel.png) | ![](./public/CharacterForm.png) | ![](./public/WorldSettings.png) |
-
----
-
 ## Estrutura do Projeto
 
 ```plaintext
