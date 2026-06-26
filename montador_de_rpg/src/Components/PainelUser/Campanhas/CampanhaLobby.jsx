@@ -75,7 +75,7 @@ export default function CampanhaLobby({ campanha, roleAtiva, usuarioId, onVoltar
     setCarregando(true);
     setErro(null);
     try {
-      const nova = await sessaoService.agendar(campanha.id, dataInicio);
+      const nova = await sessaoService.agendar(campanha.id, dataInicio); // ← passa "2026-06-26"
       setSessoes(prev => [...prev, nova?.data || nova]);
       setDataInicio("");
       setModalAgendarSessao(false);
@@ -149,6 +149,7 @@ export default function CampanhaLobby({ campanha, roleAtiva, usuarioId, onVoltar
   };
 
   return (
+    
     <div className={styles.lobby}>
       <header className={styles.cabecalho}>
         <button className={styles.voltar} onClick={onVoltar}>← Voltar</button>
@@ -156,9 +157,14 @@ export default function CampanhaLobby({ campanha, roleAtiva, usuarioId, onVoltar
           <h2 className={styles.titulo}>{campanha.nome}</h2>
           <p className={styles.descricao}>{campanha.descricao}</p>
         </div>
-        <span className={[styles.status, styles[campanha.status?.toLowerCase()]].filter(Boolean).join(' ')}>
-          {campanha.status}
-        </span>
+        <div style={{ display: 'flex', gap: '8px', alignItems: 'center' }}>
+          <button className={styles.btnPrimario} onClick={() => navigate("/jogo")}>
+            Ir para o Jogo →
+          </button>
+          <span className={[styles.status, styles[campanha.status?.toLowerCase()]].filter(Boolean).join(' ')}>
+            {campanha.status}
+          </span>
+        </div>
       </header>
 
       {erro && <p className={styles.erro}>{erro}</p>}

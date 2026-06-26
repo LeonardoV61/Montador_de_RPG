@@ -156,7 +156,6 @@ export default function UserMenu() {
     carregarAmigos();
   }, [usuarioId]);
 
-  // Campanhas — Alterado para listar apenas as campanhas vinculadas ao usuário ativo
   useEffect(() => {
     async function carregarCampanhas() {
       try {

@@ -2,7 +2,10 @@ import api from '../utils/api';
 
 export const sessaoService = {
   iniciar: (campanhaId) => api.post(`/api/sessoes/campanhas/${campanhaId}/iniciar`),
-  agendar: (campanhaId, dataInicio) => api.post(`/api/sessoes/campanhas/${campanhaId}/agendar`, { dataInicio }),
+ agendar: (campanhaId, data) =>
+  api.post(`/api/sessoes/campanhas/${campanhaId}/agendar`, {
+    dataInicio: `${data}T00:00:00`  // ← converte "2026-06-26" em "2026-06-26T00:00:00"
+  }),
   listarPorCampanha: (campanhaId) => api.get(`/api/sessoes/campanha/${campanhaId}`),
   encerrar: (sessaoId) => api.post(`/api/sessoes/${sessaoId}/encerrar`),
   entrar: (sessaoId, tokenConvite) =>
