@@ -7,10 +7,20 @@ export const campanhaService = {
   listarMinhas: () => api.get('/api/campanhas/minhas'),
   listarPorUsuario: (usuarioId) => api.get(`/api/campanhas/usuario/${usuarioId}`),
   deletar: (id) => api.delete(`/api/campanhas/${id}`),
-  adicionarJogador: (campanhaId, dto) =>
+  
+  // Participantes
+  adicionarJogador: (campanhaId, dto) => 
     api.post(`/api/campanhas/${campanhaId}/jogadores`, dto),
-  criarTemporariaComSessao: (sistemaId) =>
+  listarParticipantes: (campanhaId) => 
+    api.get(`/api/campanhas/${campanhaId}/jogadores`),
+  
+  // Temporária
+  criarTemporariaComSessao: (sistemaId) => 
     api.post('/api/campanhas/temporaria-com-sessao', { sistemaId }),
 
-  
+  // Personagem do jogador
+  obterMeuPersonagem: (campanhaId) => 
+    api.get(`/api/campanhas/${campanhaId}/meu-personagem`),
+  vincularPersonagem: (campanhaId, dto) => 
+    api.post(`/api/campanhas/${campanhaId}/vincular-personagem`, dto)
 };

@@ -26,6 +26,8 @@ import Loots from "../Components/PainelUser/Loot/Loots.jsx";
 import Inventario from "../Components/PainelUser/Inventário/inventario.jsx";
 import HeronPadrao from "../assets/perfil/Heron.png";
 import FichaPersonagem from "./Personagens/FichaPersonagem.jsx";
+import CampanhaLobby from "../Components/PainelUser/Campanhas/CampanhaLobby.jsx";
+
 import api from "../utils/api.js";
 
 // Criação de personagem — único ponto de entrada
@@ -46,11 +48,12 @@ export default function UserMenu() {
   const [modalNovaSessao, setModalNovaSessao] = useState(null);
   const [modalNovaCena, setModalNovaCena] = useState(null);
   const [personagemSelecionadoId, setPersonagemSelecionadoId] = useState(null);
+  const [campanhaAtiva, setCampanhaAtiva] = useState(null);
 
   const [campanhas, setCampanhas] = useState([
-    { id: 1, nome: "O REINO ARRUINADO", descricao: "Mythic Bastionland • 4 jogadores", Status: "ATIVA" },
-    { id: 2, nome: "CINZAS DA VELHA CIDADE", descricao: "Rune 2e • 3 jogadores", Status: "PAUSADA" },
-    { id: 3, nome: "O TEMPLO SUBMERSO", descricao: "OSE • 2 jogadores", Status: "FINALIZADA" },
+    { id: 1, nome: "O REINO ARRUINADO", descricao: "Mythic Bastionland • 4 jogadores", status: "ATIVA" },
+    { id: 2, nome: "CINZAS DA VELHA CIDADE", descricao: "Rune 2e • 3 jogadores", status: "PAUSADA" },
+    { id: 3, nome: "O TEMPLO SUBMERSO", descricao: "OSE • 2 jogadores", status: "FINALIZADA" },
   ]);
 
   const [amigos, setAmigos] = useState([]);
@@ -234,28 +237,34 @@ export default function UserMenu() {
           <PanelDashboard
             titulo="MINHAS CAMPANHAS"
             canto="btn"
-            botao={
-              roleAtiva === 'mestre'
-                ? <button onClick={() => setModalNovaCampanha(true)}>+ Nova</button>
-                : undefined
-            }
+            botao={roleAtiva === 'mestre'
+              ? <button onClick={() => setModalNovaCampanha(true)}>+ Nova</button>
+              : undefined}
           >
             {campanhas.map((c) => (
-              <CampanhasP key={c.id} campanha={c} roleAtiva={roleAtiva} />
+              <CampanhasP
+                key={c.id}
+                campanha={c}
+                roleAtiva={roleAtiva}
+                onAbrirLobby={(camp) => {
+                  setCampanhaAtiva(camp);
+                  setMenuAtivo('campanha-lobby');
+                }}
+              />
             ))}
           </PanelDashboard>
-          <PanelDashboard titulo="JOGADORES ONLINE" canto={amigos.filter((a) => a.online).length}>
-            {amigos.map((a) => <AmigoP key={a.id} amigo={a} />)}
-          </PanelDashboard>
-          <PanelDashboard titulo="PREPARAÇÃO PARA PRÓXIMA SESSÃO">
-            {tarefas.map((t) => <TarefaP key={t.id} tarefa={t} />)}
-          </PanelDashboard>
-          <PanelDashboard titulo="ATIVIDADE RECENTE">
-            {atividades.map((a) => <AtividadeP key={a.id} atividade={a} />)}
-          </PanelDashboard>
-        </section>
-      </>
-    );
+            <PanelDashboard titulo="JOGADORES ONLINE" canto={amigos.filter((a) => a.online).length}>
+              {amigos.map((a) => <AmigoP key={a.id} amigo={a} />)}
+            </PanelDashboard>
+            <PanelDashboard titulo="PREPARAÇÃO PARA PRÓXIMA SESSÃO">
+              {tarefas.map((t) => <TarefaP key={t.id} tarefa={t} />)}
+            </PanelDashboard>
+            <PanelDashboard titulo="ATIVIDADE RECENTE">
+              {atividades.map((a) => <AtividadeP key={a.id} atividade={a} />)}
+            </PanelDashboard>
+          </section>
+        </>
+      );
   }
 
   return (
