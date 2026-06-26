@@ -1,117 +1,123 @@
-import { useState, useRef } from "react";
-import { Search, Swords, Shield, DownloadCloud, CheckCircle, ChevronLeft, Sparkles, Scroll, PlusCircle, UploadCloud } from "lucide-react";
+import { useState, useEffect, useRef } from "react";
+import { Search, Swords, Shield, CheckCircle, ChevronLeft, Sparkles, Scroll, PlusCircle, UploadCloud, Package } from "lucide-react";
+import { sistemaService } from "../../../services/sistemaService";
+import { entidadeSistemaService } from "../../../services/entidadeSistemaService";
 import styles from "./styles.Habilidades.module.css";
 
 export default function Habilidades() {
-  const [abaAtiva, setAbaAtiva] = useState("instalados");
+  const [abaAtiva, setAbaAtiva] = useState("todos");
   const [busca, setBusca] = useState("");
   const [habilidadeAberta, setHabilidadeAberta] = useState(null);
-  
   const fileInputRef = useRef(null);
 
+  const [sistemas, setSistemas] = useState([]);
+  const [sistemaAtivo, setSistemaAtivo] = useState(null);
+  const [habilidades, setHabilidades] = useState([]);
+  const [habilidadesExternas, setHabilidadesExternas] = useState([]);
 
-  const [habilidades, setHabilidades] = useState([
-    {
-      id: "hab-1",
-      titulo: "GOLPE TRESPASSANTE",
-      requisito: "Veterano",
-      categoria: "Ataque",
-      descricao: "Um ataque em arco capaz de atingir múltiplos inimigos ao seu redor com uma arma pesada.",
-      custo: "2 Vigor",
-      instalado: true,
-      externo: false,
-      acao: "Padrão",
-      alcance: "Corpo-a-Corpo",
-      alvo: "Até 3 adjacentes",
-      duracao: "Instantânea",
-      teste: "Reflexos reduz metade",
-      efeitoCompleto: "Você desfere um golpe circular com sua arma. Faça uma rolagem de dano normal; o resultado é aplicado a todos os inimigos na área de ameaça. Aliados devem fazer um teste de DES para evitar o dano excedente."
-    },
-    {
-      id: "hab-2",
-      titulo: "POSTURA DA FORTALEZA",
-      requisito: "Iniciante",
-      categoria: "Defesa",
-      descricao: "Uma postura inabalável que endurece os músculos e ignora ferimentos superficiais.",
-      custo: "1 Vigor",
-      instalado: true,
-      externo: false,
-      acao: "Movimento",
-      alcance: "Pessoal",
-      alvo: "Você mesmo",
-      duracao: "Sustentada (Até mover)",
-      teste: "Nenhum",
-      efeitoCompleto: "Você firma os pés no chão. Enquanto mantiver esta postura, você ganha Armadura +1 e ignora o primeiro ponto de dano à sua Guarda em cada rodada. Qualquer movimento voluntário encerra a postura."
-    },
-    {
-      id: "hab-3",
-      titulo: "INVESTIDA IMPLACÁVEL",
-      requisito: "Mestre",
-      categoria: "Ataque",
-      descricao: "Use o peso da armadura e o ímpeto para esmagar a Guarda adversária.",
-      custo: "3 Vigor",
-      instalado: false,
-      externo: false,
-      acao: "Rodada Completa",
-      alcance: "Até 9m",
-      alvo: "1 Criatura",
-      duracao: "Instantânea",
-      teste: "FOR para não cair",
-      efeitoCompleto: "Você se move em linha reta em direção ao alvo e ataca. Você rola seu dado de dano com Vantagem. Se o alvo for menor ou do mesmo tamanho que você, ele é arremessado 2 metros para trás e fica Caído."
-    },
-    {
-      id: "hab-externa-1",
-      titulo: "TÉCNICA DO LOBO HOMEBREW",
-      requisito: "Custom",
-      categoria: "Exploração",
-      descricao: "Técnica de caça adaptada da guilda dos rastreadores. Sentidos aguçados na selva.",
-      custo: "Sem Custo",
-      instalado: true,
-      externo: true,
-      acao: "Exploração (10 min)",
-      alcance: "1 Hexágono",
-      alvo: "Terreno",
-      duracao: "Passiva",
-      teste: "Nenhum",
-      efeitoCompleto: "Esta técnica caseira permite ao Cavaleiro identificar rastros de Mitos antigos que passaram pela área nas últimas 24 horas, revelando sua direção geral."
+  const [carregandoSistemas, setCarregandoSistemas] = useState(true);
+  const [carregandoHabilidades, setCarregandoHabilidades] = useState(false);
+
+  // 1. Carrega todos os sistemas disponíveis
+  useEffect(() => {
+    async function carregarSistemas() {
+      try {
+        const resp = await sistemaService.listarTodos();
+        const lista = resp?.data || resp || [];
+        const array = Array.isArray(lista) ? lista : [];
+        setSistemas(array);
+        if (array.length > 0) setSistemaAtivo(array[0]);
+      } catch (err) {
+        console.error("Erro ao carregar sistemas:", err);
+      } finally {
+        setCarregandoSistemas(false);
+      }
     }
-  ]);
+    carregarSistemas();
+  }, []);
 
-  function handleInstalarHabilidade(id) {
-    setHabilidades(habilidades.map(h => h.id === id ? { ...h, instalado: true } : h));
-    alert("Absorvendo conhecimento tático... Técnica integrada ao seu compêndio!");
-  }
+  // 2. Quando o sistema ativo muda, busca as entidades e filtra tipo "habilidade"
+  useEffect(() => {
+    if (!sistemaAtivo?.id) return;
+
+    async function carregarHabilidades() {
+      setCarregandoHabilidades(true);
+      setHabilidades([]);
+      try {
+        const resp = await entidadeSistemaService.listarPorSistema(sistemaAtivo.id);
+        const lista = resp?.data || resp || [];
+        const array = Array.isArray(lista) ? lista : [];
+
+        const habs = array
+          .filter((e) => e.tipo === "habilidade")
+          .map((e) => ({
+            id: e.id,
+            titulo: e.nome || "Sem nome",
+            requisito: e.atributos?.requisito || e.requisito || "—",
+            categoria: e.atributos?.categoria || e.categoria || "Geral",
+            descricao: e.descricao || e.atributos?.descricao || "",
+            custo: e.atributos?.custo || e.custo || "—",
+            acao: e.atributos?.acao || "—",
+            alcance: e.atributos?.alcance || "—",
+            alvo: e.atributos?.alvo || "—",
+            duracao: e.atributos?.duracao || "—",
+            teste: e.atributos?.teste || "—",
+            efeitoCompleto: e.atributos?.efeitoCompleto || e.atributos?.efeito || e.descricao || "Sem descrição detalhada.",
+            externo: false,
+          }));
+
+        setHabilidades(habs);
+      } catch (err) {
+        console.error("Erro ao carregar habilidades:", err);
+      } finally {
+        setCarregandoHabilidades(false);
+      }
+    }
+    carregarHabilidades();
+  }, [sistemaAtivo]);
 
   function handleImportarHabilidade(event) {
     const arquivo = event.target.files[0];
     if (!arquivo) return;
-
-    const novaHab = {
+    const nova = {
       id: `hab-externa-${Date.now()}`,
       titulo: arquivo.name.replace(/\.[^/.]+$/, "").toUpperCase(),
       requisito: "Custom",
       categoria: "Externo",
-      descricao: "Técnica militar externa adicionada manualmente à sua ficha.",
+      descricao: "Técnica externa adicionada manualmente.",
       custo: "Variável",
-      instalado: true,
-      externo: true,
       acao: "Consultar Documento",
       alcance: "Variável",
       alvo: "Especificado no arquivo",
       duracao: "Variável",
       teste: "Variável",
-      efeitoCompleto: `Arquivo de doutrina original: ${arquivo.name}. O pacote de regras customizado foi indexado e está disponível para uso do seu Cavaleiro.`
+      efeitoCompleto: `Arquivo original: ${arquivo.name}. Regras customizadas indexadas ao acervo.`,
+      externo: true,
     };
-
-    setHabilidades([novaHab, ...habilidades]);
-    alert(`Módulo de táticas "${arquivo.name}" foi indexado ao seu acervo!`);
+    setHabilidadesExternas([nova, ...habilidadesExternas]);
+    alert(`Módulo "${arquivo.name}" indexado ao seu acervo!`);
   }
 
+  // Todas as habilidades para exibição (sistema + externas)
+  const todasHabilidades = [...habilidades, ...habilidadesExternas];
+
+  const habilidadesFiltradas = todasHabilidades.filter((h) => {
+    let correspondeAba = true;
+    if (abaAtiva === "todos") correspondeAba = !h.externo;
+    if (abaAtiva === "externos") correspondeAba = h.externo;
+
+    const correspondeBusca =
+      h.titulo.toLowerCase().includes(busca.toLowerCase()) ||
+      h.categoria.toLowerCase().includes(busca.toLowerCase());
+
+    return correspondeAba && correspondeBusca;
+  });
+
+  // Tela de detalhe
   if (habilidadeAberta) {
     return (
       <div className={styles.containerGeral}>
         <div className={styles.telaLeituraWiki}>
-          
           <div className={styles.headerLeitura}>
             <button className={styles.btnVoltar} onClick={() => setHabilidadeAberta(null)}>
               <ChevronLeft size={16} /> Fechar Compêndio
@@ -120,28 +126,31 @@ export default function Habilidades() {
               <span className={styles.tagCampanhaLeitura}>{habilidadeAberta.categoria}</span>
               <span className={styles.tagPapelLeitura}>{habilidadeAberta.requisito}</span>
               <span className={styles.tagCustoLeitura}>{habilidadeAberta.custo}</span>
-              {habilidadeAberta.externo && <span className={styles.tagExternoLeitura}>Homebrew</span>}
+              {habilidadeAberta.externo && (
+                <span className={styles.tagExternoLeitura}>Homebrew</span>
+              )}
             </div>
           </div>
 
           <div className={styles.corpoLeitura}>
             <div className={styles.layoutLeituraLivro}>
-              
-              {}
               <div className={styles.fichaTecnicaMagia}>
                 <div className={styles.runaIconWrapper}>
-                  {habilidadeAberta.categoria === "Ataque" ? <Swords size={48} className={styles.runaIconVisual} /> : <Shield size={48} className={styles.runaIconVisual} />}
+                  {habilidadeAberta.categoria === "Ataque" ? (
+                    <Swords size={48} className={styles.runaIconVisual} />
+                  ) : (
+                    <Shield size={48} className={styles.runaIconVisual} />
+                  )}
                 </div>
                 <div className={styles.atributosGrid}>
-                  <div><strong>Ação:</strong> <p>{habilidadeAberta.acao}</p></div>
-                  <div><strong>Alcance:</strong> <p>{habilidadeAberta.alcance}</p></div>
-                  <div><strong>Alvo/Área:</strong> <p>{habilidadeAberta.alvo}</p></div>
-                  <div><strong>Duração:</strong> <p>{habilidadeAberta.duracao}</p></div>
-                  <div><strong>Teste/Save:</strong> <p>{habilidadeAberta.teste}</p></div>
+                  <div><strong>Ação:</strong><p>{habilidadeAberta.acao}</p></div>
+                  <div><strong>Alcance:</strong><p>{habilidadeAberta.alcance}</p></div>
+                  <div><strong>Alvo/Área:</strong><p>{habilidadeAberta.alvo}</p></div>
+                  <div><strong>Duração:</strong><p>{habilidadeAberta.duracao}</p></div>
+                  <div><strong>Teste/Save:</strong><p>{habilidadeAberta.teste}</p></div>
                 </div>
               </div>
-              
-              {}
+
               <div className={styles.textoLeituraWrapper}>
                 <div className={styles.tituloAlinhamento}>
                   <Scroll size={28} className={styles.iconSelo} />
@@ -149,153 +158,164 @@ export default function Habilidades() {
                 </div>
                 <div className={styles.divisorEstilizado} />
                 <p className={styles.textoLoreNpc}>{habilidadeAberta.efeitoCompleto}</p>
-                
                 <div className={styles.caixaAlertaLeitura}>
                   <Sparkles size={18} />
-                  <span>Esta habilidade foi vinculada à sua ficha. O gasto de Vigor será deduzido automaticamente ao usar o macro.</span>
+                  <span>
+                    Habilidade do sistema{" "}
+                    <strong>{sistemaAtivo?.nome || "atual"}</strong>. Consulte
+                    seu Mestre para adquiri-la.
+                  </span>
                 </div>
               </div>
-
             </div>
           </div>
 
           <div className={styles.rodapeProtegido}>
-            <span>Compêndio de Técnicas de Combate atrelado à licença de Mythic Bastionland local.</span>
+            <span>
+              Compêndio de Técnicas vinculado ao sistema{" "}
+              {sistemaAtivo?.nome || ""}.
+            </span>
           </div>
-
         </div>
       </div>
     );
   }
 
-
-  const habilidadesFiltradas = habilidades.filter(h => {
-    let correspondeAba = true;
-    if (abaAtiva === "instalados") correspondeAba = h.instalado && !h.externo;
-    if (abaAtiva === "externos") correspondeAba = h.externo;
-    if (abaAtiva === "todos") correspondeAba = !h.externo;
-
-    const correspondeBusca = h.titulo.toLowerCase().includes(busca.toLowerCase()) || 
-                             h.categoria.toLowerCase().includes(busca.toLowerCase());
-    return correspondeAba && correspondeBusca;
-  });
-
   return (
     <div className={styles.containerGeral}>
-      
-      <input 
-        type="file" 
-        ref={fileInputRef} 
-        style={{ display: "none" }} 
+      <input
+        type="file"
+        ref={fileInputRef}
+        style={{ display: "none" }}
         accept=".pdf,.json,.txt"
         onChange={handleImportarHabilidade}
       />
 
-      {}
-      <div className={styles.headerMenu}>
-        <div className={styles.abasPrincipais}>
-          <button 
-            className={`${styles.btnAbaPrincipal} ${abaAtiva === "instalados" ? styles.abaPrincipalAtiva : ""}`}
-            onClick={() => { setAbaAtiva("instalados"); setBusca(""); }}
-          >
-            <CheckCircle size={16} /> Técnicas Instaladas
-          </button>
-          <button 
-            className={`${styles.btnAbaPrincipal} ${abaAtiva === "todos" ? styles.abaPrincipalAtiva : ""}`}
-            onClick={() => { setAbaAtiva("todos"); setBusca(""); }}
-          >
-            <Swords size={16} /> Todas as Técnicas
-          </button>
-          <button 
-            className={`${styles.btnAbaPrincipal} ${abaAtiva === "externos" ? styles.abaPrincipalAtiva : ""}`}
-            onClick={() => { setAbaAtiva("externos"); setBusca(""); }}
-          >
-            <PlusCircle size={16} /> Adicionadas (Mods)
-          </button>
-        </div>
-
-        <div className={styles.buscaWrapper}>
-          <Search size={18} className={styles.buscaIcon} />
-          <input 
-            type="text" 
-            placeholder="Filtrar técnica, escola ou requisito..." 
-            value={busca}
-            onChange={(e) => setBusca(e.target.value)}
-          />
-        </div>
-      </div>
-
-      {}
-      <div className={styles.painelRolavel}>
-        <div className={styles.secaoLayout}>
-          
-          <div className={styles.subHeaderInterno}>
-            <div>
-              <h3>
-                {abaAtiva === "instalados" && "Manuais de Combate da Ficha"}
-                {abaAtiva === "todos" && "Compêndio Geral do Sistema"}
-                {abaAtiva === "externos" && "Doutrinas Customizadas"}
-              </h3>
-              <p>
-                {abaAtiva === "instalados" && "Habilidades atualmente preparadas e memorizadas pelo seu Cavaleiro."}
-                {abaAtiva === "todos" && "Lista completa de progressão, talentos e artes marciais disponíveis."}
-                {abaAtiva === "externos" && "Regras de manobras alternativas ou homebrews carregados localmente."}
-              </p>
-            </div>
-
-            {abaAtiva === "externos" && (
-              <button className={styles.btnImportar} onClick={() => fileInputRef.current.click()}>
-                <UploadCloud size={16} /> Importar Técnica (.json)
+      {/* SIDEBAR DE SISTEMAS */}
+      {/* <aside className={styles.sidebarCampanhas}>
+        <div className={styles.labelSecao}>SISTEMAS</div>
+        {carregandoSistemas ? (
+          <p style={{ color: "var(--cor-texto-muted, #888)", padding: "0 1rem", fontSize: "0.8rem" }}>
+            Carregando...
+          </p>
+        ) : sistemas.length === 0 ? (
+          <p style={{ color: "var(--cor-texto-muted, #888)", padding: "0 1rem", fontSize: "0.8rem" }}>
+            Nenhum sistema encontrado.
+          </p>
+        ) : (
+          <div className={styles.listaCampanhasLayout}>
+            {sistemas.map((s) => (
+              <button
+                key={s.id}
+                className={`${styles.itemCampanhaBtn} ${sistemaAtivo?.id === s.id ? styles.itemCampanhaAtivo : ""}`}
+                onClick={() => setSistemaAtivo(s)}
+              >
+                <Package size={18} className={styles.iconeCampanhaBtn} />
+                <span className={styles.nomeCampanhaTexto}>{s.nome || s.name || s.id}</span>
               </button>
-            )}
-          </div>
-
-          <div className={styles.gridLivros}>
-            {habilidadesFiltradas.map(hab => (
-              <div key={hab.id} className={styles.cardLivro}>
-                
-                {}
-                <div className={styles.capaLivroContainer}>
-                  <div className={styles.backgroundRunaVisual} />
-                  {hab.categoria === "Ataque" ? (
-                    <Swords className={styles.imagemCapaIcone} size={48} />
-                  ) : hab.categoria === "Defesa" ? (
-                    <Shield className={styles.imagemCapaIcone} size={48} />
-                  ) : (
-                    <Sparkles className={styles.imagemCapaIcone} size={48} />
-                  )}
-                  <div className={styles.overlayCapa}>
-                    <span className={styles.badgeCategoriaCapa}>{hab.categoria}</span>
-                  </div>
-                </div>
-
-                <div className={styles.livroInfoCorpo}>
-                  <div className={styles.livroMetaHeader}>
-                    <span className={styles.livroVersao}>{hab.requisito}</span>
-                    <span className={styles.badgeCusto}>{hab.custo}</span>
-                  </div>
-                  
-                  <h4>{hab.titulo}</h4>
-                  <p className={styles.descricaoLivroShort}>{hab.descricao}</p>
-                  
-                  {hab.instalado ? (
-                    <button className={styles.btnAbrirLivro} onClick={() => setHabilidadeAberta(hab)}>
-                      <Scroll size={14} /> Detalhar Técnica
-                    </button>
-                  ) : (
-                    <button className={styles.btnInstalarLivro} onClick={() => handleInstalarHabilidade(hab.id)}>
-                      <DownloadCloud size={14} /> Aprender Manobra
-                    </button>
-                  )}
-                </div>
-
-              </div>
             ))}
           </div>
+        )}
+      </aside> */}
 
+      {/* PAINEL PRINCIPAL */}
+      <div className={styles.painelPrincipalConteudo ?? styles.containerGeral}>
+        <div className={styles.headerMenu}>
+          <div className={styles.abasPrincipais}>
+            <button
+              className={`${styles.btnAbaPrincipal} ${abaAtiva === "todos" ? styles.abaPrincipalAtiva : ""}`}
+              onClick={() => { setAbaAtiva("todos"); setBusca(""); }}
+            >
+              <Swords size={16} /> Todas as Técnicas
+            </button>
+            <button
+              className={`${styles.btnAbaPrincipal} ${abaAtiva === "externos" ? styles.abaPrincipalAtiva : ""}`}
+              onClick={() => { setAbaAtiva("externos"); setBusca(""); }}
+            >
+              <PlusCircle size={16} /> Adicionadas (Mods)
+            </button>
+          </div>
+
+          <div className={styles.buscaWrapper}>
+            <Search size={18} className={styles.buscaIcon} />
+            <input
+              type="text"
+              placeholder="Filtrar técnica, escola ou requisito..."
+              value={busca}
+              onChange={(e) => setBusca(e.target.value)}
+            />
+          </div>
+        </div>
+
+        <div className={styles.painelRolavel}>
+          <div className={styles.secaoLayout}>
+            <div className={styles.subHeaderInterno}>
+              <div>
+                <h3>
+                  {abaAtiva === "todos" && `Compêndio — ${sistemaAtivo?.nome || "Sistema"}`}
+                  {abaAtiva === "externos" && "Doutrinas Customizadas"}
+                </h3>
+                <p>
+                  {abaAtiva === "todos" && "Lista completa de habilidades disponíveis no sistema selecionado."}
+                  {abaAtiva === "externos" && "Regras de manobras alternativas ou homebrews carregados localmente."}
+                </p>
+              </div>
+              {abaAtiva === "externos" && (
+                <button className={styles.btnImportar} onClick={() => fileInputRef.current.click()}>
+                  <UploadCloud size={16} /> Importar Técnica (.json)
+                </button>
+              )}
+            </div>
+
+            {carregandoHabilidades ? (
+              <p style={{ color: "var(--cor-texto-muted, #888)", padding: "1rem 0" }}>
+                Carregando habilidades...
+              </p>
+            ) : (
+              <div className={styles.gridLivros}>
+                {habilidadesFiltradas.length === 0 ? (
+                  <p style={{ color: "var(--cor-texto-muted, #888)" }}>
+                    Nenhuma habilidade encontrada para este sistema.
+                  </p>
+                ) : (
+                  habilidadesFiltradas.map((hab) => (
+                    <div key={hab.id} className={styles.cardLivro}>
+                      <div className={styles.capaLivroContainer}>
+                        <div className={styles.backgroundRunaVisual} />
+                        {hab.categoria === "Ataque" ? (
+                          <Swords className={styles.imagemCapaIcone} size={48} />
+                        ) : hab.categoria === "Defesa" ? (
+                          <Shield className={styles.imagemCapaIcone} size={48} />
+                        ) : (
+                          <Sparkles className={styles.imagemCapaIcone} size={48} />
+                        )}
+                        <div className={styles.overlayCapa}>
+                          <span className={styles.badgeCategoriaCapa}>{hab.categoria}</span>
+                        </div>
+                      </div>
+
+                      <div className={styles.livroInfoCorpo}>
+                        <div className={styles.livroMetaHeader}>
+                          <span className={styles.livroVersao}>{hab.requisito}</span>
+                          <span className={styles.badgeCusto}>{hab.custo}</span>
+                        </div>
+                        <h4>{hab.titulo}</h4>
+                        <p className={styles.descricaoLivroShort}>{hab.descricao}</p>
+                        <button
+                          className={styles.btnAbrirLivro}
+                          onClick={() => setHabilidadeAberta(hab)}
+                        >
+                          <Scroll size={14} /> Detalhar Técnica
+                        </button>
+                      </div>
+                    </div>
+                  ))
+                )}
+              </div>
+            )}
+          </div>
         </div>
       </div>
-
     </div>
   );
 }
