@@ -9,8 +9,8 @@ export default function CampanhaP({ campanha, roleAtiva, onAbrirLobby }) {
         <p>{campanha.descricao}</p>
       </div>
       <span className={`${styles.status} ${
-        campanha.status === "ATIVA" ? styles.ativa :
-        campanha.satus === "PAUSADA" ? styles.pausada : styles.finalizada
+        campanha.Status === "ATIVA" ? styles.ativa :
+        campanha.Satus === "PAUSADA" ? styles.pausada : styles.finalizada
       }`}>
         {campanha.Status}
       </span>
