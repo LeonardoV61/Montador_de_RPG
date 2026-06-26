@@ -175,6 +175,17 @@ export default function UserMenu() {
 
   // ── renderização de conteúdo por aba ────────────────────────────
   function renderConteudo() {
+
+    if (menuAtivo === 'campanha-lobby') {
+      return (
+        <CampanhaLobby 
+          campanha={campanhaAtiva}
+          roleAtiva={roleAtiva}
+          usuarioId={usuarioId}
+          onVoltar={() => setMenuAtivo('dashboard')}
+        />
+      );
+    }
     // ── Mestre ──
     if (roleAtiva === 'mestre') {
       switch (menuAtivo) {
