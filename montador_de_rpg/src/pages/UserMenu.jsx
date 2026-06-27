@@ -278,6 +278,7 @@ export default function UserMenu() {
                 onAbrirLobby={(camp) => {
                   setCampanhaAtiva(camp);
                   setMenuAtivo('campanha-lobby');
+                  window.scrollTo({top: 0, behavior: "smooth"})
                 }}
                 onDeletar={handleDeletarCampanha} // <-- Adicionado aqui!
               />

@@ -383,21 +383,21 @@ export default function Mapa({ roleAtiva = 'jogador' }) {
                         
                if (ehRio) {
                   const conexaoValley = tile.valleys || "1-2";
-                  srcChaoBase = `/public/svgMap/terrains/valleys/${conexaoValley}.svg`;
+                  srcChaoBase = `/svgMap/terrains/valleys/${conexaoValley}.svg`;
                } else if (tile.holding) {
-                  srcChaoBase = `/public/svgMap/terrains/plain.svg`;
+                  srcChaoBase = `/svgMap/terrains/plain.svg`;
                   // Exibe a holding/estrutura somente se o player já explorou o local
                   if (tileFoiExplorado) {
-                     srcHoldingStr = `/public/svgMap/structures/${tile.holding.svg}`;
+                     srcHoldingStr = `/svgMap/structures/${tile.holding.svg}`;
                   }
                } else {
                   const dadosTerreno = TERRENOS_INFO[tile.terreno];
-                  srcChaoBase = `/public/svgMap/terrains/${dadosTerreno.svg}`;
+                  srcChaoBase = `/svgMap/terrains/${dadosTerreno.svg}`;
                }
           
                const mostrarLandmark = tileFoiExplorado && tile.landmark;
-               const srcLandmark = mostrarLandmark ? `/public/svgMap/modifiers/${tile.landmark.svg}` : null;
-               const srcBlankMark = mostrarLandmark ? `/public/svgMap/modifiers/blank marks/${tile.landmark.svg}` : null;
+               const srcLandmark = mostrarLandmark ? `/svgMap/modifiers/${tile.landmark.svg}` : null;
+               const srcBlankMark = mostrarLandmark ? `/svgMap/modifiers/blank marks/${tile.landmark.svg}` : null;
           
                return (
                   <div
@@ -419,6 +419,7 @@ export default function Mapa({ roleAtiva = 'jogador' }) {
                      <div className={styles.conteudoHex}>
                      {srcChaoBase && (
                         <img 
+                           draggable="false"
                            src={srcChaoBase} 
                            className={`${styles.camadaBase} ${tile.isSeatOfPower ? styles.seatOfPower : ""}`} 
                            alt="" 
@@ -426,19 +427,19 @@ export default function Mapa({ roleAtiva = 'jogador' }) {
                      )}
           
                      {srcHoldingStr && (
-                        <img src={srcHoldingStr} className={styles.camadaBase} alt="" />
+                        <img draggable="false" src={srcHoldingStr} className={styles.camadaBase} alt="" />
                      )}
           
                      {srcLandmark && srcBlankMark && (
-                        <img src={srcBlankMark} className={styles.camadaBlankMark} alt="" />
+                        <img draggable="false" src={srcBlankMark} className={styles.camadaBlankMark} alt="" />
                      )}
           
                      {srcLandmark && (
-                        <img src={srcLandmark} className={styles.camadaLandmark} alt="" />
+                        <img draggable="false" src={srcLandmark} className={styles.camadaLandmark} alt="" />
                      )}
           
                      {temMitoAqui && (
-                        <div className={styles.bolhinhaMito}>
+                        <div draggable="false" className={styles.bolhinhaMito}>
                            {temMitoAqui.id}
                         </div>
                      )}

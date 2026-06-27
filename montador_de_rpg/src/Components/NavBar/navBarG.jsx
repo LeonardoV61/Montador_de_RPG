@@ -1,4 +1,5 @@
 import { useState } from 'react';
+import { Link } from 'react-router-dom';
 import NavBarJogadores from './navBarP';
 import logo from '../../assets/Hydra.png';
 import styles from './styles.navBarG.module.css';
@@ -11,10 +12,13 @@ export default function NavBarJogo({ roleAtiva }) {
       <>
       <header className={styles.navBar}>
          <div className={styles.logo}>
-            <img src={logo} alt="Logo Hydra" className={styles.logoImg} />
+            <Link to="/menu"><img src={logo} alt="Logo Hydra" className={styles.logoImg} /></Link>
             <span>Bastionland</span>
          </div>
-         <div className={styles.titulo}><div className={styles.pontoAtivo}></div>Sessão IV · A Marcha do Bastião Perdido</div>
+         <div className={styles.titulo}>
+            <div className={styles.pontoAtivo}></div>
+            Sessão IV · A Marcha do Bastião Perdido
+         </div>
          <NavBarJogadores />
          <div className={styles.botoes}>
             {roleAtiva == "mestre" ? (
