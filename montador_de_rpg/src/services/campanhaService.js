@@ -7,6 +7,7 @@ export const campanhaService = {
   listarMinhas: () => api.get('/api/campanhas/minhas'),
   listarPorUsuario: (usuarioId) => api.get(`/api/campanhas/usuario/${usuarioId}`),
   deletar: (id) => api.delete(`/api/campanhas/${id}`),
+  deletarTemporaria: (id) => api.delete(`/api/campanhas/${id}/temporaria`),
   
   // Atualização de dados da campanha
   atualizar: (id, dto) => api.put(`/api/campanhas/${id}`, dto),

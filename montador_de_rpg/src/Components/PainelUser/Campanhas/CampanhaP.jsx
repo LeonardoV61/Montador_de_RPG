@@ -1,20 +1,20 @@
 import { useState, useEffect } from "react";
 import styles from "./styles.CampanhaP.module.css";
-import { campanhaService } from "../../../services/campanhaService.js"; // Ajuste o caminho do import se necessário
+import { campanhaService } from "../../../services/campanhaService.js";
 
 export default function CampanhaP({ campanha, onAbrirLobby, onDeletar }) {
   const [confirmando, setConfirmando] = useState(false);
   const [papelReal, setPapelReal] = useState(null);
 
- useEffect(() => {
+  useEffect(() => {
     async function buscarPapelNaCampanha() {
       try {
         const res = await campanhaService.buscarMinhaRole(campanha.id);
         const dados = res?.data !== undefined ? res.data : res;
-        
-        if (dados && typeof dados === 'object' && dados.papel) {
+
+        if (dados && typeof dados === "object" && dados.papel) {
           setPapelReal(dados.papel.trim().toLowerCase());
-        } else if (typeof dados === 'string') {
+        } else if (typeof dados === "string") {
           setPapelReal(dados.trim().toLowerCase());
         }
       } catch (err) {
@@ -22,9 +22,7 @@ export default function CampanhaP({ campanha, onAbrirLobby, onDeletar }) {
       }
     }
 
-    if (campanha?.id) {
-      buscarPapelNaCampanha();
-    }
+    if (campanha?.id) buscarPapelNaCampanha();
   }, [campanha.id]);
 
   function handleDeletar(e) {
@@ -42,20 +40,32 @@ export default function CampanhaP({ campanha, onAbrirLobby, onDeletar }) {
     setConfirmando(false);
   }
 
+  // status pode vir como "status" ou "Status" dependendo do back
+  const statusValor = campanha.status ?? campanha.Status;
+
   return (
     <li className={styles.campaign} onClick={() => onAbrirLobby(campanha)}>
       <div className={styles.info}>
         <h4>{campanha.nome}</h4>
-        <p>{campanha.descricao}</p>
+
+        {/* sistema logo abaixo do nome */}
+        {campanha.sistemaNome && (
+          <span className={styles.sistema}>{campanha.sistemaNome}</span>
+        )}
+
+        {campanha.descricao && (
+          <p>{campanha.descricao}</p>
+        )}
       </div>
 
       <div className={styles.acoes} onClick={(e) => e.stopPropagation()}>
         <span className={`${styles.status} ${
-          campanha.Status === "ATIVA"    ? styles.ativa :
-          campanha.Status === "PAUSADA"  ? styles.pausada : styles.finalizada
+          statusValor === "ATIVA"     ? styles.ativa    :
+          statusValor === "PAUSADA"   ? styles.pausada  : styles.finalizada
         }`}>
-          {campanha.Status}
+          {statusValor}
         </span>
+
         {papelReal === "mestre" && (
           confirmando ? (
             <div className={styles.confirmar}>

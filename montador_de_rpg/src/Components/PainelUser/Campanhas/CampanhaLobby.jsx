@@ -55,10 +55,10 @@ export default function CampanhaLobby({ campanha, usuarioId, onVoltar, onStatusA
       setCarregandoRole(true);
       try {
         const res = await campanhaService.buscarMinhaRole(campanha.id);
-        const papel = res?.data?.papel ?? res?.papel ?? res; // back retorna { papel: "MESTRE" }
+        const papel = res?.data?.papel ?? res?.papel ?? res;
         setRoleNaCampanha(typeof papel === "string" ? papel.toLowerCase() : "jogador");
       } catch {
-        setRoleNaCampanha("jogador"); // fallback seguro
+        setRoleNaCampanha("jogador");
       } finally {
         setCarregandoRole(false);
       }
@@ -71,7 +71,7 @@ export default function CampanhaLobby({ campanha, usuarioId, onVoltar, onStatusA
   useEffect(() => {
     if (!campanha?.id || carregandoRole) return;
 
-    // Participantes com papéis reais (retorna: [{usuarioId, apelido, papel, personagemNome}])
+    // Participantes
     campanhaService
       .listarParticipantes(campanha.id)
       .then((res) => setParticipantes(res?.data || res || []))
@@ -83,14 +83,29 @@ export default function CampanhaLobby({ campanha, usuarioId, onVoltar, onStatusA
       .then((res) => setSessoes(res?.data || res || []))
       .catch(() => setSessoes([]));
 
-    // Sistema da campanha
+    // ── Sistema da campanha ──────────────────────────────────────────────────
+    // O CampanhaResponseDTO retorna sistemaId e sistemaNome como campos separados,
+    // não como objeto aninhado. Por isso buscamos o sistema completo pelo id.
     campanhaService
       .buscarPorId(campanha.id)
       .then((res) => {
         const dados = res?.data || res;
         if (dados) {
           setCampanhaLocal(dados);
-          setSistema(dados.sistema || null);
+
+          if (dados.sistemaId) {
+            sistemaService
+              .buscarPorId(dados.sistemaId)
+              .then((resSistema) => {
+                setSistema(resSistema?.data || resSistema || null);
+              })
+              .catch(() => {
+                // fallback com o mínimo que já temos caso a busca falhe
+                setSistema({ id: dados.sistemaId, nome: dados.sistemaNome });
+              });
+          } else {
+            setSistema(null);
+          }
         }
       })
       .catch(() => {});
@@ -111,10 +126,9 @@ export default function CampanhaLobby({ campanha, usuarioId, onVoltar, onStatusA
 
   // ── Handlers ─────────────────────────────────────────────────────────────────
 
-  // Mestre: abre modal de seleção de sistema
   const handleAbrirModalSistema = async () => {
     setModalSistema(true);
-    if (sistemasDisponiveis.length > 0) return; // já carregados
+    if (sistemasDisponiveis.length > 0) return;
     setCarregandoSistemas(true);
     try {
       const res = await sistemaService.listarTodos();
@@ -126,30 +140,32 @@ export default function CampanhaLobby({ campanha, usuarioId, onVoltar, onStatusA
     }
   };
 
-  // Mestre: vincular sistema escolhido à campanha
   const handleVincularSistema = async () => {
     if (!sistemaSelecionadoId) return;
     setCarregando(true);
     setErro(null);
-    try {
-      // Cria o payload contendo os dados OBRIGATÓRIOS que o backend exige
-      const payload = {
-        nome: campanhaLocal?.nome || campanha.nome,
-        descricao: campanhaLocal?.descricao || campanha.descricao,
-        status: campanhaLocal?.status || campanha.status || "ATIVA",
-        sistemaId: sistemaSelecionadoId
-      };
 
-      await campanhaService.atualizar(campanha.id, payload);
-      
-      const sistemaObj = sistemasDisponiveis.find(s => s.id === sistemaSelecionadoId) || null;
+    try {
+      await campanhaService.atualizar(campanha.id, {
+        sistemaId: sistemaSelecionadoId,
+      });
+
+      // sistemasDisponiveis já tem o objeto completo vindo do listarTodos
+      const sistemaObj =
+        sistemasDisponiveis.find((s) => s.id === sistemaSelecionadoId) || null;
+
       setSistema(sistemaObj);
-      setCampanhaLocal(prev => ({ ...prev, sistemaId: sistemaSelecionadoId }));
+      setCampanhaLocal((prev) => ({
+        ...prev,
+        sistema: sistemaObj,
+        sistemaId: sistemaSelecionadoId,
+      }));
+
       setModalSistema(false);
       setSistemaSelecionadoId(null);
     } catch (err) {
       console.error("Erro ao vincular sistema:", err);
-      setErro("Não foi possível vincular o sistema. Verifique o console.");
+      setErro("Erro ao vincular sistema.");
     } finally {
       setCarregando(false);
     }
@@ -242,24 +258,15 @@ export default function CampanhaLobby({ campanha, usuarioId, onVoltar, onStatusA
     }
   };
 
-  
   const handleAtualizarStatus = async (novoStatus) => {
     setCarregando(true);
     try {
-      const payload = { /* ... seu payload ... */ status: novoStatus };
-      await campanhaService.atualizar(campanha.id, payload);
-      
-      // 1. Atualiza o estado local do lobby
+      await campanhaService.atualizar(campanha.id, { status: novoStatus });
       setCampanhaLocal((prev) => ({ ...prev, status: novoStatus }));
-      
-      // 2. Notifica o UserMenu para atualizar a lista (A MÁGICA ESTÁ AQUI)
-      if (onStatusAlterado) {
-        onStatusAlterado(campanha.id, novoStatus);
-      }
-      
+      if (onStatusAlterado) onStatusAlterado(campanha.id, novoStatus);
       setEditandoStatus(false);
-    } catch (err) {
-      // ... erro
+    } catch {
+      setErro("Erro ao atualizar status.");
     } finally {
       setCarregando(false);
     }
@@ -293,7 +300,6 @@ export default function CampanhaLobby({ campanha, usuarioId, onVoltar, onStatusA
         </div>
 
         <div className={styles.cabecalhoAcoes}>
-          {/* Status — mestre pode editar */}
           <div className={styles.statusWrapper}>
             <span className={[styles.status, styles[statusAtual]].filter(Boolean).join(" ")}>
               {(campanhaLocal?.status ?? campanha?.Status) || "—"}
@@ -405,13 +411,11 @@ export default function CampanhaLobby({ campanha, usuarioId, onVoltar, onStatusA
                   <li key={p.id ?? p.usuarioId ?? i} className={styles.participante}>
                     <span className={styles.avatar}>
                       {ehMestreParticipante ? (
-                        /* Livro aberto — narrador/mestre */
                         <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.6" strokeLinecap="round" strokeLinejoin="round" aria-label="Mestre">
                           <path d="M2 3h6a4 4 0 0 1 4 4v14a3 3 0 0 0-3-3H2z" />
                           <path d="M22 3h-6a4 4 0 0 0-4 4v14a3 3 0 0 1 3-3h7z" />
                         </svg>
                       ) : (
-                        /* Espada — jogador */
                         <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.6" strokeLinecap="round" strokeLinejoin="round" aria-label="Jogador">
                           <polyline points="14.5 17.5 3 6 3 3 6 3 17.5 14.5" />
                           <line x1="13" y1="19" x2="19" y2="13" />
@@ -580,7 +584,7 @@ export default function CampanhaLobby({ campanha, usuarioId, onVoltar, onStatusA
               <p className={styles.vazio}>Nenhum sistema disponível.</p>
             ) : (
               <ul className={styles.listaSistemas}>
-                {sistemasDisponiveis.map(s => (
+                {sistemasDisponiveis.map((s) => (
                   <li
                     key={s.id}
                     className={[

@@ -65,7 +65,7 @@ export default function BarraL({
               Nova Campanha
             </a>
 
-            <a href="#" onClick={(e) => { e.preventDefault(); onNovaSessao?.(); }}>
+            {/* <a href="#" onClick={(e) => { e.preventDefault(); onNovaSessao?.(); }}>
               <Play size={18} />
               Nova Sessão
             </a>
@@ -73,7 +73,7 @@ export default function BarraL({
             <a href="#" onClick={(e) => { e.preventDefault(); onNovaCena?.(); }}>
               <Play size={18} />
               Nova Cena
-            </a>
+            </a> */}
 
             <p className={styles.menuTitle}>FERRAMENTAS</p>
 

@@ -13,51 +13,11 @@ export default function CriacaoPersonagem({ setMenuAtivo }) {
   const [carregandoUsuario, setCarregandoUsuario] = useState(true);
   const [erroGlobal, setErroGlobal] = useState(null);
 
-  // ── [MODIFICADO] Inicialização Lazy buscando do localStorage ──────
-  const [fase, setFase] = useState(() => localStorage.getItem('rpg_fase') || 'selecao');
-  
-  const [selecao, setSelecao] = useState(() => {
-    const salvo = localStorage.getItem('rpg_selecao');
-    return salvo ? JSON.parse(salvo) : null;
-  });
-  
-  const [entidadeJogador, setEntidadeJogador] = useState(() => {
-    const salvo = localStorage.getItem('rpg_entidade_jogador');
-    return salvo ? JSON.parse(salvo) : null;
-  });
-  
-  const [personagemFinal, setPersonagemFinal] = useState(() => {
-    const salvo = localStorage.getItem('rpg_personagem_final');
-    return salvo ? JSON.parse(salvo) : null;
-  });
-
-  // ── [NOVO] Efeitos para sincronizar os estados com o localStorage ──
-  useEffect(() => {
-    localStorage.setItem('rpg_fase', fase);
-  }, [fase]);
-
-  useEffect(() => {
-    if (selecao) localStorage.setItem('rpg_selecao', JSON.stringify(selecao));
-    else localStorage.removeItem('rpg_selecao');
-  }, [selecao]);
-
-  useEffect(() => {
-    if (entidadeJogador) localStorage.setItem('rpg_entidade_jogador', JSON.stringify(entidadeJogador));
-    else localStorage.removeItem('rpg_entidade_jogador');
-  }, [entidadeJogador]);
-
-  useEffect(() => {
-    if (personagemFinal) localStorage.setItem('rpg_personagem_final', JSON.stringify(personagemFinal));
-    else localStorage.removeItem('rpg_personagem_final');
-  }, [personagemFinal]);
-
-  // Limpa o rascunho local do navegador
-  function limparRascunhoLocal() {
-    localStorage.removeItem('rpg_fase');
-    localStorage.removeItem('rpg_selecao');
-    localStorage.removeItem('rpg_entidade_jogador');
-    localStorage.removeItem('rpg_personagem_final');
-  }
+  // ── Inicialização limpa (sem localStorage) ──────
+  const [fase, setFase] = useState('selecao');
+  const [selecao, setSelecao] = useState(null);
+  const [entidadeJogador, setEntidadeJogador] = useState(null);
+  const [personagemFinal, setPersonagemFinal] = useState(null);
 
   // ── carrega usuário ──────────────────────────────────────────────
   useEffect(() => {
@@ -122,13 +82,11 @@ export default function CriacaoPersonagem({ setMenuAtivo }) {
     setSelecao(null);
     setEntidadeJogador(null);
     setErroGlobal(null);
-    limparRascunhoLocal(); // Reseta se o usuário desistir voluntariamente
   }
 
-  // Sair da tela limpando o rascunho
+  // Sair da tela
   function irParaMenuPersonagens(e) {
     if (e) e.preventDefault();
-    limparRascunhoLocal();
     setMenuAtivo('personagens');
   }
 
@@ -176,8 +134,6 @@ export default function CriacaoPersonagem({ setMenuAtivo }) {
           campanhaAtivaId={null}
           onConcluido={handleConcluido}
           onErro={handleErro}
-          // Se o ExecucaoProcedimento tiver estados internos que precisam salvar rascunho,
-          // eles devem ser tratados lá dentro da mesma forma!
         />
       )}
 
