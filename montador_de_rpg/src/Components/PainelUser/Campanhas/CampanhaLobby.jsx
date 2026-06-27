@@ -239,9 +239,9 @@ export default function CampanhaLobby({ campanha, usuarioId, onVoltar }) {
     setCarregando(true);
     setErro(null);
     try {
-      const res = await campanhaService.atualizar(campanha.id, { Status: novoStatus });
+      const res = await campanhaService.atualizar(campanha.id, { status: novoStatus });
       const atualizada = res?.data || res;
-      setCampanhaLocal((prev) => ({ ...prev, Status: atualizada?.status ?? novoStatus }));
+      setCampanhaLocal((prev) => ({ ...prev, status: atualizada?.status ?? novoStatus }));
       setEditandoStatus(false);
     } catch {
       setErro("Não foi possível atualizar o status da campanha.");
@@ -262,7 +262,7 @@ export default function CampanhaLobby({ campanha, usuarioId, onVoltar }) {
     );
   }
 
-  const statusAtual = (campanhaLocal?.Status ?? campanha?.Status ?? "").toLowerCase();
+  const statusAtual = (campanhaLocal?.status ?? campanha?.status ?? "").toLowerCase();
 
   return (
     <div className={styles.lobby}>
@@ -280,7 +280,7 @@ export default function CampanhaLobby({ campanha, usuarioId, onVoltar }) {
           {/* Status — mestre pode editar */}
           <div className={styles.statusWrapper}>
             <span className={[styles.status, styles[statusAtual]].filter(Boolean).join(" ")}>
-              {(campanhaLocal?.Status ?? campanha?.Status) || "—"}
+              {(campanhaLocal?.status ?? campanha?.status) || "—"}
             </span>
 
             {ehMestre && !editandoStatus && (
