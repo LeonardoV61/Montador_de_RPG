@@ -370,17 +370,17 @@ export default function GeradorMapa() {
               
               if (ehRio) {
                 const conexaoValley = tile.valleys || "1-2";
-                srcChaoBase = `/src/assets/svgMap/terrains/valleys/${conexaoValley}.svg`;
+                srcChaoBase = `/public/svgMap/terrains/valleys/${conexaoValley}.svg`;
               } else if (tile.holding) {
-                srcChaoBase = `/src/assets/svgMap/terrains/plain.svg`;
-                srcHoldingStr = `/src/assets/svgMap/structures/${tile.holding.svg}`;
+                srcChaoBase = `/public/svgMap/terrains/plain.svg`;
+                srcHoldingStr = `/public/svgMap/structures/${tile.holding.svg}`;
               } else {
                 const dadosTerreno = TERRENOS_INFO[tile.terreno];
-                srcChaoBase = `/src/assets/svgMap/terrains/${dadosTerreno.svg}`;
+                srcChaoBase = `/public/svgMap/terrains/${dadosTerreno.svg}`;
               }
 
-              const srcLandmark = tile.landmark ? `/src/assets/svgMap/modifiers/${tile.landmark.svg}` : null;
-              const srcBlankMark = tile.landmark ? `/src/assets/svgMap/modifiers/blank marks/${tile.landmark.svg}` : null;
+              const srcLandmark = tile.landmark ? `/public/svgMap/modifiers/${tile.landmark.svg}` : null;
+              const srcBlankMark = tile.landmark ? `/public/svgMap/modifiers/blank marks/${tile.landmark.svg}` : null;
 
               return (
                 <div

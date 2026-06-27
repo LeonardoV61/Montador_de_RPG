@@ -64,8 +64,9 @@
 
 .hexagono:hover,
 .hexagono.focoExterno {
+    filter: drop-shadow(0px 1px 10px rgb(105, 101, 85)) !important; 
     transform: scale(1.06) translateZ(10px) !important;
-    z-index: 900 !important; 
+    z-index: 900 !important;
 }
 
 .hexagono.comBarreiras:hover .conteudoHex,
@@ -115,7 +116,11 @@
     height: 100%;
     object-fit: fill;
     z-index: 3;
-    filter: invert(18%) sepia(85%) saturate(5432%) hue-rotate(354deg) brightness(91%) contrast(118%);
+    filter: invert(18%) sepia(85%) saturate(5432%) hue-rotate(354deg) brightness(71%) contrast(100%);
+}
+
+.hexagono:hover .camadaLandmark {
+    filter: invert(18%) sepia(85%) saturate(5432%) hue-rotate(354deg) brightness(91%) contrast(100%);
 }
 
 
@@ -153,8 +158,8 @@
     width: 20px;
     height: 20px;
     background-color: var(--begeMapa); 
-    color: var(--vermelho);            
-    border: 2px solid var(--vermelho); 
+    color: #ba1a1a;;            
+    border: 2px solid #ba1a1a;; 
     border-radius: 50%;
     display: flex;
     justify-content: center;
@@ -165,7 +170,11 @@
     box-shadow: 1px 1px 3px rgba(0,0,0,0.4);
     z-index: 5;
 }
-
+.hexagono:hover .bolhinhaMito,
+.hexagono.focoExterno .bolhinhaMito{
+    color: #ff3b3b;            
+    border: 2px solid #ff3b3b; 
+}
 /* Coordenada técnica discreta */
 /* .coordenada {
     position: absolute;

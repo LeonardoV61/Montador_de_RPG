@@ -1,5 +1,5 @@
-import { useState, useEffect, useRef, useContext, createContext } from 'react';
-import { useParams } from 'react-router-dom'; // 1. Adicionado para pegar o ID da campanha da URL
+import { useState, useEffect, useRef, useContext, createContext, useCallback } from 'react';
+import { useParams } from 'react-router-dom'; 
 import { Canvas } from '@react-three/fiber';
 import { Physics } from '@react-three/cannon';
 import styles from './styles.Mapa.module.css';
@@ -11,12 +11,10 @@ import { ChaoMesa, ParedesMesa } from '../AbaDados/MesaFisica.jsx';
 import { DadoFisico } from '../AbaDados/physics/objects/DadoFisico.jsx';
 import { MoedaFisica } from '../AbaDados/physics/objects/MoedaFisica.jsx';
 
-// 2. Importação do seu novo serviço (Ajuste o caminho se necessário)
 import { entidadeInstanciaService } from '../../../services/entidadeInstanciaService';
 
 export const ContextoAvatar = createContext(null);
 
-// Constantes do Gerador de Mapa
 const TERRENOS_INFO = {
   1: { nome: "Marsh", svg: "marsh.svg" },
   2: { nome: "Heath", svg: "heath.svg" },
@@ -42,7 +40,7 @@ const LANDMARKS_TYPES = [
   { nome: "Cursed", svg: "cursed.svg" },
   { nome: "Dwellings", svg: "dwellings.svg" },
   { nome: "Hazards", svg: "hazards.svg" },
-  { nome: "Monuments", svg: "monuments.svg" },
+  { nome: "Monument", svg: "monument.svg" },
   { nome: "Ruins", svg: "ruins.svg" },
   { nome: "Sanctum", svg: "sanctum.svg" }
 ];
@@ -63,36 +61,111 @@ function obterVizinhosHex(r, c, w, h) {
     .filter(v => v.r >= 0 && v.r < h && v.c >= 0 && v.c < w);
 }
 
-export default function Mapa() {
-   const { campanhaId } = useParams(); // Captura o ID da campanha vindo da rota / URL
-   const { abasAbertas } = useContext(ContextoAbasPersonagem);
+export default function Mapa({ roleAtiva = 'jogador' }) {
+   const { campanhaId } = useParams(); 
+   const contextoAbas = useContext(ContextoAbasPersonagem) || {};
+   const abasAbertas = contextoAbas.abasAbertas || {};
    const dadosAberta = !!abasAbertas?.Dados;
    const anotacoesAberta = !!abasAbertas?.Anotacoes;
 
-   /* const [contextoAberto, setContextoAberto] = useState(false); */
+   const [contextoAberto, setContextoAberto] = useState(false); 
    const [avatarSelecionado, setAvatarSelecionado] = useState("Aldric");
-
-   // 3. Estado criado para armazenar os avatares/tokens vindos do Back-end
    const [avatares, setAvatares] = useState([]);
 
-   // Estados do Gerador de Mapa incorporados
+// 1. Estados base e complementares organizados no topo
    const [gridHex, setGridHex] = useState([]);
    const [listaMitos, setListaMitos] = useState([]);
+   const [tilesVisitados, setTilesVisitados] = useState(new Set(["0,0"]));
+   const [listaEquipes, setListaEquipes] = useState([
+      { id: 'comitiva-principal', nome: 'Comitiva Principal', r: 0, c: 0, icone: '⛺' }
+   ]);
+   const [barreirasReveladas, setBarreirasReveladas] = useState(new Set());
+
+   // 2. Funções utilitárias e Callbacks de exploração declarados primeiro:
+   const verificarVisibilidade = useCallback((r, c) => {
+      if (roleAtiva === 'mestre') return true;
+      return tilesVisitados.has(`${r},${c}`);
+   }, [roleAtiva, tilesVisitados]);
+
+   const marcarComoVisitado = useCallback((r, c) => {
+      setTilesVisitados((prev) => {
+         if (prev.has(`${r},${c}`)) return prev;
+         const novoSet = new Set(prev);
+         novoSet.add(`${r},${c}`);
+         return novoSet;
+      });
+   }, []);
+
+   const obterArestaAtravessada = (rO, cO, rD, cD) => {
+      const par = cO % 2 === 0;
+      if (rD === rO - 1 && cD === cO) return 1;
+      if (rD === (par ? rO - 1 : rO) && cD === cO + 1) return 2;
+      if (rD === (par ? rO : rO + 1) && cD === cO + 1) return 3;
+      if (rD === rO + 1 && cD === cO) return 4;
+      if (rD === (par ? rO : rO + 1) && cD === cO - 1) return 5;
+      if (rD === (par ? rO - 1 : rO) && cD === cO - 1) return 6;
+      return null;
+   };
+
+   // Executa a movimentação validando o sensor de barreiras direcionadas
+   const tentarMoverEquipe = useCallback((equipeId, rDestino, cDestino) => {
+      setListaEquipes((prevEquipes) => {
+         return prevEquipes.map((eq) => {
+            if (eq.id !== equipeId) return eq;
+            const rOrigem = eq.r; const cOrigem = eq.c;
+            if (rOrigem === rDestino && cOrigem === cDestino) return eq;
+
+            // --- TRAVA DE SEGURANÇA: Validação de Adjacência (Apenas vizinhos diretos) ---
+            const vizinhosOrigem = obterVizinhosHex(rOrigem, cOrigem, widthInput, heightInput);
+            const ehVizinhoValido = vizinhosOrigem.some(v => v.r === rDestino && v.c === cDestino);
+            
+            // Se o destino não for um dos 6 hexágonos vizinhos, cancela o movimento (anti-teletransporte)
+            if (!ehVizinhoValido) return eq;
+
+            const vizinhosDestino = obterVizinhosHex(rDestino, cDestino, widthInput, heightInput);
+            const vinculo = vizinhosDestino.find(v => v.r === rOrigem && v.c === cOrigem);
+
+            if (vinculo) {
+               const arestaBloqueada = vinculo.indoPara;
+               const tileDestinoDados = gridHex[rDestino]?.[cDestino];
+
+               if (tileDestinoDados?.barriers?.[arestaBloqueada]) {
+                  setBarreirasReveladas((prevSet) => {
+                     const novoSet = new Set(prevSet);
+                     novoSet.add(`${rDestino},${cDestino},${arestaBloqueada}`);
+                     return novoSet;
+                  });
+
+                  // Liga a animação de impacto e desliga após 350ms (tempo do CSS)
+                  setEstaColidindo(true);
+                  setTimeout(() => setEstaColidindo(false), 350);
+                  
+                  return eq;
+               }
+            }
+
+            marcarComoVisitado(rDestino, cDestino);
+            return { ...eq, r: rDestino, c: cDestino };
+         });
+      });
+   }, [gridHex, marcarComoVisitado]);
+   
    const [zoom, setZoom] = useState(1);
    const [posicao, setPosicao] = useState({ x: 0, y: 0 });
+   const [estaColidindo, setEstaColidindo] = useState(false);
+   const [tileHovered, setTileHovered] = useState(null);
    const [isDragging, setIsDragging] = useState(false);
    const dragStart = useRef({ x: 0, y: 0 });
 
-   // Dimensões do Grid do Gerador
    const widthInput = 12;
    const heightInput = 12;
    const qtdHoldings = 8;
    const qtdMitos = 6;
 
    const hexLargura = 100;
-   const hexAltura = 86.6; 
+   const hexAltura = 86.85; 
    const hEspaco = 75; 
-   const vEspaco = 86.6; 
+   const vEspaco = 86.5; 
 
    const normalizarRotaRio = (entrada, saida) => {
       if (entrada === saida) saida = (entrada + 3) % 6 || 6;
@@ -204,7 +277,6 @@ export default function Mapa() {
       setListaMitos(mitos);
    };
 
-   // 4. useEffect para carregar as instâncias de entidades do banco de dados
    useEffect(() => {
       handleGerarNovoMapa();
 
@@ -212,7 +284,6 @@ export default function Mapa() {
          if (!campanhaId) return;
          try {
             const resposta = await entidadeInstanciaService.listarPorCampanha(campanhaId);
-            // Garante a extração correta dos dados dependendo da estrutura do Axios (resp.data)
             const lista = resposta?.data?.data || resposta?.data || resposta || [];
             setAvatares(Array.isArray(lista) ? lista : []);
          } catch (erro) {
@@ -222,6 +293,19 @@ export default function Mapa() {
       
       carregarEntidades();
    }, [campanhaId]);
+
+   // --- GATILHO DE RASTREAMENTO: Marca a posição do jogador como explorada ---
+   useEffect(() => {
+      if (roleAtiva === 'jogador' && avatares.length > 0) {
+         avatares.forEach(av => {
+            const pos = av.pos || av.posicao;
+            // Verifica se o avatar possui coordenadas de grid compatíveis (r, c ou x, y)
+            if (pos && typeof pos.r !== 'undefined' && typeof pos.c !== 'undefined') {
+               marcarComoVisitado(pos.r, pos.c);
+            }
+         });
+      }
+   }, [avatares, roleAtiva, marcarComoVisitado]);
 
    const handleMouseDown = (e) => {
       if (e.button !== 0) return; 
@@ -252,24 +336,17 @@ export default function Mapa() {
       }
    };
 
-   /* const [ctxMenuX, setCtxMenuX] = useState(0);
-   const [ctxMenuY, setCtxMenuY] = useState(0);
-
-   function canvasCtxMenu(e) {
-      e.preventDefault();
-      setCtxMenuX(e.clientX > window.innerWidth / 2 ? e.clientX - 172 : e.clientX);
-      setCtxMenuY(e.clientY > window.innerHeight / 2 ? e.clientY - 165 : e.clientY);
-      setContextoAberto(true);
-   } */
-
-   const { dadosAtivosNaMesa, possuiDadosInterativos, onDadoParou } = useContext(ContextoMesaFisica);
+   // Bloco de contexto blindado com a nova propriedade adicionada de forma incremental
+   const contextoMesaFisica = useContext(ContextoMesaFisica) || {};
+   const dadosAtivosNaMesa = contextoMesaFisica.dadosAtivosNaMesa || [];
+   const setDadosAtivosNaMesa = contextoMesaFisica.setDadosAtivosNaMesa || (() => {});
+   const possuiDadosInterativos = contextoMesaFisica.possuiDadosInterativos || false; // <--- Adicionado aqui de forma segura
 
    return (
        <main 
          className={`${styles.mapa} ${isDragging ? styles.dragging : ""}`} 
          id="map" 
-         /* onClick={() => setContextoAberto(false)} 
-         onContextMenu={(e) => canvasCtxMenu(e)} */
+         
          onMouseDown={(e) => handleMouseDown(e)}
          onMouseMove={(e) => handleMouseMove(e)}
          onMouseUp={() => handleMouseUpOrLeave()}
@@ -287,64 +364,126 @@ export default function Mapa() {
            }}
          >
           {gridHex.map((linha, rIndex) => 
-            linha.map((tile, cIndex) => {
-              if (!tile || !tile.terreno) return null;
+               linha.map((tile, cIndex) => {
+               if (!tile || !tile.terreno) return null;
+          
+               const posX = cIndex * hEspaco;
+               const deslocamentoTopo = cIndex % 2 === 0 ? 0 : vEspaco / 2;
+               const posY = rIndex * vEspaco + deslocamentoTopo;
+          
+               // --- FILTRO DE VISIBILIDADE CONDICIONAL ---
+               const tileFoiExplorado = verificarVisibilidade(rIndex, cIndex);
 
-              const posX = cIndex * hEspaco;
-              const deslocamentoTopo = cIndex % 2 === 0 ? 0 : vEspaco / 2;
-              const posY = rIndex * vEspaco + deslocamentoTopo;
-              const temMitoAqui = listaMitos.find(m => m.r === rIndex && m.c === cIndex);
-              
-              let srcChaoBase = ""; let srcHoldingStr = null;
-              const ehRio = tile.terreno === 6;
-              
-              if (ehRio) {
-                srcChaoBase = `/src/assets/svgMap/terrains/valleys/${tile.valleys || "1-2"}.svg`;
-              } else if (tile.holding) {
-                srcChaoBase = `/src/assets/svgMap/terrains/plain.svg`;
-                srcHoldingStr = `/src/assets/svgMap/structures/${tile.holding.svg}`;
-              } else {
-                srcChaoBase = `/src/assets/svgMap/terrains/${TERRENOS_INFO[tile.terreno].svg}`;
-              }
-
-              const srcLandmark = tile.landmark ? `/src/assets/svgMap/modifiers/${tile.landmark.svg}` : null;
-              const srcBlankMark = tile.landmark ? `/src/assets/svgMap/modifiers/blank marks/${tile.landmark.svg}` : null;
-
-              const temAlgumaBarreira = Object.values(tile.barriers).some(b => b === true);
-
-              return (
-                <div
-                  key={`${rIndex}-${cIndex}`}
-                  className={`${styles.hexagono} ${temAlgumaBarreira ? styles.comBarreiras : ""}`}
-                  style={{
-                    position: 'absolute', left: `${posX}px`, top: `${posY}px`,
-                    width: `${hexLargura}px`, height: `${hexAltura}px`,
-                    zIndex: ehRio ? 10 : (tile.holding ? 5 : 1)
-                  }}
-                >
-                  <div className={styles.conteudoHex}>
-                    {srcChaoBase && <img src={srcChaoBase} className={styles.camadaBase} alt="" />}
-                    {srcHoldingStr && <img src={srcHoldingStr} className={styles.camadaBase} alt="" />}
-                    {srcLandmark && srcBlankMark && <img src={srcBlankMark} className={styles.camadaBlankMark} alt="" />}
-                    {srcLandmark && <img src={srcLandmark} className={styles.camadaLandmark} alt="" />}
-                    {temMitoAqui && <div className={styles.bolhinhaMito}>{temMitoAqui.id}</div>}
+               const temMitoAqui = tileFoiExplorado && listaMitos.find(m => m.r === rIndex && m.c === cIndex);
+               const temAlgumaBarreira = tileFoiExplorado && Object.values(tile.barriers || {}).some(Boolean);
+                        
+               let srcChaoBase = "";
+               let srcHoldingStr = null;
+               const ehRio = tile.terreno === 6;
+                        
+               if (ehRio) {
+                  const conexaoValley = tile.valleys || "1-2";
+                  srcChaoBase = `/public/svgMap/terrains/valleys/${conexaoValley}.svg`;
+               } else if (tile.holding) {
+                  srcChaoBase = `/public/svgMap/terrains/plain.svg`;
+                  // Exibe a holding/estrutura somente se o player já explorou o local
+                  if (tileFoiExplorado) {
+                     srcHoldingStr = `/public/svgMap/structures/${tile.holding.svg}`;
+                  }
+               } else {
+                  const dadosTerreno = TERRENOS_INFO[tile.terreno];
+                  srcChaoBase = `/public/svgMap/terrains/${dadosTerreno.svg}`;
+               }
+          
+               const mostrarLandmark = tileFoiExplorado && tile.landmark;
+               const srcLandmark = mostrarLandmark ? `/public/svgMap/modifiers/${tile.landmark.svg}` : null;
+               const srcBlankMark = mostrarLandmark ? `/public/svgMap/modifiers/blank marks/${tile.landmark.svg}` : null;
+          
+               return (
+                  <div
+                     key={`${rIndex}-${cIndex}`}
+                     className={`
+                        ${styles.hexagono} 
+                        ${temAlgumaBarreira ? styles.comBarreiras : ""}
+                     `}
+                     style={{
+                        left: `${posX}px`,
+                        top: `${posY}px`,
+                        width: `${hexLargura}px`,
+                        height: `${hexAltura}px`
+                     }}
+                     onClick={() => tentarMoverEquipe('comitiva-principal', rIndex, cIndex)}
+                     onMouseEnter={() => setTileHovered({ r: rIndex, c: cIndex })}
+                     onMouseLeave={() => setTileHovered(null)}
+                  >
+                     <div className={styles.conteudoHex}>
+                     {srcChaoBase && (
+                        <img 
+                           src={srcChaoBase} 
+                           className={`${styles.camadaBase} ${tile.isSeatOfPower ? styles.seatOfPower : ""}`} 
+                           alt="" 
+                        />
+                     )}
+          
+                     {srcHoldingStr && (
+                        <img src={srcHoldingStr} className={styles.camadaBase} alt="" />
+                     )}
+          
+                     {srcLandmark && srcBlankMark && (
+                        <img src={srcBlankMark} className={styles.camadaBlankMark} alt="" />
+                     )}
+          
+                     {srcLandmark && (
+                        <img src={srcLandmark} className={styles.camadaLandmark} alt="" />
+                     )}
+          
+                     {temMitoAqui && (
+                        <div className={styles.bolhinhaMito}>
+                           {temMitoAqui.id}
+                        </div>
+                     )}
+                     </div>
+          
+                     <svg viewBox="0 0 100 86.6" className={styles.camadaBarreira}>
+                        {(roleAtiva === 'mestre' || barreirasReveladas.has(`${rIndex},${cIndex},1`)) && tile.barriers[1] && (<polygon points="25,0 75,0 71.88,5.41 28.13,5.41" />)}
+                        {(roleAtiva === 'mestre' || barreirasReveladas.has(`${rIndex},${cIndex},2`)) && tile.barriers[2] && (<polygon points="75,0 100,43.3 93.75,43.3 71.88,5.41" />)}
+                        {(roleAtiva === 'mestre' || barreirasReveladas.has(`${rIndex},${cIndex},3`)) && tile.barriers[3] && (<polygon points="100,43.3 75,86.6 71.18,81.19 93.75,43.3" />)}
+                        {(roleAtiva === 'mestre' || barreirasReveladas.has(`${rIndex},${cIndex},4`)) && tile.barriers[4] && (<polygon points="75,86.6 25,86.6 28.13,81.19 71.88,81.19" />)}
+                        {(roleAtiva === 'mestre' || barreirasReveladas.has(`${rIndex},${cIndex},5`)) && tile.barriers[5] && (<polygon points="25,86.6 0,43.3 6.25,43.3 28.13,81.19" />)}
+                        {(roleAtiva === 'mestre' || barreirasReveladas.has(`${rIndex},${cIndex},6`)) && tile.barriers[6] && (<polygon points="0,43.3 25,0 28.13,5.41 6.25,43.3" />)}
+                     </svg>
                   </div>
+               );
+               })
+            )}
 
-                  <svg viewBox="0 0 100 86.6" className={styles.camadaBarreira}>
-                    {tile.barriers[1] && <line x1="25" y1="0"    x2="75" y2="0"    stroke="#ba1a1a" strokeWidth="6" strokeLinecap="round" />}
-                    {tile.barriers[2] && <line x1="75" y1="0"    x2="100" y2="43.3" stroke="#ba1a1a" strokeWidth="6" strokeLinecap="round" />}
-                    {tile.barriers[3] && <line x1="100" y1="43.3" x2="75" y2="86.6" stroke="#ba1a1a" strokeWidth="6" strokeLinecap="round" />}
-                    {tile.barriers[4] && <line x1="75" y1="86.6" x2="25" y2="86.6" stroke="#ba1a1a" strokeWidth="6" strokeLinecap="round" />}
-                    {tile.barriers[5] && <line x1="25" y1="86.6" x2="0"   y2="43.3" stroke="#ba1a1a" strokeWidth="6" strokeLinecap="round" />}
-                    {tile.barriers[6] && <line x1="0"  y1="43.3" x2="25" y2="0"    stroke="#ba1a1a" strokeWidth="6" strokeLinecap="round" />}
-                  </svg>
-                </div>
-              );
-            })
-          )}
+            {/* ADIÇÃO DO TOKEN DE EQUIPE AQUI: Fica sobreposto à grade de hexágonos */}
+            {listaEquipes.map((equipe) => {
+               const posX = equipe.c * hEspaco;
+               const deslocamentoTopo = equipe.c % 2 === 0 ? 0 : vEspaco / 2;
+               const posY = equipe.r * vEspaco + deslocamentoTopo;
+
+               return (
+                  <div 
+                     key={equipe.id} // Chave estável para manter a transição de caminhada
+                     className={`${styles.tokenEquipeMarcador} ${
+                        tileHovered?.r === equipe.r && tileHovered?.c === equipe.c 
+                           ? styles.tokenEquipeHovered 
+                           : ""
+                     } ${estaColidindo ? styles.tokenColidindo : ""}`}
+                     style={{
+                        position: 'absolute',
+                        left: `${posX + 20}px`,  // Adicione ou subtraia pixels aqui para alinhar na horizontal
+                        top: `${posY + 10}px`,   // Adicione ou subtraia pixels aqui para alinhar na vertical
+                     }}
+                     title={equipe.nome}
+                  >
+                     {equipe.icone}
+                  </div>
+               );
+            })}
          </div>
 
-         {/* CAMADA INVISÍVEL 3D PARA OS DADOS (zIndex: 2) */}
          {dadosAtivosNaMesa.length > 0 && (
             <div style={{ position: 'absolute', top: 0, left: 0, width: '100%', height: '100%', zIndex: 2, pointerEvents: possuiDadosInterativos ? 'auto' : 'none' }}>
                <Canvas camera={{ position: [0, 5.5, 5.5], fov: 40 }} shadows gl={{ alpha: true }}>
@@ -394,7 +533,7 @@ export default function Mapa() {
             <button className={styles.zoomBotao} onClick={() => { setPosicao({x:0, y:0}); setZoom(1); }}>⌖</button>
          </div>
          <div className={styles.nomeCena}>Região de Bastionland · Mapa Hexagonal</div>
-         {/* {contextoAberto && <MenuContexto x={ctxMenuX} y={ctxMenuY} />} */}
+         {contextoAberto && <MenuContexto x={ctxMenuX} y={ctxMenuY} />}
       </main>
    );
 }
