@@ -16,10 +16,6 @@ export const ContextoParticipantes = createContext(null); // ← novo
 export default function Jogo() {
   const roleNaSessao = localStorage.getItem('role_sessao_ativa') || 'jogador';
 
-  useEffect(() => {
-    if (roleNaSessao !== null) localStorage.removeItem('role_sessao_ativa');
-  }, [roleNaSessao]);
-
   const [registros, setRegistros] = useState([
     { id: 1, aba: 'Chat', autor: 'Mestre', horario: '20:03', texto: 'A estrada de terra leva por colinas cobertas de névoa...' },
     { id: 3, aba: 'Roll', icone: <Dices />, autor: 'Aldric', tipo: 'Força', valor: 17, dado: 'd20', valorAtributo: 14 },
@@ -131,7 +127,7 @@ export default function Jogo() {
               <div className={styles.jogo}>
                 <LateralPersonagem />
                 <div style={{ flex: 1, position: 'relative', height: '100%', overflow: 'hidden' }}>
-                  <Mapa />
+                  <Mapa roleAtiva={roleNaSessao} />
                 </div>
                 <LateralHistorico roleAtiva={roleNaSessao} />
               </div>

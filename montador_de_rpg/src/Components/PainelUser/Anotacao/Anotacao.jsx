@@ -54,7 +54,7 @@ const elementoNoLasso = (el, pontosLasso) => {
 
   
  
-export default function AnotacaoCanvas({ modoJogo }) {
+export default function AnotacaoCanvas({ modoJogo = false }) {
   // --- ESTADO REINTEGRADO: GESTÃO DE CAMPANHAS ---
   const [campanhas, setCampanhas] = useState([
     { id: 1, nome: "Crônica Principal", elementos: [], linhas: [], cor: '#3b82f6', favorita: true },

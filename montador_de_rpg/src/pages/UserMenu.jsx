@@ -48,6 +48,7 @@ export default function UserMenu() {
   const [modalNovaSessao, setModalNovaSessao] = useState(null);
   const [modalNovaCena, setModalNovaCena] = useState(null);
   const [personagemSelecionadoId, setPersonagemSelecionadoId] = useState(null);
+  const roleNaSessao = localStorage.getItem('role_sessao_ativa') || 'jogador';
   const [campanhaAtiva, setCampanhaAtiva] = useState(null);
 
   const [campanhas, setCampanhas] = useState([
@@ -109,11 +110,15 @@ export default function UserMenu() {
   useEffect(() => {
     async function carregarIndicadores() {
       try {
-        // O seu wrapper 'api' já injeta a URL base, os Headers e faz o .json()
-        const data = await api.get("/api/dashboard");
+        const token = localStorage.getItem("token");
+        if (!token) throw new Error("Sem token");
+        const res = await fetch("/api/dashboard", {
+          headers: { Authorization: `Bearer ${token}` },
+        });
+        if (!res.ok) throw new Error("Status " + res.status);
+        const data = await res.json();
         setIndicadores(data);
-      } catch (err) {
-        console.error("Erro ao carregar indicadores:", err);
+      } catch {
         setIndicadores({
           campanhasAtivas: 2,
           jogadores: 5,
@@ -131,9 +136,13 @@ export default function UserMenu() {
     if (!usuarioId) return;
     async function carregarAmigos() {
       try {
-        // Substituído pelo seu wrapper customizado
-        const lista = await api.get("/api/amigos");
-
+        const token = localStorage.getItem("token");
+        if (!token) throw new Error("Sem token");
+        const res = await fetch("/api/amigos", {
+          headers: { Authorization: `Bearer ${token}` },
+        });
+        if (!res.ok) throw new Error("Status " + res.status);
+        const lista = await res.json();
         const formatados = lista
           .map((a) => ({
             id: a.remetenteId === usuarioId ? a.destinatarioId : a.remetenteId,
@@ -142,8 +151,7 @@ export default function UserMenu() {
           }))
           .sort((a, b) => a.nome.localeCompare(b.nome));
         setAmigos(formatados);
-      } catch (err) {
-        console.error("Erro ao carregar amigos:", err);
+      } catch {
         setAmigos([
           { id: 1, nome: "Erik Guilherme", online: true },
           { id: 2, nome: "Leonardo ProPlayer", online: true },
@@ -156,22 +164,26 @@ export default function UserMenu() {
     carregarAmigos();
   }, [usuarioId]);
 
-  // Campanhas — Alterado para listar apenas as campanhas vinculadas ao usuário ativo
   useEffect(() => {
-    async function carregarCampanhas() {
-      try {
-        const resCamp = await campanhaService.listarMinhas();
-        const campanhasData = resCamp?.data || resCamp;
+    if (roleNaSessao !== null) localStorage.removeItem('role_sessao_ativa');
+  }, [roleNaSessao]);
+
+  // // Campanhas — Alterado para listar apenas as campanhas vinculadas ao usuário ativo
+  // useEffect(() => {
+  //   async function carregarCampanhas() {
+  //     try {
+  //       const resCamp = await campanhaService.listarMinhas();
+  //       const campanhasData = resCamp?.data || resCamp;
         
-        if (Array.isArray(campanhasData)) {
-          setCampanhas(campanhasData);
-        }
-      } catch (err) {
-        console.error("Erro ao carregar campanhas vinculadas:", err);
-      }
-    }
-    carregarCampanhas();
-  }, []);
+  //       if (Array.isArray(campanhasData)) {
+  //         setCampanhas(campanhasData);
+  //       }
+  //     } catch (err) {
+  //       console.error("Erro ao carregar campanhas vinculadas:", err);
+  //     }
+  //   }
+  //   carregarCampanhas();
+  // }, []);
 
   // ── renderização de conteúdo por aba ────────────────────────────
   function renderConteudo() {
@@ -232,7 +244,7 @@ export default function UserMenu() {
         );
       case 'regras':      return <Regras />;
       case 'habilidades': return <Habilidades />;
-      case 'diario':      return <Diario />;
+      case 'diario':      return <Diario modoJogo={false}/>;
       case 'eventos':     return <Eventos />;
       case 'inventario':  return <Inventario />;
       default:            return null;

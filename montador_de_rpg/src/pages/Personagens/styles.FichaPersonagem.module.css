@@ -7,7 +7,7 @@
 @import url('https://fonts.googleapis.com/css2?family=Cinzel:wght@400;600;700&family=EB+Garamond:ital,wght@0,400;0,500;1,400&display=swap');
 
 /* ── Variáveis ── */
-:root {
+root {
   --ouro:        var(--dourado);
   --ouro-claro:  var(--dourado2);
   --ouro-sutil:  rgba(179, 146, 78, 0.18);

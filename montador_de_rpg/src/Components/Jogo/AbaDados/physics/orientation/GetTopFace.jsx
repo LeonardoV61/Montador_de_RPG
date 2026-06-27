@@ -1,12 +1,20 @@
 import { useCallback } from 'react';
 import * as THREE from 'three';
 
-// Instanciação de vetores auxiliares fora do loop (Otimização crítica de performance)
+// Instanciação de vetores auxiliares fora do loop (Otimização de performance)
 const _worldUp = new THREE.Vector3(0, 1, 0);
 const _quaternion = new THREE.Quaternion();
 const _worldNormal = new THREE.Vector3();
 
-// Mantemos o D6 estático porque ele usa um mapeamento ortogonal customizado na tua mesa
+// SEU MAPA ORIGINAL DO D4 RECUPERADO
+const D4_FACE_MAP = [
+   { local: new THREE.Vector3(1, 1, 1).normalize(), value: 1 },
+   { local: new THREE.Vector3(-1, -1, 1).normalize(), value: 4 },
+   { local: new THREE.Vector3(-1, 1, -1).normalize(), value: 3 },
+   { local: new THREE.Vector3(1, -1, -1).normalize(), value: 2 }
+];
+
+// MAPA ESTÁTICO DO D6
 const D6_FACE_MAP = [
    { local: new THREE.Vector3(1, 0, 0), value: 1 },
    { local: new THREE.Vector3(-1, 0, 0), value: 2 },
@@ -22,7 +30,7 @@ const D6_FACE_MAP = [
 export function determinarFaceSuperior(mesh, lados) {
    if (!mesh) return 1;
 
-   // 1. Tratamento direto para a Moeda (D2)
+   // 1. Tratamento para a Moeda (D2)
    if (lados === 2) {
       mesh.updateMatrixWorld(true);
       mesh.getWorldQuaternion(_quaternion);
@@ -33,7 +41,22 @@ export function determinarFaceSuperior(mesh, lados) {
    mesh.updateMatrixWorld(true);
    mesh.getWorldQuaternion(_quaternion);
 
-   // 2. O D6 usa o teu mapa estático ortogonal estável
+   // 2. RETORNO DO SEU MAPA ORIGINAL PARA O D4
+   if (lados === 4) {
+      let maxDot = -Infinity;
+      let faceVencedora = 1;
+      for (const f of D4_FACE_MAP) {
+         _worldNormal.copy(f.local).applyQuaternion(_quaternion);
+         const dot = _worldNormal.dot(_worldUp);
+         if (dot > maxDot) {
+            maxDot = dot;
+            faceVencedora = f.value;
+         }
+      }
+      return faceVencedora;
+   }
+
+   // 3. MAPA DO D6
    if (lados === 6) {
       let maxDot = -Infinity;
       let faceVencedora = 1;
@@ -48,7 +71,7 @@ export function determinarFaceSuperior(mesh, lados) {
       return faceVencedora;
    }
 
-   // 3. Resolução Dinâmica para Dados Complexos (D10, D12, D20, D4, D8)
+   // 4. Resolução Dinâmica Robusta para Dados Complexos (D10, D12, D20, D8)
    let alvoGeometria = null;
    mesh.traverse((child) => {
       if (!alvoGeometria && child.geometry && child.geometry.attributes && child.geometry.attributes.position) {
@@ -91,7 +114,6 @@ export function determinarFaceSuperior(mesh, lados) {
       if (!existe) normaisUnicas.push(triNormal.clone());
    }
 
-   // Encontra qual das normais reais da malha está apontando mais para o topo do mundo
    let maxDot = -Infinity;
    let indiceNormalVencedora = -1;
 
@@ -106,13 +128,7 @@ export function determinarFaceSuperior(mesh, lados) {
 
    if (indiceNormalVencedora === -1) return 1;
 
-   // Com base na sequência sequencial perfeita do teu D10 (onde índice 0 = face 1, índice 1 = face 2...)
-   // O valor real da face do dado é matematicamente o índice do vetor + 1!
-   const faceDetectada = indiceNormalVencedora + 1;
-
-   // Caso especial do D4: Se a tua malha do D4 ler pela face de apoio (virada para baixo), invertemos o dot.
-   // Mas para D10, D12 e D20, o índice sequencial puro resolve a confusão perfeitamente.
-   return faceDetectada;
+   return indiceNormalVencedora + 1;
 }
 
 export function useTopFaceDeterminer() {

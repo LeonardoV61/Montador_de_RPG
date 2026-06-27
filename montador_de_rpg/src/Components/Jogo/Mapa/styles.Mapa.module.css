@@ -2,16 +2,16 @@
    CONTAINER PRINCIPAL DO MAPA (OCUPA A TELA INTEIRA)
    ========================================================================== */
 .mapa {
-  position: fixed;
-  top: 0;
-  left: 0;
-  width: 100vw;
-  height: 100vh;
-  z-index: 0; 
-  overflow: hidden;
-  background: #0c0b09;
+  width: 42vw;               
+  height: 68vh;              
+  background-color: var(--preto2);
+  border: 4px double var(--dourado);
+  border-radius: 8px;
+  box-shadow: 0 10px 30px rgba(0,0,0,0.6);
+  overflow: hidden;         
+  position: relative;       
   cursor: grab;
-  user-select: none;
+  user-select: none;    
 }
 
 .mapa.dragging {
@@ -19,26 +19,43 @@
 }
 
 .mapaGrid {
-  position: absolute;
+  position: absolute;       
   top: 0;
   left: 0;
   padding: 40px;
-  will-change: transform;
+  /* ATUALIZAÇÃO: Permite que elementos usem coordenadas Z reais 3D */
+  transform-style: preserve-3d;
 }
 
 /* ==========================================================================
    ESTILIZAÇÃO DOS HEXÁGONOS & CAMADAS VISUAIS
    ========================================================================== */
 .hexagono {
-  position: absolute;
-  box-sizing: border-box;
-  transition: transform 0.1s ease;
+    position: absolute;
+    box-sizing: border-box;
+    /* ATUALIZAÇÃO: preserve-3d garante que o filho (.camadaBarreira) possa flutuar no eixo Z */
+    transform-style: preserve-3d;
+    transition: transform 0.12s ease-out;
 }
 
-/* Efeito padrão de leve zoom ao focar em qualquer hexágono */
+/* Quando passa o mouse, o tile inteiro expande e herda dinamicamente o z-index alto */
 .hexagono:hover {
-  transform: scale(1.05);
-  z-index: 50 !important; 
+    z-index: 900 !important; 
+}
+
+.hexagono.comBarreiras:hover .conteudoHex {
+    color: inset 0 0 0 4px rgba(0, 102, 255, 0.45);
+}
+
+.hexagono:hover,
+.hexagono.focoExterno {
+    filter: drop-shadow(0px 1px 3px rgb(105, 101, 85)) !important; 
+    z-index: 900 !important;
+}
+
+.hexagono.comBarreiras:hover .conteudoHex,
+.hexagono.comBarreiras.focoExterno .conteudoHex {
+    color: inset 0 0 0 4px rgba(0, 102, 255, 0.45);
 }
 
 .conteudoHex {
@@ -50,87 +67,172 @@
   transition: background-color 0.15s ease;
 }
 
-/* MODIFICAÇÃO: Se o bloco tiver barreiras, o fundo ganha um leve contorno interno (inset) azulado no hover */
-.hexagono.comBarreiras:hover .conteudoHex {
-  background-color: #e3f0ff; /* Muda sutilmente o tom arenoso para azul claro */
-  box-shadow: inset 0 0 0 4px rgba(0, 102, 255, 0.45); /* Borda interna azul seguindo o clip-path */
-}
-
+/* CAMADA 1: Imagem Base ocupando todo o espaço (Terreno OU Holding) */
 .camadaBase {
-  position: absolute;
-  top: -4px;
-  left: -3px;
-  width: 110%;
-  height: 110%;
-  object-fit: contain;
-  z-index: 1;
+    position: absolute;
+    top: -4px;
+    left: -3px;
+    width: 110%;
+    height: 110%;
+    object-fit: contain;
+    z-index: 1;
 }
 
+/* CAMADA 2: Blank Mark (Fundo protetor do Modificador) */
 .camadaBlankMark {
-  position: absolute;
-  top: 0;
-  left: 0;
-  width: 100%;
-  height: 100%;
-  object-fit: fill;
-  z-index: 2;
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    object-fit: fill;
+    z-index: 2;
 }
 
+/* CAMADA 3: Modificadores (Landmarks) com Filtro Vermelho do Livro */
 .camadaLandmark {
-  position: absolute;
-  top: 0;
-  left: 0;
-  width: 100%;
-  height: 100%;
-  object-fit: fill;
-  z-index: 3;
-  filter: invert(18%) sepia(85%) saturate(5432%) hue-rotate(354deg) brightness(91%) contrast(118%);
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    object-fit: fill;
+    z-index: 3;
+    filter: invert(18%) sepia(85%) saturate(5432%) hue-rotate(354deg) brightness(71%) contrast(100%);
 }
 
+.hexagono:hover .camadaLandmark {
+    filter: invert(18%) sepia(85%) saturate(5432%) hue-rotate(354deg) brightness(91%) contrast(100%);
+}
+
+
+/* CAMADA 4: Barreiras Limítrofes (Atualizado para o contêiner do SVG sem clip-path) */
 .camadaBarreira {
-  position: absolute;
-  top: 0;
-  left: 0;
-  width: 100%;
-  height: 100%;
-  pointer-events: none;
-  z-index: 4;
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    pointer-events: none;
+    z-index: 4;
 }
 
+/* Cor padrão da barreira (o vermelho original) */
+.camadaBarreira polygon {
+    fill: #ba1a1a;
+    transition: fill 0.12s ease-out; /* Transição suave para a troca de cor */
+}
+
+/* QUANDO PASSAR O MOUSE NO HEXÁGONO: Muda a cor dos polígonos internos */
+.hexagono:hover .camadaBarreira polygon {
+    fill: #ff3b3b; /* Insira aqui a cor que você deseja no hover (ex: um vermelho mais brilhante, azul, dourado, etc.) */
+}
+
+.hexagono:hover .camadaBarreira polygon,
+.hexagono.focoExterno .camadaBarreira polygon {
+    fill: #ff3b3b;
+}
+/* CAMADA 5: Bolhinha do Mito Ajustada com Inversão de Cores */
 .bolhinhaMito {
-  position: absolute;
-  top: 1px;
-  left: 21px;
-  width: 20px;
-  height: 20px;
-  background-color: #fff3cc;
-  color: #e62222;
-  border: 2px solid #e62222;
-  border-radius: 50%;
-  display: flex;
-  justify-content: center;
-  align-items: center;
-  font-size: 0.81rem;
-  font-weight: 900;
-  font-family: 'Cinzel', Georgia, serif;
-  box-shadow: 1px 1px 3px rgba(0, 0, 0, 0.4);
-  z-index: 5;
+    position: absolute;
+    top: 5px;
+    left: 23px;
+    width: 20px;
+    height: 20px;
+    background-color: var(--begeMapa); 
+    color: #ba1a1a;;            
+    border: 2px solid #ba1a1a;; 
+    border-radius: 50%;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    font-size: 0.81rem;
+    font-weight: 900;
+    font-family: 'Cinzel', Georgia, serif;
+    box-shadow: 1px 1px 3px rgba(0,0,0,0.4);
+    z-index: 5;
+}
+.hexagono:hover .bolhinhaMito,
+.hexagono.focoExterno .bolhinhaMito{
+    color: #ff3b3b;            
+    border: 2px solid #ff3b3b; 
 }
 
-.coordenada {
-  position: absolute;
-  bottom: 4px;
-  left: 50%;
-  transform: translateX(-50%);
-  font-size: 0.55rem;
-  color: #4a3e2b;
-  font-weight: bold;
-  opacity: 0.35;
-  z-index: 10;
-}
+/* Coordenada técnica discreta */
+/* .coordenada {
+    position: absolute;
+    bottom: 4px;
+    left: 50%;
+    transform: translateX(-50%);
+    font-size: 0.55rem;
+    color: #4a3e2b;
+    font-weight: bold;
+    opacity: 0.35;
+    z-index: 10;
+} */
 
-.seatOfPower {
+/* .seatOfPower {
   filter: drop-shadow(0px 0px 8px var(--dourado, #d4af37));
+} */
+ 
+/* ==========================================================================\
+   ESTILIZAÇÃO DO TOKEN DE EQUIPE E FEEDBACK DE HOVER (CENTRALIZADO)
+   ========================================================================== */
+.tokenEquipeMarcador {
+  /* Garante o topo absoluto do mapa e ignora cliques */
+  z-index: 910 !important;
+  pointer-events: none !important;
+  
+  /* Definição de tamanho físico para evitar que o token encolha ou deforme */
+  width: 48px;
+  height: 48px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 1.8rem; /* Ajuste o tamanho do ícone/emoji aqui se necessário */
+
+  /* Ponto de ancoragem central: qualquer animação ou escala mantém o meio fixo */
+  transform-origin: center center;
+  
+  /* Transição de movimento linear acelerada */
+  transition: left 0.25s ease-out, top 0.25s ease-out, opacity 0.2s ease-out;
+  will-change: left, top, opacity, transform;
+}
+
+/* Quando o bloco sofre hover, apenas reduz a opacidade */
+.tokenEquipeHovered {
+  opacity: 0.75;
+  pointer-events: none !important;
+}
+
+/* ==========================================================================\
+   ANIMAÇÃO DE IMPACTO E FREADA (CENTRALIZADA NA ANCORA)
+   ========================================================================== */
+.tokenColidindo {
+  /* Executa o tranco mantendo o ponto central rígido */
+  animation: trancoFreada 0.35s cubic-bezier(0.25, 1, 0.5, 1) forwards;
+}
+
+@keyframes trancoFreada {
+  0% {
+    transform: scale(1);
+  }
+  25% {
+    /* Impacto: cresce a partir do centro exato */
+    transform: scale(1.35);
+    filter: brightness(1.3) drop-shadow(0 0 10px #ff4a4a);
+  }
+  50% {
+    /* Freada: absorve o impacto encolhendo no centro */
+    transform: scale(0.85);
+  }
+  75% {
+    transform: scale(1.05);
+  }
+  100% {
+    transform: scale(1);
+    filter: none;
+  }
 }
 
 /* ==========================================================================
