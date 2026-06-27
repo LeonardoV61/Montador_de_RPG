@@ -29,10 +29,7 @@ import FichaPersonagem from "./Personagens/FichaPersonagem.jsx";
 import CampanhaLobby from "../Components/PainelUser/Campanhas/CampanhaLobby.jsx";
 
 import api from "../utils/api.js";
-
-// Criação de personagem — único ponto de entrada
 import CriacaoPersonagem from "../pages/Personagens/CriacaoPersonagem.jsx";
-
 import ModalNovaCampanha from "../Components/PainelUser/Campanhas/ModalNovaCampanha.jsx";
 import ModalNovaSessao from "../Components/PainelUser/Campanhas/ModalNovaSessao.jsx";
 import ModalNovaCena from "../Components/PainelUser/Campanhas/ModalNovaCena.jsx";
@@ -50,12 +47,7 @@ export default function UserMenu() {
   const [personagemSelecionadoId, setPersonagemSelecionadoId] = useState(null);
   const [campanhaAtiva, setCampanhaAtiva] = useState(null);
 
-  const [campanhas, setCampanhas] = useState([
-    { id: 1, nome: "O REINO ARRUINADO", descricao: "Mythic Bastionland • 4 jogadores", status: "ATIVA" },
-    { id: 2, nome: "CINZAS DA VELHA CIDADE", descricao: "Rune 2e • 3 jogadores", status: "PAUSADA" },
-    { id: 3, nome: "O TEMPLO SUBMERSO", descricao: "OSE • 2 jogadores", status: "FINALIZADA" },
-  ]);
-
+  const [campanhas, setCampanhas] = useState([]);
   const [amigos, setAmigos] = useState([]);
   const [atividades] = useState([
     { id: 1, descricao: "Oséias atualizou a ficha", momento: "15:25:54" },
@@ -131,7 +123,6 @@ export default function UserMenu() {
     async function carregarAmigos() {
       try {
         const lista = await api.get("/api/amigos");
-
         const formatados = lista
           .map((a) => ({
             id: a.remetenteId === usuarioId ? a.destinatarioId : a.remetenteId,
@@ -154,6 +145,7 @@ export default function UserMenu() {
     carregarAmigos();
   }, [usuarioId]);
 
+  // Carregar Campanhas
   useEffect(() => {
     async function carregarCampanhas() {
       try {
@@ -170,11 +162,9 @@ export default function UserMenu() {
     carregarCampanhas();
   }, []);
 
-  // ── Função para deletar a campanha ──────────────────────────────
   const handleDeletarCampanha = async (id) => {
     try {
       await campanhaService.deletar(id);
-      // Atualiza a lista filtrando a campanha que foi deletada
       setCampanhas((prev) => prev.filter(c => c.id !== id));
     } catch (error) {
       console.error("Erro ao deletar campanha:", error);
@@ -182,19 +172,24 @@ export default function UserMenu() {
     }
   };
 
-  // ── renderização de conteúdo por aba ────────────────────────────
-  function renderConteudo() {
+  const handleAtualizarCampanhaNaLista = (id, novoStatus) => {
+    setCampanhas((prev) => 
+      prev.map(c => c.id === id ? { ...c, Status: novoStatus } : c)
+    );
+  }
 
+  function renderConteudo() {
     if (menuAtivo === 'campanha-lobby') {
       return (
         <CampanhaLobby
           campanha={campanhaAtiva}
           usuarioId={usuarioId}
           onVoltar={() => setMenuAtivo('dashboard')}
+          onStatusAlterado={(id, novoStatus) => handleAtualizarCampanhaNaLista(id, novoStatus)}
         />
       );
     }
-    // ── Mestre ──
+
     if (roleAtiva === 'mestre') {
       switch (menuAtivo) {
         case 'dashboard': return renderDashboard();
@@ -210,7 +205,6 @@ export default function UserMenu() {
       }
     }
 
-    // ── Jogador ──
     switch (menuAtivo) {
       case 'dashboard':       return renderDashboard();
       case 'personagens':     return (
@@ -264,28 +258,27 @@ export default function UserMenu() {
               <CampanhasP
                 key={c.id}
                 campanha={c}
-                roleAtiva={roleAtiva}
                 onAbrirLobby={(camp) => {
                   setCampanhaAtiva(camp);
                   setMenuAtivo('campanha-lobby');
                   window.scrollTo({top: 0, behavior: "smooth"})
                 }}
-                onDeletar={handleDeletarCampanha} // <-- Adicionado aqui!
+                onDeletar={handleDeletarCampanha} 
               />
             ))}
           </PanelDashboard>
-            <PanelDashboard titulo="JOGADORES ONLINE" canto={amigos.filter((a) => a.online).length}>
-              {amigos.map((a) => <AmigoP key={a.id} amigo={a} />)}
-            </PanelDashboard>
-            <PanelDashboard titulo="PREPARAÇÃO PARA PRÓXIMA SESSÃO">
-              {tarefas.map((t) => <TarefaP key={t.id} tarefa={t} />)}
-            </PanelDashboard>
-            <PanelDashboard titulo="ATIVIDADE RECENTE">
-              {atividades.map((a) => <AtividadeP key={a.id} atividade={a} />)}
-            </PanelDashboard>
-          </section>
-        </>
-      );
+          <PanelDashboard titulo="JOGADORES ONLINE" canto={amigos.filter((a) => a.online).length}>
+            {amigos.map((a) => <AmigoP key={a.id} amigo={a} />)}
+          </PanelDashboard>
+          <PanelDashboard titulo="PREPARAÇÃO PARA PRÓXIMA SESSÃO">
+            {tarefas.map((t) => <TarefaP key={t.id} tarefa={t} />)}
+          </PanelDashboard>
+          <PanelDashboard titulo="ATIVIDADE RECENTE">
+            {atividades.map((a) => <AtividadeP key={a.id} atividade={a} />)}
+          </PanelDashboard>
+        </section>
+      </>
+    );
   }
 
   return (

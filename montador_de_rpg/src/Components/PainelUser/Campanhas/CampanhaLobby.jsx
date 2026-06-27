@@ -11,7 +11,7 @@ import { sistemaService } from "../../../services/sistemaService.js";
 // ─── constantes de status disponíveis para o mestre ───────────────────────────
 const STATUS_OPCOES = ["ATIVA", "PAUSADA", "FINALIZADA"];
 
-export default function CampanhaLobby({ campanha, usuarioId, onVoltar }) {
+export default function CampanhaLobby({ campanha, usuarioId, onVoltar, onStatusAlterado }) {
   const navigate = useNavigate();
 
   // ── role vem do back-end, nunca do estado local do UserMenu ─────────────────
@@ -126,22 +126,30 @@ export default function CampanhaLobby({ campanha, usuarioId, onVoltar }) {
     }
   };
 
-  // Mestre: vincula sistema escolhido à campanha
+  // Mestre: vincular sistema escolhido à campanha
   const handleVincularSistema = async () => {
     if (!sistemaSelecionadoId) return;
     setCarregando(true);
     setErro(null);
     try {
-      const res = await campanhaService.atualizar(campanha.id, { sistemaId: sistemaSelecionadoId });
-      const atualizada = res?.data || res;
-      // Busca objeto completo do sistema na lista local
+      // Cria o payload contendo os dados OBRIGATÓRIOS que o backend exige
+      const payload = {
+        nome: campanhaLocal?.nome || campanha.nome,
+        descricao: campanhaLocal?.descricao || campanha.descricao,
+        status: campanhaLocal?.status || campanha.status || "ATIVA",
+        sistemaId: sistemaSelecionadoId
+      };
+
+      await campanhaService.atualizar(campanha.id, payload);
+      
       const sistemaObj = sistemasDisponiveis.find(s => s.id === sistemaSelecionadoId) || null;
       setSistema(sistemaObj);
-      setCampanhaLocal(prev => ({ ...prev, sistemaId: sistemaSelecionadoId, sistemaNome: sistemaObj?.nome }));
+      setCampanhaLocal(prev => ({ ...prev, sistemaId: sistemaSelecionadoId }));
       setModalSistema(false);
       setSistemaSelecionadoId(null);
-    } catch {
-      setErro("Não foi possível vincular o sistema.");
+    } catch (err) {
+      console.error("Erro ao vincular sistema:", err);
+      setErro("Não foi possível vincular o sistema. Verifique o console.");
     } finally {
       setCarregando(false);
     }
@@ -234,17 +242,24 @@ export default function CampanhaLobby({ campanha, usuarioId, onVoltar }) {
     }
   };
 
-  // Mestre: atualiza status da campanha
+  
   const handleAtualizarStatus = async (novoStatus) => {
     setCarregando(true);
-    setErro(null);
     try {
-      const res = await campanhaService.atualizar(campanha.id, { status: novoStatus });
-      const atualizada = res?.data || res;
-      setCampanhaLocal((prev) => ({ ...prev, status: atualizada?.status ?? novoStatus }));
+      const payload = { /* ... seu payload ... */ status: novoStatus };
+      await campanhaService.atualizar(campanha.id, payload);
+      
+      // 1. Atualiza o estado local do lobby
+      setCampanhaLocal((prev) => ({ ...prev, status: novoStatus }));
+      
+      // 2. Notifica o UserMenu para atualizar a lista (A MÁGICA ESTÁ AQUI)
+      if (onStatusAlterado) {
+        onStatusAlterado(campanha.id, novoStatus);
+      }
+      
       setEditandoStatus(false);
-    } catch {
-      setErro("Não foi possível atualizar o status da campanha.");
+    } catch (err) {
+      // ... erro
     } finally {
       setCarregando(false);
     }
@@ -262,7 +277,8 @@ export default function CampanhaLobby({ campanha, usuarioId, onVoltar }) {
     );
   }
 
-  const statusAtual = (campanhaLocal?.status ?? campanha?.status ?? "").toLowerCase();
+  const statusCampanha = campanhaLocal?.status ?? campanha?.status ?? campanha?.Status ?? "ATIVA";
+  const statusAtual = statusCampanha.toLowerCase();
 
   return (
     <div className={styles.lobby}>
@@ -280,7 +296,7 @@ export default function CampanhaLobby({ campanha, usuarioId, onVoltar }) {
           {/* Status — mestre pode editar */}
           <div className={styles.statusWrapper}>
             <span className={[styles.status, styles[statusAtual]].filter(Boolean).join(" ")}>
-              {(campanhaLocal?.status ?? campanha?.status) || "—"}
+              {(campanhaLocal?.status ?? campanha?.Status) || "—"}
             </span>
 
             {ehMestre && !editandoStatus && (

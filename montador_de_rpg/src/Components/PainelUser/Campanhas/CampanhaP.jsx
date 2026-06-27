@@ -1,11 +1,34 @@
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import styles from "./styles.CampanhaP.module.css";
+import { campanhaService } from "../../../services/campanhaService.js"; // Ajuste o caminho do import se necessário
 
-export default function CampanhaP({ campanha, roleAtiva, onAbrirLobby, onDeletar }) {
+export default function CampanhaP({ campanha, onAbrirLobby, onDeletar }) {
   const [confirmando, setConfirmando] = useState(false);
+  const [papelReal, setPapelReal] = useState(null);
+
+ useEffect(() => {
+    async function buscarPapelNaCampanha() {
+      try {
+        const res = await campanhaService.buscarMinhaRole(campanha.id);
+        const dados = res?.data !== undefined ? res.data : res;
+        
+        if (dados && typeof dados === 'object' && dados.papel) {
+          setPapelReal(dados.papel.trim().toLowerCase());
+        } else if (typeof dados === 'string') {
+          setPapelReal(dados.trim().toLowerCase());
+        }
+      } catch (err) {
+        console.error(`Erro ao buscar papel da campanha ${campanha.id}:`, err);
+      }
+    }
+
+    if (campanha?.id) {
+      buscarPapelNaCampanha();
+    }
+  }, [campanha.id]);
 
   function handleDeletar(e) {
-    e.stopPropagation()
+    e.stopPropagation();
     if (confirmando) {
       onDeletar?.(campanha.id);
       setConfirmando(false);
@@ -33,9 +56,7 @@ export default function CampanhaP({ campanha, roleAtiva, onAbrirLobby, onDeletar
         }`}>
           {campanha.Status}
         </span>
-
-        {/* Só o mestre pode deletar */}
-        {roleAtiva === "mestre" && (
+        {papelReal === "mestre" && (
           confirmando ? (
             <div className={styles.confirmar}>
               <span className={styles.confirmarTexto}>Deletar?</span>
@@ -48,7 +69,6 @@ export default function CampanhaP({ campanha, roleAtiva, onAbrirLobby, onDeletar
               title="Deletar campanha"
               onClick={handleDeletar}
             >
-              {/* Ícone de lixeira SVG */}
               <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round">
                 <polyline points="3 6 5 6 21 6" />
                 <path d="M19 6l-1 14H6L5 6" />
