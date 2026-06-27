@@ -109,7 +109,6 @@ export default function UserMenu() {
   useEffect(() => {
     async function carregarIndicadores() {
       try {
-        // O seu wrapper 'api' já injeta a URL base, os Headers e faz o .json()
         const data = await api.get("/api/dashboard");
         setIndicadores(data);
       } catch (err) {
@@ -131,7 +130,6 @@ export default function UserMenu() {
     if (!usuarioId) return;
     async function carregarAmigos() {
       try {
-        // Substituído pelo seu wrapper customizado
         const lista = await api.get("/api/amigos");
 
         const formatados = lista
@@ -172,14 +170,25 @@ export default function UserMenu() {
     carregarCampanhas();
   }, []);
 
+  // ── Função para deletar a campanha ──────────────────────────────
+  const handleDeletarCampanha = async (id) => {
+    try {
+      await campanhaService.deletar(id);
+      // Atualiza a lista filtrando a campanha que foi deletada
+      setCampanhas((prev) => prev.filter(c => c.id !== id));
+    } catch (error) {
+      console.error("Erro ao deletar campanha:", error);
+      alert("Não foi possível deletar a campanha. Tente novamente.");
+    }
+  };
+
   // ── renderização de conteúdo por aba ────────────────────────────
   function renderConteudo() {
 
     if (menuAtivo === 'campanha-lobby') {
       return (
-        <CampanhaLobby 
+        <CampanhaLobby
           campanha={campanhaAtiva}
-          roleAtiva={roleAtiva}
           usuarioId={usuarioId}
           onVoltar={() => setMenuAtivo('dashboard')}
         />
@@ -260,6 +269,7 @@ export default function UserMenu() {
                   setCampanhaAtiva(camp);
                   setMenuAtivo('campanha-lobby');
                 }}
+                onDeletar={handleDeletarCampanha} // <-- Adicionado aqui!
               />
             ))}
           </PanelDashboard>

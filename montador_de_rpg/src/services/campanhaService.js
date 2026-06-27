@@ -8,11 +8,18 @@ export const campanhaService = {
   listarPorUsuario: (usuarioId) => api.get(`/api/campanhas/usuario/${usuarioId}`),
   deletar: (id) => api.delete(`/api/campanhas/${id}`),
   
+  // Atualização de dados da campanha
+  atualizar: (id, dto) => api.put(`/api/campanhas/${id}`, dto),
+
   // Participantes
   adicionarJogador: (campanhaId, dto) => 
     api.post(`/api/campanhas/${campanhaId}/jogadores`, dto),
   listarParticipantes: (campanhaId) => 
     api.get(`/api/campanhas/${campanhaId}/jogadores`),
+  removerJogador: (campanhaId, usuarioId) => 
+    api.delete(`/api/campanhas/${campanhaId}/jogadores/${usuarioId}`),
+  buscarMinhaRole: (campanhaId) =>
+    api.get(`/api/campanhas/${campanhaId}/minha-role`),
   
   // Temporária
   criarTemporariaComSessao: (sistemaId) => 

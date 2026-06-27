@@ -1,8 +1,7 @@
 .campaign {
-  /* Resets para transformar o botão em um container limpo */
   background: transparent;
   border: none;
-  /* border-bottom: 1px solid rgba(255, 255, 255, .05); */
+  border-bottom: 1px solid rgba(255, 255, 255, 0.05);
   font-family: inherit;
   text-align: left;
   cursor: pointer;
@@ -10,39 +9,51 @@
   display: flex;
   justify-content: space-between;
   align-items: center;
-  padding: 18px 16px 18px 12px; /* Adicionado um leve padding interno nas laterais */
-  width: calc(100% - 0px); /* Garante que o hover preencha até a borda */
-  /* border-radius: 12px; */
+  padding: 18px 16px 18px 12px;
+  width: 100%;
   
   transition: all .3s ease;
 }
 
-/* Efeito de destaque ao passar o mouse ou focar com o teclado */
 .campaign:hover,
 .campaign:focus-visible {
-  background: rgba(213, 176, 110, 0.03); /* Um brilho dourado bem sutil de fundo */
+  background: rgba(213, 176, 110, 0.03);
   outline: none;
 }
 
-/* Pequeno feedback de clique (escala) */
 .campaign:active {
   transform: scale(0.995);
 }
 
+.info {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+}
+
 .campaign h4 {
   font-family: 'Cinzel', serif;
-  color: var(--branco);
-  margin: 0 0 6px 0;
+  color: var(--branco, #f0f0f0);
+  margin: 0;
+  font-size: 1.1rem;
   transition: color .3s ease;
 }
+
 .campaign:hover h4 {
   color: #fff;
 }
 
 .campaign p {
-  color: var(--cinza);
+  color: var(--cinza, #888);
   font-size: 13px;
   margin: 0;
+}
+
+/* --- Container de Ações --- */
+.acoes {
+  display: flex;
+  align-items: center;
+  gap: 16px; /* Espaço entre o status e o botão de deletar */
 }
 
 /* --- Status Badges --- */
@@ -50,22 +61,99 @@
   padding: 6px 10px;
   border: 1px solid;
   font-size: 11px;
-  letter-spacing: 1px; /* Um espaçamento para dar um tom mais clássico */
+  letter-spacing: 1px;
   transition: all .3s ease;
   background: transparent;
+  border-radius: 2px;
 }
 
 .ativa {
-  color: var(--verde);
-  border-color: var(--verde);
+  color: var(--verde, #4CAF50);
+  border-color: rgba(76, 175, 80, 0.4);
 }
 
 .pausada {
-  color: var(--dourado2);
-  border-color: var(--dourado2);
+  color: var(--dourado2, #D5B06E);
+  border-color: rgba(213, 176, 110, 0.4);
 }
 
 .finalizada {
-  color: var(--vermelho);
-  border-color: var(--vermelho);
+  color: var(--vermelho, #E53935);
+  border-color: rgba(229, 57, 53, 0.4);
+}
+
+/* --- Botão Deletar Padrão --- */
+.btnDeletar {
+  background: transparent;
+  border: 1px solid rgba(229, 57, 53, 0.2);
+  color: rgba(229, 57, 53, 0.7);
+  padding: 6px;
+  border-radius: 4px;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: all 0.2s ease;
+}
+
+.btnDeletar:hover {
+  background: rgba(229, 57, 53, 0.1);
+  color: var(--vermelho, #E53935);
+  border-color: rgba(229, 57, 53, 0.5);
+}
+
+/* --- Bloco de Confirmação --- */
+.confirmar {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  background: rgba(0, 0, 0, 0.2);
+  padding: 4px 8px;
+  border-radius: 4px;
+  border: 1px solid rgba(229, 57, 53, 0.3);
+  animation: fadeIn 0.2s ease;
+}
+
+.confirmarTexto {
+  font-size: 11px;
+  color: var(--cinza, #aaa);
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+}
+
+.btnSim, .btnNao {
+  background: transparent;
+  border: 1px solid;
+  padding: 4px 10px;
+  font-size: 11px;
+  cursor: pointer;
+  border-radius: 2px;
+  transition: all 0.2s;
+  text-transform: uppercase;
+  font-weight: bold;
+}
+
+.btnSim {
+  color: var(--vermelho, #E53935);
+  border-color: rgba(229, 57, 53, 0.5);
+}
+
+.btnSim:hover {
+  background: rgba(229, 57, 53, 0.15);
+  border-color: var(--vermelho, #E53935);
+}
+
+.btnNao {
+  color: var(--cinza, #888);
+  border-color: rgba(136, 136, 136, 0.5);
+}
+
+.btnNao:hover {
+  color: #fff;
+  border-color: #fff;
+}
+
+@keyframes fadeIn {
+  from { opacity: 0; transform: translateX(5px); }
+  to { opacity: 1; transform: translateX(0); }
 }

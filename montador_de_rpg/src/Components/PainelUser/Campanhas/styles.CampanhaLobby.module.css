@@ -1,4 +1,5 @@
 /* styles.CampanhaLobby.module.css */
+
 .lobby {
   display: flex;
   flex-direction: column;
@@ -8,14 +9,47 @@
   margin: 0 auto;
 }
 
+/* ── Carregando role ──────────────────────────────────────────────────────── */
+.carregandoRole {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 1rem;
+  padding: 4rem 0;
+  color: var(--cinza);
+  font-size: 0.95rem;
+}
+
+.spinner {
+  width: 28px;
+  height: 28px;
+  border: 3px solid var(--fundo3);
+  border-top-color: var(--dourado);
+  border-radius: 50%;
+  animation: girar 0.7s linear infinite;
+}
+
+@keyframes girar {
+  to { transform: rotate(360deg); }
+}
+
+/* ── Cabeçalho ───────────────────────────────────────────────────────────── */
 .cabecalho {
   display: flex;
-  align-items: center;
+  align-items: flex-start;
   gap: 1.5rem;
 }
 
-.cabecalho > div {
+.cabecalhoInfo {
   flex: 1;
+}
+
+.cabecalhoAcoes {
+  display: flex;
+  align-items: center;
+  gap: 0.8rem;
+  flex-shrink: 0;
 }
 
 .voltar {
@@ -29,6 +63,7 @@
   border-radius: 4px;
   transition: color 0.2s;
   white-space: nowrap;
+  flex-shrink: 0;
 }
 .voltar:hover { color: var(--dourado); }
 
@@ -44,6 +79,14 @@
   margin-top: 0.2rem;
 }
 
+/* ── Status + edição ─────────────────────────────────────────────────────── */
+.statusWrapper {
+  position: relative;
+  display: flex;
+  align-items: center;
+  gap: 0.4rem;
+}
+
 .status {
   font-size: 0.75rem;
   padding: 0.3rem 0.8rem;
@@ -53,10 +96,127 @@
   white-space: nowrap;
   font-weight: 600;
 }
-.ativa    { background: rgba(50,205,50,0.15); color: var(--verde); }
-.pausada  { background: rgba(255,204,58,0.15); color: var(--dourado); }
-.encerrada, .finalizada { background: rgba(180,180,180,0.1); color: var(--cinza); }
+.ativa      { background: rgba(50,205,50,0.15);   color: var(--verde); }
+.pausada    { background: rgba(255,204,58,0.15);   color: var(--dourado); }
+.encerrada,
+.finalizada { background: rgba(180,180,180,0.1);   color: var(--cinza); }
 
+.btnIcone {
+  background: none;
+  border: 1px solid var(--fundo3);
+  color: var(--cinza);
+  width: 26px;
+  height: 26px;
+  border-radius: 5px;
+  font-size: 0.85rem;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: border-color 0.2s, color 0.2s;
+}
+.btnIcone:hover { border-color: var(--dourado); color: var(--dourado); }
+
+.statusDropdown {
+  position: absolute;
+  top: calc(100% + 6px);
+  right: 0;
+  background: var(--fundo2);
+  border: 1px solid var(--fundo3);
+  border-radius: 8px;
+  padding: 0.5rem;
+  display: flex;
+  flex-direction: column;
+  gap: 0.35rem;
+  z-index: 50;
+  min-width: 140px;
+  box-shadow: 0 8px 24px rgba(0,0,0,0.4);
+}
+
+.statusOpcao {
+  background: transparent;
+  border: 1px solid transparent;
+  color: var(--cinza);
+  padding: 0.4rem 0.8rem;
+  border-radius: 5px;
+  font-family: inherit;
+  font-size: 0.8rem;
+  text-transform: uppercase;
+  letter-spacing: 0.06em;
+  cursor: pointer;
+  text-align: left;
+  transition: background 0.15s, color 0.15s;
+}
+.statusOpcao:hover { background: var(--fundo3); color: var(--branco); }
+.statusOpcaoAtiva  { color: var(--dourado); border-color: var(--fundo3); }
+
+.statusOpcaoCancelar {
+  background: transparent;
+  border: none;
+  color: var(--vermelho);
+  font-family: inherit;
+  font-size: 0.78rem;
+  padding: 0.3rem 0.8rem;
+  cursor: pointer;
+  text-align: left;
+  border-top: 1px solid var(--fundo3);
+  margin-top: 0.2rem;
+  padding-top: 0.5rem;
+}
+.statusOpcaoCancelar:hover { opacity: 0.75; }
+
+/* ── Sistema da campanha ─────────────────────────────────────────────────── */
+.sistemaFaixa {
+  display: flex;
+  align-items: center;
+  gap: 0.9rem;
+  background: var(--fundo2);
+  border: 1px solid var(--fundo3);
+  border-radius: 8px;
+  padding: 0.8rem 1.2rem;
+}
+
+.sistemaLabel {
+  font-size: 0.72rem;
+  text-transform: uppercase;
+  letter-spacing: 0.1em;
+  color: var(--cinza);
+  flex-shrink: 0;
+}
+
+.sistemaImagem {
+  width: 36px;
+  height: 36px;
+  object-fit: cover;
+  border-radius: 5px;
+  flex-shrink: 0;
+}
+
+.sistemaNome {
+  font-size: 1rem;
+  color: var(--branco);
+  font-weight: 600;
+}
+
+.sistemaDesc {
+  font-size: 0.85rem;
+  color: var(--cinza);
+}
+
+.sistemaBadge {
+  margin-left: auto;
+  font-size: 0.7rem;
+  background: rgba(255,204,58,0.12);
+  color: var(--dourado);
+  border: 1px solid rgba(255,204,58,0.3);
+  border-radius: 20px;
+  padding: 0.2rem 0.6rem;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+  white-space: nowrap;
+}
+
+/* ── Grade principal ─────────────────────────────────────────────────────── */
 .conteudo {
   display: grid;
   grid-template-columns: 1fr 1.6fr;
@@ -70,6 +230,7 @@
   gap: 1.5rem;
 }
 
+/* ── Seções ──────────────────────────────────────────────────────────────── */
 .secao {
   background: var(--fundo2);
   border: 1px solid var(--fundo3);
@@ -93,6 +254,7 @@
   letter-spacing: 0.06em;
 }
 
+/* ── Lista genérica ──────────────────────────────────────────────────────── */
 .lista {
   list-style: none;
   display: flex;
@@ -106,16 +268,44 @@
   font-style: italic;
 }
 
+/* ── Participante com papel ───────────────────────────────────────────────── */
 .participante {
   display: flex;
   align-items: center;
   gap: 0.6rem;
   font-size: 0.95rem;
+  padding: 0.4rem 0;
+  border-bottom: 1px solid var(--fundo3);
+}
+.participante:last-child { border-bottom: none; }
+
+.participanteInfo {
+  flex: 1;
+  display: flex;
+  align-items: baseline;
+  gap: 0.4rem;
+  flex-wrap: wrap;
+}
+
+.participanteNome {
+  color: var(--branco);
 }
 
 .avatar {
-  font-size: 1rem;
-  opacity: 0.7;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 20px;
+  height: 20px;
+  flex-shrink: 0;
+  opacity: 0.8;
+  color: var(--cinza);
+}
+
+/* Mestre: olho dourado */
+.avatar svg[aria-label="Mestre"] {
+  color: var(--dourado);
+  opacity: 1;
 }
 
 .personagemNome {
@@ -123,6 +313,22 @@
   font-size: 0.85rem;
 }
 
+/* Badges de papel */
+.papelBadge {
+  font-size: 0.68rem;
+  padding: 0.15rem 0.55rem;
+  border-radius: 20px;
+  text-transform: uppercase;
+  letter-spacing: 0.07em;
+  white-space: nowrap;
+  font-weight: 700;
+  flex-shrink: 0;
+}
+
+.papel_mestre  { background: rgba(255,204,58,0.15); color: var(--dourado); border: 1px solid rgba(255,204,58,0.3); }
+.papel_jogador { background: rgba(178,178,178,0.1); color: var(--cinza);   border: 1px solid var(--fundo3); }
+
+/* ── Sessões ─────────────────────────────────────────────────────────────── */
 .sessao {
   display: flex;
   justify-content: space-between;
@@ -141,6 +347,7 @@
   color: var(--cinza);
 }
 
+/* ── Personagem ──────────────────────────────────────────────────────────── */
 .personagemCard {
   display: flex;
   align-items: center;
@@ -189,6 +396,7 @@
   border-radius: 5px;
 }
 
+/* ── Botões ──────────────────────────────────────────────────────────────── */
 .btnPrimario {
   background: var(--dourado);
   color: var(--preto);
@@ -219,6 +427,7 @@
 }
 .btnSecundario:hover { border-color: var(--dourado); color: var(--dourado); }
 
+/* ── Erro ────────────────────────────────────────────────────────────────── */
 .erro {
   background: rgba(217,0,0,0.12);
   border: 1px solid var(--vermelho);
@@ -228,6 +437,7 @@
   font-size: 0.9rem;
 }
 
+/* ── Modais ──────────────────────────────────────────────────────────────── */
 .modalOverlay {
   position: fixed;
   inset: 0;
@@ -265,10 +475,115 @@
   width: 100%;
   transition: border-color 0.2s;
 }
-.input:focus { border-color: var(--dourado); }
+.input:focus { border-color: var(--dourado); outline: none; }
 
 .modalBotoes {
   display: flex;
   justify-content: flex-end;
   gap: 0.8rem;
+}
+
+/* ── Sistema — estados sem definição e botão trocar ─────────────────────── */
+.sistemaSemDef {
+  color: var(--cinza);
+  font-size: 0.9rem;
+  font-style: italic;
+  flex: 1;
+}
+
+.btnSistemaTrocar {
+  margin-left: auto;
+  background: transparent;
+  border: 1px solid var(--fundo3);
+  color: var(--cinza);
+  padding: 0.25rem 0.7rem;
+  border-radius: 5px;
+  font-family: inherit;
+  font-size: 0.78rem;
+  cursor: pointer;
+  white-space: nowrap;
+  transition: border-color 0.2s, color 0.2s;
+}
+.btnSistemaTrocar:hover { border-color: var(--dourado); color: var(--dourado); }
+
+/* ── Modal de sistema (maior que os outros) ──────────────────────────────── */
+.modalSistema {
+  width: min(560px, 92vw);
+  max-height: 80vh;
+  overflow: hidden;
+  display: flex;
+  flex-direction: column;
+}
+
+.modalSpinnerWrap {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 0.8rem;
+  padding: 2rem 0;
+  color: var(--cinza);
+  font-size: 0.9rem;
+}
+
+/* ── Lista de sistemas no modal ──────────────────────────────────────────── */
+.listaSistemas {
+  list-style: none;
+  display: flex;
+  flex-direction: column;
+  gap: 0.5rem;
+  overflow-y: auto;
+  flex: 1;
+  padding-right: 0.3rem;
+}
+
+.sistemaOpcao {
+  display: flex;
+  align-items: center;
+  gap: 0.9rem;
+  padding: 0.75rem 1rem;
+  border-radius: 7px;
+  border: 1px solid var(--fundo3);
+  background: var(--fundo);
+  cursor: pointer;
+  transition: border-color 0.15s, background 0.15s;
+  user-select: none;
+}
+.sistemaOpcao:hover { border-color: var(--dourado); background: var(--fundo2); }
+.sistemaOpcaoAtiva  { border-color: var(--dourado); background: rgba(255,204,58,0.06); }
+
+.sistemaOpcaoImg {
+  width: 40px;
+  height: 40px;
+  object-fit: cover;
+  border-radius: 5px;
+  flex-shrink: 0;
+}
+
+.sistemaOpcaoInfo {
+  display: flex;
+  flex-direction: column;
+  gap: 0.2rem;
+  flex: 1;
+  min-width: 0;
+}
+
+.sistemaOpcaoNome {
+  font-size: 0.95rem;
+  color: var(--branco);
+  font-weight: 600;
+}
+
+.sistemaOpcaoDesc {
+  font-size: 0.8rem;
+  color: var(--cinza);
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.sistemaOpcaoCheck {
+  color: var(--dourado);
+  font-size: 1rem;
+  font-weight: 700;
+  flex-shrink: 0;
 }
