@@ -80,9 +80,9 @@
 }
 
 .campAtiva {
-  color: #b3924e;
+  color: var(--dourado);
   background: rgba(179, 146, 78, 0.08);
-  border-left: 2px solid #b3924e;
+  border-left: 2px solid var(--dourado);
   border-radius: 0 4px 4px 0;
 }
 
@@ -97,7 +97,7 @@
   gap: 6px;
   background: transparent;
   border: 1px dashed rgba(179, 146, 78, 0.3);
-  color: #b3924e;
+  color: var(--dourado);
   padding: 0.5rem;
   border-radius: 4px;
   font-size: 0.8rem;
@@ -109,7 +109,7 @@
 
 .btnNovaCampanha:hover {
   background: rgba(179, 146, 78, 0.1);
-  border-color: #b3924e;
+  border-color: var(--dourado);
 }
 
 /* Área da Lista de Páginas (Embaixo) */
@@ -141,8 +141,8 @@
   align-items: center;
   gap: 4px;
   background: transparent;
-  border: 1px solid #b3924e;
-  color: #b3924e;
+  border: 1px solid var(--dourado);
+  color: var(--dourado);
   padding: 0.25rem 0.5rem;
   border-radius: 3px;
   font-size: 0.75rem;
@@ -152,7 +152,7 @@
 }
 
 .btnCriar:hover {
-  background: #b3924e;
+  background: var(--dourado);
   color: #000;
 }
 
@@ -191,18 +191,18 @@
 }
 
 .itemPagina:hover .iconeArquivo {
-  color: #b3924e;
+  color: var(--dourado);
 }
 
 .paginaSelecionada {
   background: rgba(179, 146, 78, 0.05);
   color: #fff;
-  border-left: 2px solid #b3924e;
+  border-left: 2px solid var(--dourado);
   border-radius: 0 4px 4px 0;
 }
 
 .paginaSelecionada .iconeArquivo {
-  color: #b3924e;
+  color: var(--dourado);
 }
 
 .truncarTexto {
@@ -270,7 +270,7 @@
 .tagCampanha {
   background: rgba(179, 146, 78, 0.1);
   border: 1px solid rgba(179, 146, 78, 0.3);
-  color: #b3924e;
+  color: var(--dourado);
   font-size: 0.75rem;
   padding: 0.25rem 0.7rem;
   border-radius: 4px;
@@ -295,8 +295,8 @@
 }
 
 .btnEditar:hover {
-  border-color: #b3924e;
-  color: #b3924e;
+  border-color: var(--dourado);
+  color: var(--dourado);
 }
 
 .btnSalvar {
@@ -327,7 +327,7 @@
 
 .tituloFolha {
   font-family: 'Cinzel', serif, sans-serif;
-  color: #b3924e;
+  color: var(--dourado);
   font-size: 2.2rem;
   margin: 0 0 1rem 0;
   letter-spacing: 1px;
@@ -360,7 +360,7 @@
   background: transparent;
   border: none;
   font-family: 'Cinzel', serif, sans-serif;
-  color: #b3924e;
+  color: var(--dourado);
   font-size: 2.2rem;
   margin-bottom: 1rem;
   outline: none;

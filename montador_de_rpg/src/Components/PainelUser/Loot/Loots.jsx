@@ -282,7 +282,7 @@ export default function Loots() {
                     </div>
                     
                     <h4>{item.titulo}</h4>
-                    <p className={styles.descricaoLivroShort} style={{color: '#b3924e', fontStyle: 'italic', marginBottom: '4px'}}>
+                    <p className={styles.descricaoLivroShort} style={{color: 'var(--dourado)', fontStyle: 'italic', marginBottom: '4px'}}>
                       {item.propriedades}
                     </p>
                     <p className={styles.descricaoLivroShort}>{item.descricao}</p>

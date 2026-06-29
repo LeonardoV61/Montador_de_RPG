@@ -75,7 +75,7 @@
 .itemCampanhaAtivo {
   background: rgba(179, 146, 78, 0.15) !important;
   border-color: rgba(179, 146, 78, 0.3) !important;
-  color: #b3924e !important;
+  color: var(--dourado) !important;
 }
 
 /* PAINEL PRINCIPAL */
@@ -128,7 +128,7 @@
 
 .preenchimentoBarra {
   height: 100%;
-  background: linear-gradient(to right, #8c723e, #b3924e);
+  background: linear-gradient(to right, #8c723e, var(--dourado));
 }
 
 .grupoMoedas {
@@ -179,7 +179,7 @@
 .abaBotaoAtiva {
   background: rgba(179, 146, 78, 0.12) !important;
   border-color: rgba(179, 146, 78, 0.25) !important;
-  color: #b3924e !important;
+  color: var(--dourado) !important;
   font-weight: 600;
 }
 
@@ -254,7 +254,7 @@
 .badgeTipoItem {
   font-size: 0.72rem;
   font-weight: 700;
-  color: #b3924e;
+  color: var(--dourado);
   background: rgba(179, 146, 78, 0.08);
   padding: 3px 8px;
   border-radius: 3px;
@@ -291,7 +291,7 @@
 
 .itemSubtituloArsenal {
   font-size: 0.92rem;
-  color: #b3924e;
+  color: var(--dourado);
   font-style: italic;
   margin: 0;
   font-weight: 600;
@@ -316,9 +316,9 @@
 }
 
 .btnAbrirLivro:hover {
-  background: #b3924e;
+  background: var(--dourado);
   color: #090706;
-  border-color: #b3924e;
+  border-color: var(--dourado);
 }
 
 /* MODAL DE INSPEÇÃO */
@@ -344,7 +344,7 @@
 .btnVoltar {
   background: rgba(179, 146, 78, 0.08);
   border: 1px solid rgba(179, 146, 78, 0.25);
-  color: #b3924e;
+  color: var(--dourado);
   padding: 0.5rem 1.2rem;
   font-size: 0.85rem;
   font-weight: bold;
@@ -354,16 +354,16 @@
 }
 
 .btnVoltar:hover {
-  background: #b3924e;
+  background: var(--dourado);
   color: #090706;
-  border-color: #b3924e;
+  border-color: var(--dourado);
 }
 
 .badgeCategoriaLeitura {
   font-family: 'Cinzel', serif;
   font-size: 0.8rem;
   font-weight: bold;
-  color: #b3924e;
+  color: var(--dourado);
   letter-spacing: 0.1em;
   border: 1px solid rgba(179, 146, 78, 0.3);
   padding: 4px 12px;
@@ -390,7 +390,7 @@
 
 .subtituloItemAberto {
   font-size: 1.2rem;
-  color: #b3924e;
+  color: var(--dourado);
   font-style: italic;
   margin-bottom: 1.8rem;
   font-weight: 500;
@@ -421,7 +421,7 @@
 .caixaPropriedades strong {
   display: block;
   font-family: 'Cinzel', serif;
-  color: #b3924e;
+  color: var(--dourado);
   font-size: 1.2rem; 
   margin-bottom: 0.8rem;
   letter-spacing: 0.05em;

@@ -50,8 +50,8 @@
 }
 
 .btnVoltar:hover {
-  border-color: #b3924e;
-  color: #b3924e;
+  border-color: var(--dourado);
+  color: var(--dourado);
   background: rgba(179, 146, 78, 0.05);
 }
 
@@ -63,7 +63,7 @@
 .tagCampanhaLeitura {
   background: rgba(179, 146, 78, 0.1);
   border: 1px solid rgba(179, 146, 78, 0.3);
-  color: #b3924e;
+  color: var(--dourado);
   font-size: 0.75rem;
   padding: 0.25rem 0.7rem;
   border-radius: 4px;
@@ -144,7 +144,7 @@
 }
 
 .runaIconVisual {
-  color: #b3924e;
+  color: var(--dourado);
   filter: drop-shadow(0 0 8px rgba(179, 146, 78, 0.4));
 }
 
@@ -162,7 +162,7 @@
 
 .atributosGrid strong {
   font-family: 'Cinzel', serif;
-  color: #b3924e;
+  color: var(--dourado);
   font-size: 0.85rem;
   text-transform: uppercase;
   letter-spacing: 0.5px;
@@ -175,7 +175,7 @@
   background: rgba(255, 255, 255, 0.03);
   padding: 0.4rem 0.6rem;
   border-radius: 4px;
-  border-left: 2px solid #b3924e;
+  border-left: 2px solid var(--dourado);
 }
 
 /* Corpo de Texto Principal */
@@ -192,12 +192,12 @@
 }
 
 .iconSelo {
-  color: #b3924e;
+  color: var(--dourado);
 }
 
 .tituloArtigoNpc {
   font-family: 'Cinzel', serif, sans-serif;
-  color: #b3924e;
+  color: var(--dourado);
   font-size: 2.2rem;
   margin: 0;
   letter-spacing: 1px;
@@ -284,7 +284,7 @@
 }
 
 .abaPrincipalAtiva {
-  color: #b3924e !important;
+  color: var(--dourado) !important;
 }
 
 .abaPrincipalAtiva::after {
@@ -294,7 +294,7 @@
   left: 0;
   width: 100%;
   height: 2px;
-  background: #b3924e;
+  background: var(--dourado);
   box-shadow: 0 -2px 10px rgba(179, 146, 78, 0.5);
 }
 
@@ -322,7 +322,7 @@
 
 .buscaWrapper input:focus {
   outline: none;
-  border-color: #b3924e;
+  border-color: var(--dourado);
 }
 
 .painelRolavel {
@@ -365,7 +365,7 @@
   gap: 8px;
   background: rgba(179, 146, 78, 0.1);
   border: 1px solid rgba(179, 146, 78, 0.4);
-  color: #b3924e;
+  color: var(--dourado);
   font-family: 'Cinzel', serif, sans-serif;
   font-size: 0.85rem;
   font-weight: bold;
@@ -376,7 +376,7 @@
 }
 
 .btnImportar:hover {
-  background: #b3924e;
+  background: var(--dourado);
   color: #000;
   box-shadow: 0 0 15px rgba(179, 146, 78, 0.3);
 }
@@ -401,7 +401,7 @@
 }
 
 .cardLivro:hover {
-  border-color: #b3924e;
+  border-color: var(--dourado);
   transform: translateY(-4px);
   box-shadow: 0 8px 25px rgba(0, 0, 0, 0.7);
 }
@@ -427,7 +427,7 @@
 }
 
 .imagemCapaIcone {
-  color: #b3924e;
+  color: var(--dourado);
   opacity: 0.4;
   z-index: 1;
   transition: transform 0.4s ease, opacity 0.4s ease;
@@ -452,7 +452,7 @@
 
 .badgeCategoriaCapa {
   font-size: 0.65rem;
-  color: #b3924e;
+  color: var(--dourado);
   background: rgba(0, 0, 0, 0.85);
   border: 1px solid rgba(179, 146, 78, 0.3);
   padding: 0.2rem 0.5rem;
@@ -543,15 +543,15 @@
 }
 
 .btnAbrirLivro:hover {
-  background: #b3924e;
+  background: var(--dourado);
   color: #000;
-  border-color: #b3924e;
+  border-color: var(--dourado);
 }
 
 .btnInstalarLivro {
   background: rgba(179, 146, 78, 0.1);
   border: 1px solid rgba(179, 146, 78, 0.3);
-  color: #b3924e;
+  color: var(--dourado);
   font-weight: bold;
   padding: 0.55rem;
   font-size: 0.8rem;
@@ -566,9 +566,9 @@
 }
 
 .btnInstalarLivro:hover {
-  background: #b3924e;
+  background: var(--dourado);
   color: #000;
-  border-color: #b3924e;
+  border-color: var(--dourado);
   box-shadow: 0 0 10px rgba(179, 146, 78, 0.2);
 }
 

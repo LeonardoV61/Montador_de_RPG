@@ -21,7 +21,7 @@
 .iconeLupa {
   position: absolute;
   left: 8px;
-  color: var(--dourado2, #b3924e);
+  color: var(--dourado);
   opacity: 0.4;
 }
 
@@ -37,7 +37,7 @@
   font-family: inherit;
 }
 .inputFiltroTexto:focus {
-  border-color: var(--dourado2, #b3924e);
+  border-color: var(--dourado2);
 }
 
 /* CONTAINER DA SUA LISTA ORIGINAL */
@@ -112,7 +112,7 @@
 .itemLayoutOriginal span:last-of-type {
   margin-right: -4px !important;
   flex-shrink: 0 !important;
-  color: var(--dourado2, #b3924e) !important;
+  color: var(--dourado2) !important;
   font-weight: 600 !important;
 }
 
@@ -128,7 +128,7 @@
 }
 
 .corIcone {
-  color: var(--dourado2, #b3924e);
+  color: var(--dourado2);
 }
 
 /* OS BOTÕES COMPACTOS DO INVENTÁRIO */
@@ -149,7 +149,7 @@
 .btnMochilaEquipar {
   background: transparent;
   border: 1px solid rgba(179, 146, 78, 0.4);
-  color: var(--dourado2, #b3924e);
+  color: var(--dourado2);
 }
 .btnMochilaEquipar:hover {
   background: rgba(179, 146, 78, 0.1);
@@ -157,8 +157,8 @@
 }
 
 .btnMochilaDesequipar {
-  background: var(--dourado2, #b3924e);
-  border: 1px solid var(--dourado2, #b3924e);
+  background: var(--dourado2);
+  border: 1px solid var(--dourado2);
   color: #0d0a08;
 }
 .btnMochilaDesequipar:hover {
@@ -172,7 +172,7 @@
   left: 305px; /* Alinhado perfeitamente com a barra lateral de 290px */
   width: 265px; 
   background: #0d0a08; 
-  border: 1px solid var(--dourado2, #b3924e);
+  border: 1px solid var(--dourado2);
   border-radius: 4px;
   box-shadow: 5px 5px 25px rgba(0, 0, 0, 0.9);
   display: flex;
@@ -217,7 +217,7 @@
 .btnFecharPopup {
   background: transparent;
   border: none;
-  color: var(--dourado2, #b3924e);
+  color: var(--dourado2);
   cursor: pointer;
   font-size: 0.9rem; 
   padding: 2px 4px;
@@ -246,7 +246,7 @@
 
 .atributoBadge {
   font-size: 0.82rem; 
-  color: var(--dourado2, #b3924e);
+  color: var(--dourado2);
   font-weight: bold;
 }
 
@@ -274,7 +274,7 @@
 .propriedadesLabel {
   display: block;
   font-size: 0.78rem; 
-  color: var(--dourado2, #b3924e);
+  color: var(--dourado2);
   font-weight: 600;
   margin-bottom: 0.2rem;
 }

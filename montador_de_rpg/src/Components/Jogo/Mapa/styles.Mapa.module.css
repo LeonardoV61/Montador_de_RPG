@@ -5,7 +5,7 @@
   width: 42vw;               
   height: 68vh;              
   background-color: var(--preto2);
-  border: 4px double var(--dourado);
+  /* border: 4px double var(--dourado); */
   border-radius: 8px;
   box-shadow: 0 10px 30px rgba(0,0,0,0.6);
   overflow: hidden;         

@@ -9,7 +9,7 @@
 .titulo {
   font-family: 'Cinzel', serif, sans-serif;
   font-size: 1.8rem;
-  color: #b3924e;
+  color: var(--dourado);
   margin-bottom: 2rem;
   text-shadow: 0 2px 4px rgba(0, 0, 0, 0.5);
   letter-spacing: 1px;
@@ -49,7 +49,7 @@
   height: 100%;
   border-radius: 50%;
   overflow: hidden;
-  border: 2px solid #b3924e;
+  border: 2px solid var(--dourado);
   box-shadow: 0 0 15px rgba(179, 146, 78, 0.2);
   background: #111;
 }
@@ -59,8 +59,8 @@
   align-items: center;
   gap: 8px;
   background: #1c1a16;
-  border: 1px solid #b3924e;
-  color: #b3924e;
+  border: 1px solid var(--dourado);
+  color: var(--dourado);
   padding: 0.6rem 1.2rem;
   font-size: 0.85rem;
   font-weight: 600;
@@ -70,7 +70,7 @@
 }
 
 .btnUpload:hover {
-  background: #b3924e;
+  background: var(--dourado);
   color: #000;
   box-shadow: 0 0 10px rgba(179, 146, 78, 0.4);
 }
@@ -101,7 +101,7 @@
 
 .controlesImagem input[type="range"] {
   width: 100%;
-  accent-color: #b3924e;
+  accent-color: var(--dourado);
   background: #222;
   height: 4px;
   border-radius: 2px;
@@ -127,7 +127,7 @@
 .subtituloSecao {
   font-family: 'Cinzel', serif, sans-serif;
   font-size: 1.1rem;
-  color: #b3924e;
+  color: var(--dourado);
   border-bottom: 1px solid rgba(179, 146, 78, 0.2);
   padding-bottom: 0.4rem;
   letter-spacing: 1px;
@@ -171,7 +171,7 @@
 
 .inputIconWrapper input:focus {
   outline: none;
-  border-color: #b3924e;
+  border-color: var(--dourado);
   box-shadow: 0 0 8px rgba(179, 146, 78, 0.15);
 }
 
@@ -253,9 +253,9 @@
 }
 
 .btnVincular:hover {
-  background: #b3924e;
+  background: var(--dourado);
   color: #000;
-  border-color: #b3924e;
+  border-color: var(--dourado);
 }
 
 .btnDesvincular {
@@ -276,7 +276,7 @@
   align-items: center;
   justify-content: center;
   gap: 8px;
-  background: #b3924e;
+  background: var(--dourado);
   color: #000;
   border: none;
   padding: 0.85rem;
@@ -299,8 +299,8 @@
   justify-content: center;
   gap: 8px;
   background: transparent;
-  color: #b3924e;
-  border: 1px solid #b3924e;
+  color: var(--dourado);
+  border: 1px solid var(--dourado);
   padding: 0.75rem;
   font-size: 0.95rem;
   font-weight: bold;

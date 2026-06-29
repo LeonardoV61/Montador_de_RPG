@@ -19,7 +19,7 @@
   font-family: 'Cinzel', serif;
   font-size: 1.05rem;
   font-weight: 700;
-  color: #b3924e;
+  color: var(--dourado);
   letter-spacing: 0.05em;
   text-transform: uppercase;
 }
@@ -75,7 +75,7 @@
 }
 
 .atributo:hover {
-  border-color: #b3924e;
+  border-color: var(--dourado);
   background: rgba(25, 20, 16, 0.9);
 }
 
@@ -159,8 +159,8 @@
 }
 
 .atributoGloriaSimbolo.aceso {
-  background: #b3924e;
-  box-shadow: 0 0 6px #b3924e;
+  background: var(--dourado);
+  box-shadow: 0 0 6px var(--dourado);
   border-color: #ffffff;
 }
 
